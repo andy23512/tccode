@@ -1,2 +1,7 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<ngx-monaco-editor
+  class="w-full flex-1 [&_.editor-container]:!h-full"
+  [options]="editorOptions"
+  [(ngModel)]="code"
+  (onInit)="onEditorInit($event)"
+></ngx-monaco-editor>
+<div #statusBar class="flex-none"></div>
