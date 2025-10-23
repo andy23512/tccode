@@ -8,11 +8,11 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular/build:application",
+      "executor": "@angular/build:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/chord-editor",
-        "browser": "./src/main.ts",
+        "main": "./src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "tsconfig.app.json",
         "inlineStyleLanguage": "scss",
