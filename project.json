@@ -8,11 +8,11 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular/build:browser",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/chord-editor",
-        "main": "./src/main.ts",
+        "browser": "./src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "tsconfig.app.json",
         "inlineStyleLanguage": "scss",
@@ -97,7 +97,7 @@
         "baseHref": "/chord-editor/",
         "name": "Tangent Chang",
         "email": "andy23512@gmail.com",
-        "dir": "dist/chord-editor"
+        "dir": "dist/chord-editor/browser"
       }
     }
   }
