@@ -9,7 +9,7 @@ import { SAMPLE_CHORDS } from '../data/sample-chords.const';
 @Component({
   imports: [EditorComponent, FormsModule],
   selector: 'app-chord-editor',
-  templateUrl: './chord-editor.html',
+  templateUrl: './chord-editor.component.html',
   host: {
     class: 'flex flex-col',
   },

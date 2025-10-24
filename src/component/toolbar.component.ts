@@ -7,7 +7,7 @@ import { IconGuardPipe } from '../pipe/icon-guard.pipe';
 @Component({
   imports: [MatListModule, MatIconModule, MatTooltipModule, IconGuardPipe],
   selector: 'app-toolbar',
-  templateUrl: './toolbar.html',
+  templateUrl: './toolbar.component.html',
 })
 export class ToolbarComponent {
   public isWebSerialApiSupported = 'serial' in navigator;
