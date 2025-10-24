@@ -6,5 +6,5 @@
     "module": "commonjs",
     "moduleResolution": "node"
   },
-  "include": ["tool/*.ts"]
+  "include": ["tool/*.ts", "src/type/fonttools.d.ts"]
 }
