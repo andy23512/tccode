@@ -6,7 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "minify-icon-font": "ts-node tool/minify-icon-font.ts"
+    "minify-icon-font": "ts-node -P tsconfig.tsnode.json tool/minify-icon-font.ts"
   },
   "private": true,
   "dependencies": {
