@@ -3,8 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { editor } from 'monaco-editor';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
-import { TCCL_LANGUAGE_ID, TCCL_THEME_NAME } from '../../config/monaco.config';
-import { SAMPLE_CHORDS } from '../../data/sample-chords.const';
+import { TCCL_LANGUAGE_ID, TCCL_THEME_NAME } from '../config/monaco.config';
+import { SAMPLE_CHORDS } from '../data/sample-chords.const';
 
 @Component({
   imports: [EditorComponent, FormsModule],
