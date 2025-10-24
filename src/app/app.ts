@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { editor } from 'monaco-editor';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
+import { TCCL_LANGUAGE_ID, TCCL_THEME_NAME } from '../config/monaco.config';
 import { SAMPLE_CHORDS } from '../data/sample-chords.const';
 
 @Component({
@@ -19,9 +20,9 @@ export class App implements OnDestroy {
     automaticLayout: true,
     fontFamily: 'Consolas, "Courier New", monospace',
     fontSize: 20,
-    language: 'javascript',
+    language: TCCL_LANGUAGE_ID,
     scrollBeyondLastLine: false,
-    theme: 'vs-dark',
+    theme: TCCL_THEME_NAME,
     wordWrap: 'off',
   };
   public code = SAMPLE_CHORDS;
