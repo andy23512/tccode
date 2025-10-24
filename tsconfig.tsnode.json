@@ -4,7 +4,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["src/type"]
   },
-  "include": ["tool/*.ts", "src/type/fonttools.d.ts"]
+  "include": ["tool/*.ts"]
 }
