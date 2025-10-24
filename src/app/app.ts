@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ChordEditorComponent } from './component/chord-editor';
-import { ToolbarComponent } from './component/toolbar';
+import { ChordEditorComponent } from '../component/chord-editor';
+import { ToolbarComponent } from '../component/toolbar';
 
 @Component({
   imports: [ChordEditorComponent, ToolbarComponent],
