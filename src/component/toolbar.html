@@ -2,8 +2,10 @@
   <button
     mat-list-item
     type="button"
-    matTooltip="Connect to my CharaChorder device"
+    [matTooltip]="isWebSerialApiSupported ? 'Connect to my CharaChorder device.' : 'Web Serial API is not supported in this browser.'"
+    [class.!cursor-not-allowed]="!isWebSerialApiSupported"
     matTooltipPosition="right"
+    [disabled]="!isWebSerialApiSupported"
   >
     <mat-icon>{{'usb' | iconGuard}}</mat-icon>
   </button>

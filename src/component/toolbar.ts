@@ -9,4 +9,6 @@ import { IconGuardPipe } from '../pipe/icon-guard.pipe';
   selector: 'app-toolbar',
   templateUrl: './toolbar.html',
 })
-export class ToolbarComponent {}
+export class ToolbarComponent {
+  public isWebSerialApiSupported = 'serial' in navigator;
+}
