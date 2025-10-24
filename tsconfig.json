@@ -7,7 +7,7 @@
     "lib": ["es2020", "dom"],
     "paths": {},
     "isolatedModules": true,
-    "typeRoots": ["src/type"]
+    "typeRoots": ["node_modules/@types", "src/type"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -17,7 +17,6 @@
     "strictTemplates": true
   },
   "files": [],
-  "include": ["**/*.d.ts"],
   "references": [
     {
       "path": "./tsconfig.app.json"

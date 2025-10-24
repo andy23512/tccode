@@ -4,8 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "module": "commonjs",
-    "moduleResolution": "node",
-    "typeRoots": ["src/type"]
+    "moduleResolution": "node"
   },
   "include": ["tool/*.ts"]
 }
