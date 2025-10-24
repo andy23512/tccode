@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { IconGuardPipe } from '../pipe/icon-guard.pipe';
 import { ChordEditorComponent } from './component/chord-editor';
+import { ToolbarComponent } from './component/toolbar';
 
 @Component({
-  imports: [MatListModule, MatIconModule, IconGuardPipe, ChordEditorComponent],
+  imports: [ChordEditorComponent, ToolbarComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   host: {
