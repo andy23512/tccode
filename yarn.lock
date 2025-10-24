@@ -4607,6 +4607,11 @@
   resolved "https://registry.yarnpkg.com/@types/w3c-web-usb/-/w3c-web-usb-1.0.13.tgz#4792e2ef7f611d0ee260b7adbf4ed121326c04e1"
   integrity sha512-N2nSl3Xsx8mRHZBvMSdNGtzMyeleTvtlEw+ujujgXalPqOjIA6UtrqcB6OzyUjkTbDm3J7P1RNK1lgoO7jxtsw==
 
+"@types/web@^0.0.283":
+  version "0.0.283"
+  resolved "https://registry.yarnpkg.com/@types/web/-/web-0.0.283.tgz#1dec7fb3ab59b860db286bf815bbbbbc73e80962"
+  integrity sha512-btpe22s61viikRyEGzjBtCN25gy+deZeufMY+InD8YPqJpVawaVXp/H2AWCK+qDvaLIEX6cB49lG1eI5fLi+Fg==
+
 "@types/ws@^8.5.10":
   version "8.18.1"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.18.1.tgz#48464e4bf2ddfd17db13d845467f6070ffea4aa9"
