@@ -4,10 +4,11 @@
     "emitDecoratorMetadata": false,
     "target": "es2022",
     "module": "preserve",
-    "lib": ["es2020", "dom"],
+    "lib": ["es6"],
     "paths": {},
     "isolatedModules": true,
-    "typeRoots": ["node_modules/@types", "src/type"]
+    "typeRoots": ["node_modules/@types", "src/type"],
+    "libReplacement": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
