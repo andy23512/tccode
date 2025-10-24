@@ -8,7 +8,9 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      code: ['Consolas', 'Courier New', 'monospace'],
+    },
   },
   plugins: [],
 };
