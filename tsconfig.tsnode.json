@@ -4,7 +4,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["node_modules/@types", "src/type"]
   },
-  "include": ["tool/*.ts"]
+  "files": ["tool/minify-icon-font.ts", "src/type/fonttools.d.ts"]
 }
