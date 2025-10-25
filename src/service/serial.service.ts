@@ -1,6 +1,21 @@
 import { Injectable } from '@angular/core';
-import { filter, firstValueFrom, Subject } from 'rxjs';
+import {
+  filter,
+  firstValueFrom,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  Subject,
+  tap,
+  toArray,
+} from 'rxjs';
 import { CHARACHORDER_DEVICE_PORTS } from '../data/charachorder-device-ports.const';
+import {
+  SerialCommand,
+  SerialCommandArgMap,
+} from '../data/serial-command.enum';
+import { RawChord, RawChordLibraryLoadStatus } from '../model/device.model';
 
 // Reference: https://github.com/archocron/ngx-serial/blob/fd1cf846cc5dba2bb2a935f44845d072964b566c/projects/ngx-serial/src/lib/ngx-serial.ts
 
@@ -43,24 +58,78 @@ export class SerialService {
       await this.port.open({ baudRate: 115200 });
       const textEncoder = new TextEncoderStream();
       this.writableStreamClosed = textEncoder.readable.pipeTo(
-        this.port.writable
+        this.port.writable,
       );
       this.writer = textEncoder.writable.getWriter();
 
       this.startReadLoop();
 
-      const version = await this.sendData('VERSION');
-      const id = await this.sendData('ID');
+      const version = await this.send(SerialCommand.Version);
+      const id = await this.send(SerialCommand.Id);
       return { version, id };
     } catch (e) {
       console.error(e);
     }
   }
 
-  public async sendData(data: string) {
+  public loadChords(): Observable<
+    RawChordLibraryLoadStatus & { rawChords?: RawChord[] }
+  > {
+    return new Observable((observer) => {
+      (async () => {
+        const chordNumber = +(await this.send(SerialCommand.GetChordMapCount));
+        const result = {
+          complete: false,
+          loaded: 0,
+          total: chordNumber,
+        };
+        observer.next(result);
+        const maxConcurrent = 10;
+        const indices = Array.from({ length: chordNumber }).map((_, i) => i);
+        from(indices)
+          .pipe(
+            mergeMap(
+              (i) =>
+                from(this.send(SerialCommand.GetChordMapByIndex, i)).pipe(
+                  map((r) => {
+                    const [input, output] = r.split(' ');
+                    return { index: i, input, output };
+                  }),
+                ),
+              maxConcurrent,
+            ),
+            tap(() => {
+              result.loaded++;
+              observer.next(result);
+            }),
+            toArray(),
+          )
+          .subscribe((rawChords) => {
+            result.complete = true;
+            observer.next({ ...result, rawChords });
+            observer.complete();
+          });
+      })();
+    });
+  }
+
+  public async send<T extends SerialCommand>(
+    command: T,
+    ...args: SerialCommandArgMap[T] extends undefined
+      ? [undefined?]
+      : SerialCommandArgMap[T]
+  ) {
+    const data = args ? [command, ...args].join(' ') : command;
+    return this.sendData(data);
+  }
+
+  private async sendData(data: string) {
     await this.writer.write(data + '\r\n');
     return firstValueFrom(
-      this.webSerialData$.pipe(filter((d) => d.startsWith(data)))
+      this.webSerialData$.pipe(
+        filter((d) => d.startsWith(data)),
+        map((d) => d.substring(data.length + 1).trim()),
+      ),
     );
   }
 
@@ -78,7 +147,7 @@ export class SerialService {
       this.readableStreamClosed = this.port.readable.pipeTo(
         textDecoder.writable as unknown as WritableStream<
           Uint8Array<ArrayBufferLike>
-        >
+        >,
       );
       this.reader = textDecoder.readable
         .pipeThrough(new TransformStream(new LineBreakTransformer('\n')))
@@ -95,7 +164,7 @@ export class SerialService {
         }
       } catch {
         console.error(
-          'Read Loop error. Have the serial device been disconnected ? '
+          'Read Loop error. Have the serial device been disconnected ? ',
         );
       }
     }

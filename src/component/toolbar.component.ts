@@ -27,7 +27,8 @@ export class ToolbarComponent {
   public isWebSerialApiSupported = 'serial' in navigator;
 
   public async connect() {
-    this.deviceStore.connect();
+    await this.deviceStore.connect();
+    await this.deviceStore.loadChord();
   }
 
   public async disconnect() {
