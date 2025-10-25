@@ -1,16 +1,26 @@
 @if (deviceConnected()) {
-  <button
-    mat-icon-button
-    type="button"
-    matTooltip="Disconnect from the connected device."
-    matTooltipPosition="right"
-    class="cursor-pointer !size-12"
-    (click)="disconnect()"
-  >
-    <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
-      'usb_off' | iconGuard
-    }}</mat-icon>
-  </button>
+  @if (isChordLoaded()) {
+    <button
+      mat-icon-button
+      type="button"
+      matTooltip="Disconnect from the connected device."
+      matTooltipPosition="right"
+      class="cursor-pointer !size-12"
+      (click)="disconnect()"
+    >
+      <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
+        'usb_off' | iconGuard
+      }}</mat-icon>
+    </button>
+  } @else {
+    <div class="size-12 p-2">
+      <mat-progress-spinner
+        [diameter]="32"
+        [strokeWidth]="4"
+        [value]="chordLoadProgress()"
+      ></mat-progress-spinner>
+    </div>
+  }
 } @else {
   <button
     mat-icon-button
