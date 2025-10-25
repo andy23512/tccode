@@ -15,7 +15,8 @@ import {
   SerialCommand,
   SerialCommandArgMap,
 } from '../data/serial-command.enum';
-import { RawChord, RawChordLibraryLoadStatus } from '../model/device.model';
+import { Chord, ChordLibraryLoadStatus } from '../model/device.model';
+import { parseChordActions, parsePhrase } from '../util/chord.util';
 
 // Reference: https://github.com/archocron/ngx-serial/blob/fd1cf846cc5dba2bb2a935f44845d072964b566c/projects/ngx-serial/src/lib/ngx-serial.ts
 
@@ -73,7 +74,7 @@ export class SerialService {
   }
 
   public loadChords(): Observable<
-    RawChordLibraryLoadStatus & { rawChords?: RawChord[] }
+    ChordLibraryLoadStatus & { rawChords?: Chord[] }
   > {
     return new Observable((observer) => {
       (async () => {
@@ -92,8 +93,12 @@ export class SerialService {
               (i) =>
                 from(this.send(SerialCommand.GetChordMapByIndex, i)).pipe(
                   map((r) => {
-                    const [input, output] = r.split(' ');
-                    return { index: i, input, output };
+                    const [chordActions, phrase] = r.split(' ');
+                    return {
+                      index: i,
+                      input: parseChordActions(chordActions),
+                      output: parsePhrase(phrase),
+                    };
                   }),
                 ),
               maxConcurrent,

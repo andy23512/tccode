@@ -1,23 +1,23 @@
-export interface RawChordLibraryLoadStatus {
+export interface ChordLibraryLoadStatus {
   complete: boolean;
   loaded: number;
   total: number;
 }
 
-export interface RawChord {
+export interface Chord {
   index: number;
-  input: string;
-  output: string;
+  input: number[];
+  output: number[];
 }
 
-export interface RawChordLibrary {
-  rawChords: RawChord[];
+export interface ChordLibrary {
+  chords: Chord[];
 }
 
 export interface Device {
   isConnected: boolean;
   version: string;
   id: string;
-  rawChordLibraryLoadStatus: RawChordLibraryLoadStatus | null;
-  rawChordLibrary: RawChordLibrary | null;
+  chordLibraryLoadStatus: ChordLibraryLoadStatus | null;
+  chordLibrary: ChordLibrary | null;
 }

@@ -9,8 +9,8 @@ const initialState: Device = {
   isConnected: false,
   version: '',
   id: '',
-  rawChordLibraryLoadStatus: null,
-  rawChordLibrary: null,
+  chordLibraryLoadStatus: null,
+  chordLibrary: null,
 };
 
 export const DeviceStore = signalStore(
@@ -29,7 +29,7 @@ export const DeviceStore = signalStore(
             patchState(store, {
               rawChordLibraryLoadStatus: { ...loadProgress },
               ...(loadProgress.rawChords
-                ? { rawChordLibrary: { rawChords: loadProgress.rawChords } }
+                ? { rawChordLibrary: { chords: loadProgress.rawChords } }
                 : {}),
             });
           }),
