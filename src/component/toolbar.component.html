@@ -1,37 +1,4 @@
 <div class="size-12 p-2">
   <app-logo class="size-8"></app-logo>
 </div>
-@if (deviceConnected()) {
-  <button
-    mat-icon-button
-    type="button"
-    matTooltip="Disconnect from the connected device."
-    matTooltipPosition="right"
-    class="cursor-pointer !size-12"
-    (click)="disconnect()"
-  >
-    <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
-      'usb_off' | iconGuard
-    }}</mat-icon>
-  </button>
-} @else {
-  <button
-    mat-icon-button
-    type="button"
-    [matTooltip]="
-      isWebSerialApiSupported
-        ? 'Connect to my CharaChorder device.'
-        : 'Web Serial API is not supported in this browser.'
-    "
-    [class.cursor-pointer]="isWebSerialApiSupported"
-    [class.!cursor-not-allowed]="!isWebSerialApiSupported"
-    matTooltipPosition="right"
-    [disabled]="!isWebSerialApiSupported"
-    class="!size-12"
-    (click)="connect()"
-  >
-    <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
-      'usb' | iconGuard
-    }}</mat-icon>
-  </button>
-}
+<app-connect-button></app-connect-button>
