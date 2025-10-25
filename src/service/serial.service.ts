@@ -74,7 +74,7 @@ export class SerialService {
   }
 
   public loadChords(): Observable<
-    ChordLibraryLoadStatus & { rawChords?: Chord[] }
+    ChordLibraryLoadStatus & { chords?: Chord[] }
   > {
     return new Observable((observer) => {
       (async () => {
@@ -109,9 +109,9 @@ export class SerialService {
             }),
             toArray(),
           )
-          .subscribe((rawChords) => {
+          .subscribe((chords) => {
             result.complete = true;
-            observer.next({ ...result, rawChords });
+            observer.next({ ...result, chords });
             observer.complete();
           });
       })();

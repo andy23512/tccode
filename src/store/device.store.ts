@@ -27,9 +27,9 @@ export const DeviceStore = signalStore(
         serialService.loadChords().pipe(
           tap((loadProgress) => {
             patchState(store, {
-              rawChordLibraryLoadStatus: { ...loadProgress },
-              ...(loadProgress.rawChords
-                ? { rawChordLibrary: { chords: loadProgress.rawChords } }
+              chordLibraryLoadStatus: { ...loadProgress },
+              ...(loadProgress.chords
+                ? { chordLibrary: { chords: loadProgress.chords } }
                 : {}),
             });
           }),
