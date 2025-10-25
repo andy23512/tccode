@@ -1,5 +1,5 @@
 {
-  "name": "chord-editor",
+  "name": "tccode",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "includedScripts": [],
   "projectType": "application",
@@ -11,7 +11,7 @@
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/chord-editor",
+        "outputPath": "dist/tccode",
         "browser": "./src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "tsconfig.app.json",
@@ -58,10 +58,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "chord-editor:build:production"
+          "buildTarget": "tccode:build:production"
         },
         "development": {
-          "buildTarget": "chord-editor:build:development"
+          "buildTarget": "tccode:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -69,7 +69,7 @@
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "chord-editor:build"
+        "buildTarget": "tccode:build"
       }
     },
     "lint": {
@@ -90,19 +90,19 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "chord-editor:build",
-        "staticFilePath": "dist/chord-editor/browser",
+        "buildTarget": "tccode:build",
+        "staticFilePath": "dist/tccode/browser",
         "spa": true
       }
     },
     "deploy": {
       "executor": "angular-cli-ghpages:deploy",
       "options": {
-        "buildTarget": "chord-editor:build:production",
-        "baseHref": "/chord-editor/",
+        "buildTarget": "tccode:build:production",
+        "baseHref": "/tccode/",
         "name": "Tangent Chang",
         "email": "andy23512@gmail.com",
-        "dir": "dist/chord-editor/browser"
+        "dir": "dist/tccode/browser"
       }
     }
   }

@@ -1,8 +1,8 @@
 export default {
-  displayName: 'chord-editor',
+  displayName: 'tccode',
   preset: './jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: './coverage/chord-editor',
+  coverageDirectory: './coverage/tccode',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
