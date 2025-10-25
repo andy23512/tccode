@@ -31,7 +31,7 @@ export const MONACO_CONFIG: NgxMonacoEditorConfig = {
       rules: [
         { token: 'input-separator', foreground: '#999999' },
         { token: 'input-key', foreground: '#39C5BB' },
-        { token: 'output-key', foreground: '#fc4769' },
+        { token: 'output-key', foreground: '#FC4769' },
       ],
       colors: {},
     });
