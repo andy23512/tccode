@@ -1,1 +1,1 @@
-export type Icon = 'usb';
+export type Icon = 'usb' | 'usb_off';

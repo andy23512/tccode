@@ -64,13 +64,12 @@ export class SerialService {
     );
   }
 
-  public async close(callback: () => void) {
+  public async disconnect() {
     this.reader.cancel();
     await this.readableStreamClosed.catch(() => {});
     this.writer.close();
     await this.writableStreamClosed;
     await this.port.close();
-    callback();
   }
 
   private async startReadLoop() {

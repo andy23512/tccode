@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IconGuardPipe } from '../pipe/icon-guard.pipe';
-import { SerialService } from '../service/serial.service';
+import { DeviceStore } from '../store/device.store';
 
 @Component({
   imports: [MatListModule, MatIconModule, MatTooltipModule, IconGuardPipe],
@@ -11,12 +11,16 @@ import { SerialService } from '../service/serial.service';
   templateUrl: './toolbar.component.html',
 })
 export class ToolbarComponent {
-  public serialService = inject(SerialService);
+  public deviceStore = inject(DeviceStore);
+  public deviceConnected = this.deviceStore.isConnected;
 
   public isWebSerialApiSupported = 'serial' in navigator;
 
-  public async connectToCharaChorderDevice() {
-    const d = await this.serialService.connect();
-    console.log(d);
+  public async connect() {
+    this.deviceStore.connect();
+  }
+
+  public async disconnect() {
+    this.deviceStore.disconnect();
   }
 }

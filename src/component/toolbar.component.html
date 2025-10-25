@@ -1,17 +1,29 @@
 <mat-action-list>
-  <button
-    mat-list-item
-    type="button"
-    [matTooltip]="
-      isWebSerialApiSupported
-        ? 'Connect to my CharaChorder device.'
-        : 'Web Serial API is not supported in this browser.'
-    "
-    [class.!cursor-not-allowed]="!isWebSerialApiSupported"
-    matTooltipPosition="right"
-    [disabled]="!isWebSerialApiSupported"
-    (click)="connectToCharaChorderDevice()"
-  >
-    <mat-icon>{{ 'usb' | iconGuard }}</mat-icon>
-  </button>
+  @if (deviceConnected()) {
+    <button
+      mat-list-item
+      type="button"
+      matTooltip="Disconnect from the connected device."
+      matTooltipPosition="right"
+      (click)="disconnect()"
+    >
+      <mat-icon>{{ 'usb_off' | iconGuard }}</mat-icon>
+    </button>
+  } @else {
+    <button
+      mat-list-item
+      type="button"
+      [matTooltip]="
+        isWebSerialApiSupported
+          ? 'Connect to my CharaChorder device.'
+          : 'Web Serial API is not supported in this browser.'
+      "
+      [class.!cursor-not-allowed]="!isWebSerialApiSupported"
+      matTooltipPosition="right"
+      [disabled]="!isWebSerialApiSupported"
+      (click)="connect()"
+    >
+      <mat-icon>{{ 'usb' | iconGuard }}</mat-icon>
+    </button>
+  }
 </mat-action-list>
