@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   filter,
   firstValueFrom,
@@ -16,6 +16,8 @@ import {
   SerialCommandArgMap,
 } from '../data/serial-command.enum';
 import { Chord, ChordLibraryLoadStatus } from '../model/device.model';
+import { SerialLogItemType } from '../model/serial-log.model';
+import { SerialLogStore } from '../store/serial-log.store';
 import { parseChordActions, parsePhrase } from '../util/chord.util';
 
 // Reference: https://github.com/archocron/ngx-serial/blob/fd1cf846cc5dba2bb2a935f44845d072964b566c/projects/ngx-serial/src/lib/ngx-serial.ts
@@ -50,6 +52,8 @@ export class SerialService {
   private reader!: ReadableStreamDefaultReader<string>;
   private readableStreamClosed!: Promise<void>;
   private writableStreamClosed!: Promise<void>;
+
+  private serialLogStore = inject(SerialLogStore);
 
   public async connect() {
     try {
@@ -130,9 +134,13 @@ export class SerialService {
 
   private async sendData(data: string) {
     await this.writer.write(data + '\r\n');
+    this.serialLogStore.push(SerialLogItemType.Send, data);
     return firstValueFrom(
       this.webSerialData$.pipe(
         filter((d) => d.startsWith(data)),
+        tap((d) => {
+          this.serialLogStore.push(SerialLogItemType.Receive, d);
+        }),
         map((d) => d.substring(data.length + 1).trim()),
       ),
     );
@@ -144,6 +152,7 @@ export class SerialService {
     this.writer.close();
     await this.writableStreamClosed;
     await this.port.close();
+    this.serialLogStore.clear();
   }
 
   private async startReadLoop() {
