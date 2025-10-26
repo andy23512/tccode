@@ -1,6 +1,6 @@
 import { editor, languages } from 'monaco-editor';
 const ALPHABETS = 'abcdefghijklmnopqrstuvwxyz';
-const SYMBOL_KEYS = '[]./';
+const SYMBOL_KEYS = '[]./-';
 export const TCCL_LANGUAGE_ID = 'tccl';
 export const TCCL_LANGUAGE_DEF: languages.IMonarchLanguage = {
   keys: [...ALPHABETS, ...ALPHABETS.toUpperCase(), ...SYMBOL_KEYS],
@@ -8,8 +8,7 @@ export const TCCL_LANGUAGE_DEF: languages.IMonarchLanguage = {
   tokenizer: {
     root: [[/ = /, 'input-output-separator', '@output'], { include: '@input' }],
     input: [
-      [/ /, 'space'],
-      [/\+/, 'input-separator'],
+      [/ \+ /, 'input-separator'],
       [/\S/, { cases: { '@keys': 'input-key' } }],
     ],
     output: [

@@ -51,7 +51,6 @@ export function convertKeyboardLayoutToCharacterKeyCodeMap(
 export function getTcclKeyFromActionCode(
   actionCode: number,
   keyboardLayout: KeyBoardLayout | null,
-  // TODO - replace any type
 ): string | null {
   if (!keyboardLayout) {
     return null;
@@ -65,6 +64,12 @@ export function getTcclKeyFromActionCode(
       return null;
     }
     return character;
+  } else if (
+    action?.type === ActionType.NonWSK &&
+    action.keyCode === 'Space' &&
+    action.codeId === 544
+  ) {
+    return ' ';
   } else {
     return `<${actionCode}>`;
   }

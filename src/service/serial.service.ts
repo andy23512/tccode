@@ -85,7 +85,7 @@ export class SerialService {
           total: chordNumber,
         };
         observer.next(result);
-        const maxConcurrent = 10;
+        const maxConcurrent = 5;
         const indices = Array.from({ length: chordNumber }).map((_, i) => i);
         from(indices)
           .pipe(
