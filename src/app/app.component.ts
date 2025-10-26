@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ChordEditorComponent } from '../component/chord-editor/chord-editor.component';
 import { ToolbarComponent } from '../component/toolbar/toolbar.component';
+import { WelcomeDialogComponent } from '../component/welcome-dialog/welcome-dialog.component';
 import { SettingStore } from '../store/setting.store';
 
 @Component({
@@ -13,12 +15,16 @@ import { SettingStore } from '../store/setting.store';
 })
 export class AppComponent implements OnInit {
   public settingStore = inject(SettingStore);
+  public matDialog = inject(MatDialog);
 
   public ngOnInit(): void {
     const showWelcomeDialogWhenStart =
       this.settingStore.showWelcomeDialogWhenStart();
     if (showWelcomeDialogWhenStart) {
-      console.log('show');
+      this.matDialog.open(WelcomeDialogComponent, {
+        disableClose: true,
+        panelClass: 'shadow-sm shadow-white'.split(' '),
+      });
     }
   }
 }

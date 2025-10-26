@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Welcome to TanChord Code!</h2>
+<mat-dialog-content class="!text-base">
+  TanChord Code (TC Code in short) is an unofficial, experimental editor that
+  allows you to edit the chord library on your CharaChorder device, similar to
+  editing code in a code editor.
+  <br />
+  <br />
+  To prevent data loss, it is recommended to back up your data using the
+  official CharaChorder Device Manager before each use of this tool.
+</mat-dialog-content>
+<mat-dialog-actions>
+  <mat-checkbox
+    [color]="'primary'"
+    [checked]="showWelcomeDialogWhenStart()"
+    (change)="setShowWelcomeDialogWhenStart($event.checked)"
+    >Show this dialog when start</mat-checkbox
+  >
+  <div class="flex-1"></div>
+  <button matButton mat-dialog-close>Close</button>
+</mat-dialog-actions>
