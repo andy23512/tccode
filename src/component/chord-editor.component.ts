@@ -34,18 +34,32 @@ export class ChordEditorComponent implements OnDestroy {
       return '';
     }
     const tcclChords: TcclChord[] = deviceChords.map((c) => {
-      const output = c.output
-        .map((actionCode) =>
-          getTcclKeyFromActionCode(actionCode, keyboardLayout),
-        )
-        .join('');
-      const input = c.input
-        .filter(Boolean)
-        .map((actionCode) =>
-          getTcclKeyFromActionCode(actionCode, keyboardLayout),
-        )
-        .join(' + ');
-      return { input, output };
+      const outputKeys = c.output.map((actionCode) =>
+        getTcclKeyFromActionCode(actionCode, keyboardLayout),
+      );
+      const inputKeys = c.input.filter(Boolean).map((actionCode) => {
+        const key = getTcclKeyFromActionCode(actionCode, keyboardLayout);
+        const indexInOutput = outputKeys.findIndex(
+          (k) => k.toLowerCase() === key.toLowerCase(),
+        );
+        return {
+          key,
+          indexInOutput: indexInOutput !== -1 ? indexInOutput : Infinity,
+        };
+      });
+      inputKeys.sort((a, b) => {
+        const compareIndexInOutput = Math.sign(
+          a.indexInOutput - b.indexInOutput,
+        );
+        if (compareIndexInOutput !== 0) {
+          return compareIndexInOutput;
+        }
+        return a.key.localeCompare(b.key);
+      });
+      return {
+        input: inputKeys.map((k) => k.key).join(' + '),
+        output: outputKeys.join(''),
+      };
     });
     tcclChords.sort((a, b) => a.output.localeCompare(b.output));
     return tcclChords
