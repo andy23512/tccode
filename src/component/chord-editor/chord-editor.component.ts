@@ -73,6 +73,7 @@ export class ChordEditorComponent implements OnDestroy {
   public statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
 
   public onEditorInit(editor: editor.IDiffEditor) {
+    this.vimMode?.dispose();
     this.vimMode = initVimMode(
       editor.getModifiedEditor(),
       this.statusBar().nativeElement,
