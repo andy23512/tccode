@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  concatMap,
   filter,
   firstValueFrom,
   from,
   map,
-  mergeMap,
   Observable,
   Subject,
   tap,
@@ -92,23 +92,20 @@ export class SerialService {
           total: chordNumber,
         };
         observer.next(result);
-        const maxConcurrent = 5;
         const indices = Array.from({ length: chordNumber }).map((_, i) => i);
         from(indices)
           .pipe(
-            mergeMap(
-              (i) =>
-                from(this.send(SerialCommand.GetChordMapByIndex, i)).pipe(
-                  map((r) => {
-                    const [chordActions, phrase] = r.split(' ');
-                    return {
-                      index: i,
-                      input: parseChordActions(chordActions),
-                      output: parsePhrase(phrase),
-                    };
-                  }),
-                ),
-              maxConcurrent,
+            concatMap((i) =>
+              from(this.send(SerialCommand.GetChordMapByIndex, i)).pipe(
+                map((r) => {
+                  const [chordActions, phrase] = r.split(' ');
+                  return {
+                    index: i,
+                    input: parseChordActions(chordActions),
+                    output: parsePhrase(phrase),
+                  };
+                }),
+              ),
             ),
             tap(() => {
               result.loaded++;
