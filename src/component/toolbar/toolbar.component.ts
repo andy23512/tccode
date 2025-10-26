@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ConnectButtonComponent } from './connect-button.component';
-import { LogoComponent } from './logo.component';
+import { ConnectButtonComponent } from '../connect-button/connect-button.component';
+import { LogoComponent } from '../logo/logo.component';
 
 @Component({
   imports: [LogoComponent, ConnectButtonComponent],

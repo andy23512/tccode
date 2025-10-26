@@ -3,8 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { IconGuardPipe } from '../pipe/icon-guard.pipe';
-import { DeviceStore } from '../store/device.store';
+import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
+import { DeviceStore } from '../../store/device.store';
 
 @Component({
   imports: [

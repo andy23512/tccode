@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ChordEditorComponent } from '../component/chord-editor.component';
-import { ToolbarComponent } from '../component/toolbar.component';
+import { ChordEditorComponent } from '../component/chord-editor/chord-editor.component';
+import { ToolbarComponent } from '../component/toolbar/toolbar.component';
 import { SettingStore } from '../store/setting.store';
 
 @Component({

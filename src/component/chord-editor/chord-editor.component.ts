@@ -9,16 +9,16 @@ import {
 import { FormsModule } from '@angular/forms';
 import { editor } from 'monaco-editor';
 import { initVimMode, VimMode } from 'monaco-vim';
-import { DiffEditorComponent, EditorComponent } from 'ngx-monaco-editor-v2';
-import { MONACO_DIFF_EDITOR_OPTIONS } from '../config/monaco.config';
-import { TCCL_LANGUAGE_ID } from '../config/tccl-language.config';
-import { TcclChord } from '../model/tccl.model';
-import { DeviceStore } from '../store/device.store';
-import { KeyboardLayoutStore } from '../store/keyboard-layout.store';
-import { getTcclKeyFromActionCode } from '../util/layout.util';
+import { DiffEditorComponent } from 'ngx-monaco-editor-v2';
+import { MONACO_DIFF_EDITOR_OPTIONS } from '../../config/monaco.config';
+import { TCCL_LANGUAGE_ID } from '../../config/tccl-language.config';
+import { TcclChord } from '../../model/tccl.model';
+import { DeviceStore } from '../../store/device.store';
+import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
+import { getTcclKeyFromActionCode } from '../../util/layout.util';
 
 @Component({
-  imports: [EditorComponent, FormsModule, DiffEditorComponent],
+  imports: [FormsModule, DiffEditorComponent],
   selector: 'app-chord-editor',
   templateUrl: './chord-editor.component.html',
   host: {
