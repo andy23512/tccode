@@ -31,14 +31,17 @@ class LineBreakTransformer {
     this.controlCharacter = controlCharacter;
   }
 
-  transform(chunk: string, controller: any) {
+  transform(
+    chunk: string,
+    controller: TransformStreamDefaultController<string>,
+  ) {
     this.container += chunk;
     const lines = this.container.split(this.controlCharacter);
     this.container = lines.pop();
-    lines.forEach((line: string) => controller.enqueue(line));
+    lines.forEach((line) => controller.enqueue(line));
   }
 
-  flush(controller: any) {
+  flush(controller: TransformStreamDefaultController<string>) {
     controller.enqueue(this.container);
   }
 }
@@ -148,7 +151,9 @@ export class SerialService {
 
   public async disconnect() {
     this.reader.cancel();
-    await this.readableStreamClosed.catch(() => {});
+    await this.readableStreamClosed.catch(() => {
+      /* empty */
+    });
     this.writer.close();
     await this.writableStreamClosed;
     await this.port.close();

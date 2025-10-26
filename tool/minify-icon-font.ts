@@ -6,15 +6,15 @@ import { readFileSync, writeFileSync } from 'fs';
 
 (async () => {
   const iconTypesAst = ast(
-    readFileSync('./src/model/icon.model.ts', { encoding: 'utf-8' })
+    readFileSync('./src/model/icon.model.ts', { encoding: 'utf-8' }),
   );
 
   const icons = query(iconTypesAst, 'StringLiteral').map(
-    (node) => (node as any).text
+    (node) => (node as any).text,
   );
   console.log(icons);
   const font = fontkitOpenSync(
-    './src/asset/material-symbols-rounded-latin-full-normal.woff2'
+    './src/asset/material-symbols-rounded-latin-full-normal.woff2',
   ) as Font;
 
   const glyphs = ['5f-7a', '30-39'];
@@ -36,7 +36,7 @@ import { readFileSync, writeFileSync } from 'fs';
   glyphs.sort();
 
   const inputFileBuffer = readFileSync(
-    './src/asset/material-symbols-rounded-latin-full-normal.woff2'
+    './src/asset/material-symbols-rounded-latin-full-normal.woff2',
   );
   const outputFileBuffer = await subset(inputFileBuffer, {
     unicodes: glyphs.join(','),
@@ -45,6 +45,6 @@ import { readFileSync, writeFileSync } from 'fs';
   });
   writeFileSync(
     './src/asset/material-symbols-rounded-latin-full-normal.min.woff2',
-    outputFileBuffer
+    outputFileBuffer,
   );
 })();
