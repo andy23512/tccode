@@ -18,15 +18,16 @@ export const MONACO_CONFIG: NgxMonacoEditorConfig = {
   },
 };
 
-export const MONACO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions =
+export const MONACO_DIFF_EDITOR_OPTIONS: editor.IStandaloneDiffEditorConstructionOptions =
   {
     automaticLayout: true,
     fontFamily: 'Consolas, "Courier New", monospace',
     fontSize: 20,
-    language: TCCL_LANGUAGE_ID,
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
     theme: TCCL_THEME_NAME,
     wordWrap: 'off',
     renderWhitespace: 'all',
+    renderSideBySide: false,
+    ignoreTrimWhitespace: false,
   };

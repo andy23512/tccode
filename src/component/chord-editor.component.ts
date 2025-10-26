@@ -9,15 +9,16 @@ import {
 import { FormsModule } from '@angular/forms';
 import { editor } from 'monaco-editor';
 import { initVimMode, VimMode } from 'monaco-vim';
-import { EditorComponent } from 'ngx-monaco-editor-v2';
-import { MONACO_EDITOR_OPTIONS } from '../config/monaco.config';
+import { DiffEditorComponent, EditorComponent } from 'ngx-monaco-editor-v2';
+import { MONACO_DIFF_EDITOR_OPTIONS } from '../config/monaco.config';
+import { TCCL_LANGUAGE_ID } from '../config/tccl-language.config';
 import { TcclChord } from '../model/tccl.model';
 import { DeviceStore } from '../store/device.store';
 import { KeyboardLayoutStore } from '../store/keyboard-layout.store';
 import { getTcclKeyFromActionCode } from '../util/layout.util';
 
 @Component({
-  imports: [EditorComponent, FormsModule],
+  imports: [EditorComponent, FormsModule, DiffEditorComponent],
   selector: 'app-chord-editor',
   templateUrl: './chord-editor.component.html',
   host: {
@@ -66,12 +67,16 @@ export class ChordEditorComponent implements OnDestroy {
       .map(({ input, output }) => `${input} = ${output}`)
       .join('\n');
   });
-  public editorOptions = MONACO_EDITOR_OPTIONS;
+  public diffEditorOptions = MONACO_DIFF_EDITOR_OPTIONS;
+  public tcclLanguageId = TCCL_LANGUAGE_ID;
   public vimMode: VimMode;
   public statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
 
-  public onEditorInit(editor: editor.IEditor) {
-    this.vimMode = initVimMode(editor, this.statusBar().nativeElement);
+  public onEditorInit(editor: editor.IDiffEditor) {
+    this.vimMode = initVimMode(
+      editor.getModifiedEditor(),
+      this.statusBar().nativeElement,
+    );
   }
 
   public ngOnDestroy(): void {
