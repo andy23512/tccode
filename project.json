@@ -11,6 +11,9 @@
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "loader": {
+          ".ttf": "binary"
+        },
         "outputPath": "dist/tccode",
         "browser": "./src/main.ts",
         "polyfills": ["zone.js"],
@@ -35,7 +38,7 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "4mb"
+              "maximumError": "6mb"
             },
             {
               "type": "anyComponentStyle",
