@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
     if (showWelcomeDialogWhenStart) {
       this.matDialog.open(WelcomeDialogComponent, {
         disableClose: true,
-        panelClass: 'shadow-sm shadow-white'.split(' '),
       });
     }
   }

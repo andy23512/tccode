@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Settings</h2>
+<mat-dialog-content class="!text-base">
+  <mat-checkbox
+    [color]="'primary'"
+    [checked]="showWelcomeDialogWhenStart()"
+    (change)="setShowWelcomeDialogWhenStart($event.checked)"
+    >Show the welcome dialog when start</mat-checkbox
+  >
+  <br />
+  <br />
+  <mat-form-field>
+    <mat-label>Key bindings</mat-label>
+    <mat-select [value]="keyBindings()" (valueChange)="setKeyBindings($event)">
+      @for (k of keyBindingOptions; track k.value) {
+        <mat-option [value]="k.value">{{ k.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton mat-dialog-close>Close</button>
+</mat-dialog-actions>

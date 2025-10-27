@@ -3,11 +3,23 @@
 </div>
 <app-connect-button></app-connect-button>
 <div class="flex-1"></div>
+<button
+  mat-icon-button
+  type="button"
+  matTooltip="Settings"
+  matTooltipPosition="right"
+  class="!size-12 !cursor-pointer"
+  (click)="openSettingsDialog()"
+>
+  <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
+    'settings' | iconGuard
+  }}</mat-icon>
+</button>
 @if (isWebSerialApiSupported) {
   <button
     mat-icon-button
     type="button"
-    matTooltip="Open serial log dialog"
+    matTooltip="Serial log"
     matTooltipPosition="right"
     class="!size-12 !cursor-pointer"
     (click)="openSerialLogDialog()"

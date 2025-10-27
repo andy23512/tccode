@@ -7,6 +7,7 @@ import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { ConnectButtonComponent } from '../connect-button/connect-button.component';
 import { LogoComponent } from '../logo/logo.component';
 import { SerialLogDialogComponent } from '../serial-log-dialog/serial-log-dialog.component';
+import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 
 @Component({
   imports: [
@@ -27,11 +28,14 @@ export class ToolbarComponent {
   public matDialog = inject(MatDialog);
   public isWebSerialApiSupported = 'serial' in navigator;
 
+  public openSettingsDialog() {
+    this.matDialog.open(SettingsDialogComponent);
+  }
+
   public openSerialLogDialog() {
     this.matDialog.open(SerialLogDialogComponent, {
       width: '80vw',
       maxWidth: '80vw',
-      panelClass: 'shadow-sm shadow-white'.split(' '),
     });
   }
 }

@@ -3,10 +3,11 @@ import {
   withStorageSync,
 } from '@angular-architects/ngrx-toolkit';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { Setting } from '../model/setting.model';
+import { KeyBindings, Setting } from '../model/setting.model';
 
 const INITIAL_SETTING: Setting = {
   showWelcomeDialogWhenStart: true,
+  keyBindings: KeyBindings.Classic,
 };
 
 export const SettingStore = signalStore(
