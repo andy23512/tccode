@@ -45,3 +45,5 @@ Thumbs.db
 
 .angular
 src/asset/material-symbols-rounded-latin-full-normal.min.woff2
+
+.antlr
