@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 export const TCCL_LANGUAGE_ID = 'tccl';
 export const TCCL_THEME_NAME = 'tccl-theme';
 export const TCCL_THEME_DATA: editor.IStandaloneThemeData = {

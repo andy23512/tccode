@@ -1,11 +1,9 @@
-import * as monaco from 'monaco-editor';
+import type { Uri, editor } from 'monaco-editor';
 import { TCCL_LANGUAGE_ID } from '../config/tccl-language.config';
 import { TcclWorker } from './tccl-worker';
 
-import Uri = monaco.Uri;
-
 export class TcclWorkerManager {
-  private worker: monaco.editor.MonacoWebWorker<TcclWorker>;
+  private worker: editor.MonacoWebWorker<TcclWorker>;
   private workerClientProxy: Promise<TcclWorker>;
 
   constructor() {

@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import { TcclTokensProvider } from '../tccl/tccl-tokens-provider';
 import {

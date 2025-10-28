@@ -1,8 +1,8 @@
-import * as monaco from 'monaco-editor';
+import type { worker } from 'monaco-editor';
 import { TcclError } from '../language-service/tccl-error-listener';
 import { TcclLanguageService } from '../language-service/tccl-language-service';
 
-import IWorkerContext = monaco.worker.IWorkerContext;
+type IWorkerContext = worker.IWorkerContext;
 
 export class TcclWorker {
   private languageService: TcclLanguageService;

@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { editor } from 'monaco-editor';
+import type { editor } from 'monaco-editor';
 import { EmacsExtension } from 'monaco-emacs';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { DiffEditorComponent } from 'ngx-monaco-editor-v2';

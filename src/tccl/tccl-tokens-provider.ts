@@ -7,30 +7,30 @@ import {
   RecognitionException,
   Recognizer,
 } from 'antlr4ng';
-import * as monaco from 'monaco-editor';
+import type { languages } from 'monaco-editor';
 import { createLexer } from './tccl-parser';
-import ILineTokens = monaco.languages.ILineTokens;
-import IToken = monaco.languages.IToken;
+type ILineTokens = languages.ILineTokens;
+type IToken = languages.IToken;
 
-export class TcclState implements monaco.languages.IState {
-  clone(): monaco.languages.IState {
+export class TcclState implements languages.IState {
+  clone(): languages.IState {
     return new TcclState();
   }
 
-  equals(other: monaco.languages.IState): boolean {
+  equals(other: languages.IState): boolean {
     return true;
   }
 }
 
-export class TcclTokensProvider implements monaco.languages.TokensProvider {
-  public getInitialState(): monaco.languages.IState {
+export class TcclTokensProvider implements languages.TokensProvider {
+  public getInitialState(): languages.IState {
     return new TcclState();
   }
 
   public tokenize(
     line: string,
-    state: monaco.languages.IState,
-  ): monaco.languages.ILineTokens {
+    state: languages.IState,
+  ): languages.ILineTokens {
     // So far we ignore the state, which is not great for performance reasons
     return tokensForLine(line);
   }
@@ -49,16 +49,16 @@ class TcclToken implements IToken {
 }
 
 class TcclLineTokens implements ILineTokens {
-  endState: monaco.languages.IState;
-  tokens: monaco.languages.IToken[];
+  endState: languages.IState;
+  tokens: languages.IToken[];
 
-  constructor(tokens: monaco.languages.IToken[]) {
+  constructor(tokens: languages.IToken[]) {
     this.endState = new TcclState();
     this.tokens = tokens;
   }
 }
 
-export function tokensForLine(input: string): monaco.languages.ILineTokens {
+export function tokensForLine(input: string): languages.ILineTokens {
   const errorStartingPoints: number[] = [];
 
   class ErrorCollectorListener implements ANTLRErrorListener {
@@ -110,7 +110,7 @@ export function tokensForLine(input: string): monaco.languages.ILineTokens {
   const errorListener = new ErrorCollectorListener();
   lexer.addErrorListener(errorListener);
   let done = false;
-  const myTokens: monaco.languages.IToken[] = [];
+  const myTokens: languages.IToken[] = [];
   do {
     const token = lexer.nextToken();
     if (token == null) {
