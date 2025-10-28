@@ -90,15 +90,11 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    monaco.editor.create(this.monacoContainer().nativeElement, {
+    const editor = monaco.editor.create(this.monacoContainer().nativeElement, {
       value: SAMPLE_CHORDS_1,
       ...MONACO_EDITOR_OPTIONS,
     });
-  }
-
-  public onEditorInit(editor: editor.IDiffEditor) {
-    this.editor.set(editor.getModifiedEditor());
-    this.setCustomMarkers(editor.getModifiedEditor());
+    this.editor.set(editor);
   }
 
   public ngOnDestroy(): void {
@@ -130,35 +126,5 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
       });
       this.emacsMode.start();
     }
-  }
-
-  private setCustomMarkers(editor: editor.ICodeEditor | null) {
-    if (!editor) {
-      return;
-    }
-    const markers: editor.IMarkerData[] = [
-      {
-        message: 'This is a custom error.',
-        severity: monaco.MarkerSeverity.Error,
-        startLineNumber: 1,
-        startColumn: 1,
-        endLineNumber: 1,
-        endColumn: 5,
-      },
-      {
-        message: 'This is a custom warning.',
-        severity: monaco.MarkerSeverity.Warning,
-        startLineNumber: 2,
-        startColumn: 6,
-        endLineNumber: 2,
-        endColumn: 10,
-      },
-    ];
-
-    monaco.editor.setModelMarkers(
-      editor.getModel(),
-      'my-custom-validation',
-      markers,
-    );
   }
 }
