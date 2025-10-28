@@ -30,7 +30,8 @@
             "output": "/assets/monaco/"
           }
         ],
-        "styles": ["./src/styles.scss"]
+        "styles": ["./src/styles.scss"],
+        "webWorkerTsConfig": "tsconfig.worker.json"
       },
       "configurations": {
         "production": {
@@ -89,7 +90,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectName}"],
       "options": {
         "jestConfig": "jest.config.ts",
-        "tsConfig": "tsconfig.spec.json"
+        "tsConfig": "tsconfig.spec.json",
+        "webWorkerTsConfig": "tsconfig.worker.json"
       }
     },
     "serve-static": {
