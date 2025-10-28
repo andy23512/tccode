@@ -1,110 +1,95 @@
-// Generated from ./Tccl.g4 by ANTLR 4.9.0-SNAPSHOT
+
+import * as antlr from "antlr4ng";
+import { Token } from "antlr4ng";
 
 
-import { ATN } from "antlr4ts/atn/ATN";
-import { ATNDeserializer } from "antlr4ts/atn/ATNDeserializer";
-import { CharStream } from "antlr4ts/CharStream";
-import { Lexer } from "antlr4ts/Lexer";
-import { LexerATNSimulator } from "antlr4ts/atn/LexerATNSimulator";
-import { NotNull } from "antlr4ts/Decorators";
-import { Override } from "antlr4ts/Decorators";
-import { RuleContext } from "antlr4ts/RuleContext";
-import { Vocabulary } from "antlr4ts/Vocabulary";
-import { VocabularyImpl } from "antlr4ts/VocabularyImpl";
+export class TcclLexer extends antlr.Lexer {
+    public static readonly CHORD_INPUT_KEY = 1;
+    public static readonly INPUT_KEY_SEPARATOR = 2;
+    public static readonly INPUT_OUTPUT_SEPARATOR = 3;
+    public static readonly CHORD_OUTPUT_KEY = 4;
+    public static readonly NEWLINE = 5;
+    public static readonly ChordOutput = 1;
 
-import * as Utils from "antlr4ts/misc/Utils";
+    public static readonly channelNames = [
+        "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
+    ];
 
+    public static readonly literalNames = [
+        null, null, "' + '", "' = '"
+    ];
 
-export class TcclLexer extends Lexer {
-	public static readonly INPUT_KEY_SEPARATOR = 1;
-	public static readonly INPUT_OUTPUT_SEPARATOR = 2;
-	public static readonly NON_SPACE_KEY = 3;
-	public static readonly SPACE = 4;
-	public static readonly NEWLINE = 5;
+    public static readonly symbolicNames = [
+        null, "CHORD_INPUT_KEY", "INPUT_KEY_SEPARATOR", "INPUT_OUTPUT_SEPARATOR", 
+        "CHORD_OUTPUT_KEY", "NEWLINE"
+    ];
 
-	// tslint:disable:no-trailing-whitespace
-	public static readonly channelNames: string[] = [
-		"DEFAULT_TOKEN_CHANNEL", "HIDDEN",
-	];
+    public static readonly modeNames = [
+        "DEFAULT_MODE", "ChordOutput",
+    ];
 
-	// tslint:disable:no-trailing-whitespace
-	public static readonly modeNames: string[] = [
-		"DEFAULT_MODE",
-	];
-
-	public static readonly ruleNames: string[] = [
-		"LOWERCASE", "UPPERCASE", "SYMBOL", "INPUT_KEY_SEPARATOR", "INPUT_OUTPUT_SEPARATOR", 
-		"NON_SPACE_KEY", "SPACE", "NEWLINE",
-	];
-
-	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
-		undefined, "' + '", "' = '", undefined, "' '",
-	];
-	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
-		undefined, "INPUT_KEY_SEPARATOR", "INPUT_OUTPUT_SEPARATOR", "NON_SPACE_KEY", 
-		"SPACE", "NEWLINE",
-	];
-	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(TcclLexer._LITERAL_NAMES, TcclLexer._SYMBOLIC_NAMES, []);
-
-	// @Override
-	// @NotNull
-	public get vocabulary(): Vocabulary {
-		return TcclLexer.VOCABULARY;
-	}
-	// tslint:enable:no-trailing-whitespace
+    public static readonly ruleNames = [
+        "LOWERCASE", "UPPERCASE", "SYMBOL", "NON_SPACE_KEY", "SPACE", "CHORD_INPUT_KEY", 
+        "INPUT_KEY_SEPARATOR", "INPUT_OUTPUT_SEPARATOR", "CHORD_OUTPUT_KEY", 
+        "NEWLINE",
+    ];
 
 
-	constructor(input: CharStream) {
-		super(input);
-		this._interp = new LexerATNSimulator(TcclLexer._ATN, this);
-	}
+    public constructor(input: antlr.CharStream) {
+        super(input);
+        this.interpreter = new antlr.LexerATNSimulator(this, TcclLexer._ATN, TcclLexer.decisionsToDFA, new antlr.PredictionContextCache());
+    }
 
-	// @Override
-	public get grammarFileName(): string { return "Tccl.g4"; }
+    public get grammarFileName(): string { return "TcclLexer.g4"; }
 
-	// @Override
-	public get ruleNames(): string[] { return TcclLexer.ruleNames; }
+    public get literalNames(): (string | null)[] { return TcclLexer.literalNames; }
+    public get symbolicNames(): (string | null)[] { return TcclLexer.symbolicNames; }
+    public get ruleNames(): string[] { return TcclLexer.ruleNames; }
 
-	// @Override
-	public get serializedATN(): string { return TcclLexer._serializedATN; }
+    public get serializedATN(): number[] { return TcclLexer._serializedATN; }
 
-	// @Override
-	public get channelNames(): string[] { return TcclLexer.channelNames; }
+    public get channelNames(): string[] { return TcclLexer.channelNames; }
 
-	// @Override
-	public get modeNames(): string[] { return TcclLexer.modeNames; }
+    public get modeNames(): string[] { return TcclLexer.modeNames; }
 
-	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x02\x071\b\x01\x04" +
-		"\x02\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04" +
-		"\x07\t\x07\x04\b\t\b\x04\t\t\t\x03\x02\x03\x02\x03\x03\x03\x03\x03\x04" +
-		"\x03\x04\x03\x05\x03\x05\x03\x05\x03\x05\x03\x06\x03\x06\x03\x06\x03\x06" +
-		"\x03\x07\x03\x07\x03\x07\x05\x07%\n\x07\x03\b\x03\b\x03\t\x05\t*\n\t\x03" +
-		"\t\x03\t\x06\t.\n\t\r\t\x0E\t/\x02\x02\x02\n\x03\x02\x02\x05\x02\x02\x07" +
-		"\x02\x02\t\x02\x03\v\x02\x04\r\x02\x05\x0F\x02\x06\x11\x02\x07\x03\x02" +
-		"\x05\x03\x02c|\x03\x02C\\\x05\x02/1]]__\x022\x02\t\x03\x02\x02\x02\x02" +
-		"\v\x03\x02\x02\x02\x02\r\x03\x02\x02\x02\x02\x0F\x03\x02\x02\x02\x02\x11" +
-		"\x03\x02\x02\x02\x03\x13\x03\x02\x02\x02\x05\x15\x03\x02\x02\x02\x07\x17" +
-		"\x03\x02\x02\x02\t\x19\x03\x02\x02\x02\v\x1D\x03\x02\x02\x02\r$\x03\x02" +
-		"\x02\x02\x0F&\x03\x02\x02\x02\x11-\x03\x02\x02\x02\x13\x14\t\x02\x02\x02" +
-		"\x14\x04\x03\x02\x02\x02\x15\x16\t\x03\x02\x02\x16\x06\x03\x02\x02\x02" +
-		"\x17\x18\t\x04\x02\x02\x18\b\x03\x02\x02\x02\x19\x1A\x07\"\x02\x02\x1A" +
-		"\x1B\x07-\x02\x02\x1B\x1C\x07\"\x02\x02\x1C\n\x03\x02\x02\x02\x1D\x1E" +
-		"\x07\"\x02\x02\x1E\x1F\x07?\x02\x02\x1F \x07\"\x02\x02 \f\x03\x02\x02" +
-		"\x02!%\x05\x03\x02\x02\"%\x05\x05\x03\x02#%\x05\x07\x04\x02$!\x03\x02" +
-		"\x02\x02$\"\x03\x02\x02\x02$#\x03\x02\x02\x02%\x0E\x03\x02\x02\x02&\'" +
-		"\x07\"\x02\x02\'\x10\x03\x02\x02\x02(*\x07\x0F\x02\x02)(\x03\x02\x02\x02" +
-		")*\x03\x02\x02\x02*+\x03\x02\x02\x02+.\x07\f\x02\x02,.\x07\x0F\x02\x02" +
-		"-)\x03\x02\x02\x02-,\x03\x02\x02\x02./\x03\x02\x02\x02/-\x03\x02\x02\x02" +
-		"/0\x03\x02\x02\x020\x12\x03\x02\x02\x02\x07\x02$)-/\x02";
-	public static __ATN: ATN;
-	public static get _ATN(): ATN {
-		if (!TcclLexer.__ATN) {
-			TcclLexer.__ATN = new ATNDeserializer().deserialize(Utils.toCharArray(TcclLexer._serializedATN));
-		}
+    public static readonly _serializedATN: number[] = [
+        4,0,5,62,6,-1,6,-1,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,
+        5,2,6,7,6,2,7,7,7,2,8,7,8,2,9,7,9,1,0,1,0,1,1,1,1,1,2,1,2,1,3,1,
+        3,1,3,3,3,32,8,3,1,4,1,4,1,5,1,5,1,6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,
+        1,7,1,7,1,8,1,8,3,8,50,8,8,1,9,3,9,53,8,9,1,9,1,9,4,9,57,8,9,11,
+        9,12,9,58,1,9,1,9,0,0,10,2,0,4,0,6,0,8,0,10,0,12,1,14,2,16,3,18,
+        4,20,5,2,0,1,3,1,0,97,122,1,0,65,90,3,0,45,47,91,91,93,93,61,0,12,
+        1,0,0,0,0,14,1,0,0,0,0,16,1,0,0,0,1,18,1,0,0,0,1,20,1,0,0,0,2,22,
+        1,0,0,0,4,24,1,0,0,0,6,26,1,0,0,0,8,31,1,0,0,0,10,33,1,0,0,0,12,
+        35,1,0,0,0,14,37,1,0,0,0,16,41,1,0,0,0,18,49,1,0,0,0,20,56,1,0,0,
+        0,22,23,7,0,0,0,23,3,1,0,0,0,24,25,7,1,0,0,25,5,1,0,0,0,26,27,7,
+        2,0,0,27,7,1,0,0,0,28,32,3,2,0,0,29,32,3,4,1,0,30,32,3,6,2,0,31,
+        28,1,0,0,0,31,29,1,0,0,0,31,30,1,0,0,0,32,9,1,0,0,0,33,34,5,32,0,
+        0,34,11,1,0,0,0,35,36,3,8,3,0,36,13,1,0,0,0,37,38,5,32,0,0,38,39,
+        5,43,0,0,39,40,5,32,0,0,40,15,1,0,0,0,41,42,5,32,0,0,42,43,5,61,
+        0,0,43,44,5,32,0,0,44,45,1,0,0,0,45,46,6,7,0,0,46,17,1,0,0,0,47,
+        50,3,8,3,0,48,50,3,10,4,0,49,47,1,0,0,0,49,48,1,0,0,0,50,19,1,0,
+        0,0,51,53,5,13,0,0,52,51,1,0,0,0,52,53,1,0,0,0,53,54,1,0,0,0,54,
+        57,5,10,0,0,55,57,5,13,0,0,56,52,1,0,0,0,56,55,1,0,0,0,57,58,1,0,
+        0,0,58,56,1,0,0,0,58,59,1,0,0,0,59,60,1,0,0,0,60,61,6,9,1,0,61,21,
+        1,0,0,0,7,0,1,31,49,52,56,58,2,5,1,0,4,0,0
+    ];
 
-		return TcclLexer.__ATN;
-	}
+    private static __ATN: antlr.ATN;
+    public static get _ATN(): antlr.ATN {
+        if (!TcclLexer.__ATN) {
+            TcclLexer.__ATN = new antlr.ATNDeserializer().deserialize(TcclLexer._serializedATN);
+        }
 
+        return TcclLexer.__ATN;
+    }
+
+
+    private static readonly vocabulary = new antlr.Vocabulary(TcclLexer.literalNames, TcclLexer.symbolicNames, []);
+
+    public override get vocabulary(): antlr.Vocabulary {
+        return TcclLexer.vocabulary;
+    }
+
+    private static readonly decisionsToDFA = TcclLexer._ATN.decisionToState.map( (ds: antlr.DecisionState, index: number) => new antlr.DFA(ds, index) );
 }
-

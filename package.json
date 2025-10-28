@@ -7,7 +7,7 @@
     "build": "nx build",
     "test": "nx test",
     "minify-icon-font": "ts-node -P tsconfig.tsnode.json tool/minify-icon-font.ts",
-    "antlr4ts": "antlr4ts ./Tccl.g4 -o ./src/antlr"
+    "antlr": "antlr-ng -Dlanguage=TypeScript -l -v -o ./src/antlr ./TcclLexer.g4 ./TcclParser.g4"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +24,7 @@
     "@angular/router": "~20.3.0",
     "@ngrx/signals": "^20.1.0",
     "@rxjs-ninja/rxjs-utility": "^5.1.3",
-    "antlr4ts": "^0.5.0-alpha.4",
+    "antlr4ng": "^3.0.16",
     "monaco-editor": "^0.54.0",
     "monaco-emacs": "^0.3.0",
     "monaco-vim": "^0.4.2",
@@ -62,7 +62,7 @@
     "@web-alchemy/fonttools": "^1.3.4",
     "angular-cli-ghpages": "^2.0.3",
     "angular-eslint": "^20.3.0",
-    "antlr4ts-cli": "^0.5.0-alpha.4",
+    "antlr-ng": "^1.0.10",
     "autoprefixer": "^10.4.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",

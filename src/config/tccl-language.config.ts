@@ -1,30 +1,13 @@
-import { editor, languages } from 'monaco-editor';
-const ALPHABETS = 'abcdefghijklmnopqrstuvwxyz';
-const SYMBOL_KEYS = '[]./-';
+import { editor } from 'monaco-editor';
 export const TCCL_LANGUAGE_ID = 'tccl';
-export const TCCL_LANGUAGE_DEF: languages.IMonarchLanguage = {
-  keys: [...ALPHABETS, ...ALPHABETS.toUpperCase(), ...SYMBOL_KEYS],
-  includeLF: true,
-  tokenizer: {
-    root: [[/ = /, 'input-output-separator', '@output'], { include: '@input' }],
-    input: [
-      [/ \+ /, 'input-separator'],
-      [/\S/, { cases: { '@keys': 'input-key' } }],
-    ],
-    output: [
-      [/\n/, '', '@pop'],
-      [/\S/, { cases: { '@keys': 'output-key' } }],
-    ],
-  },
-};
 export const TCCL_THEME_NAME = 'tccl-theme';
 export const TCCL_THEME_DATA: editor.IStandaloneThemeData = {
   base: 'vs-dark',
   inherit: true,
   rules: [
-    { token: 'input-separator', foreground: '#999999' },
-    { token: 'input-key', foreground: '#39C5BB' },
-    { token: 'output-key', foreground: '#FC4769' },
+    { token: 'input_key_separator.tccl', foreground: '#999999' },
+    { token: 'chord_input_key.tccl', foreground: '#39C5BB' },
+    { token: 'chord_output_key.tccl', foreground: '#FC4769' },
   ],
   colors: {},
 };

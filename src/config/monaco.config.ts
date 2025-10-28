@@ -1,7 +1,7 @@
 import { editor } from 'monaco-editor';
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
+import { TcclTokensProvider } from '../tccl/tccl-tokens-provider';
 import {
-  TCCL_LANGUAGE_DEF,
   TCCL_LANGUAGE_ID,
   TCCL_THEME_DATA,
   TCCL_THEME_NAME,
@@ -10,9 +10,9 @@ import {
 export const MONACO_CONFIG: NgxMonacoEditorConfig = {
   onMonacoLoad: () => {
     monaco.languages.register({ id: TCCL_LANGUAGE_ID });
-    monaco.languages.setMonarchTokensProvider(
+    monaco.languages.setTokensProvider(
       TCCL_LANGUAGE_ID,
-      TCCL_LANGUAGE_DEF,
+      new TcclTokensProvider(),
     );
     monaco.editor.defineTheme(TCCL_THEME_NAME, TCCL_THEME_DATA);
   },
