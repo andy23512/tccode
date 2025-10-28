@@ -28,7 +28,6 @@
     "monaco-editor": "^0.54.0",
     "monaco-emacs": "^0.3.0",
     "monaco-vim": "^0.4.2",
-    "ngx-monaco-editor-v2": "^20.3.0",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"
   },

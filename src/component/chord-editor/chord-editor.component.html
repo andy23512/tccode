@@ -1,9 +1,2 @@
-<ngx-monaco-diff-editor
-  class="w-full flex-1 [&_.editor-container]:!h-full"
-  [options]="diffEditorOptions"
-  [originalModel]="{ code: deviceChordsInTccl(), language: tcclLanguageId }"
-  [modifiedModel]="{ code: deviceChordsInTccl(), language: tcclLanguageId }"
-  (onInit)="onEditorInit($event)"
->
-</ngx-monaco-diff-editor>
+<div #monacoContainer class="flex-1"></div>
 <div #statusBar class="flex-none text-xl font-code bg-[#1E1E1E]"></div>

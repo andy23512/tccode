@@ -5,16 +5,17 @@ import {
   ElementRef,
   inject,
   OnDestroy,
+  OnInit,
   signal,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { editor } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
 import { EmacsExtension } from 'monaco-emacs';
 import { initVimMode, VimMode } from 'monaco-vim';
-import { DiffEditorComponent } from 'ngx-monaco-editor-v2';
-import { MONACO_DIFF_EDITOR_OPTIONS } from '../../config/monaco.config';
-import { TCCL_LANGUAGE_ID } from '../../config/tccl-language.config';
+import { MONACO_EDITOR_OPTIONS } from '../../config/monaco.config';
+import { SAMPLE_CHORDS_1 } from '../../data/sample-chords.const';
 import { KeyBindings } from '../../model/setting.model';
 import { TcclChord } from '../../model/tccl.model';
 import { DeviceStore } from '../../store/device.store';
@@ -23,14 +24,14 @@ import { SettingStore } from '../../store/setting.store';
 import { getTcclKeyFromActionCode } from '../../util/layout.util';
 
 @Component({
-  imports: [FormsModule, DiffEditorComponent],
+  imports: [FormsModule],
   selector: 'app-chord-editor',
   templateUrl: './chord-editor.component.html',
   host: {
     class: 'flex flex-col',
   },
 })
-export class ChordEditorComponent implements OnDestroy {
+export class ChordEditorComponent implements OnInit, OnDestroy {
   public keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
   public deviceChordLibrary = inject(DeviceStore).chordLibrary;
   public keyBindings = inject(SettingStore).keyBindings;
@@ -73,12 +74,12 @@ export class ChordEditorComponent implements OnDestroy {
       .map(({ input, output }) => `${input} = ${output}`)
       .join('\n');
   });
-  public diffEditorOptions = MONACO_DIFF_EDITOR_OPTIONS;
-  public tcclLanguageId = TCCL_LANGUAGE_ID;
   public vimMode: VimMode;
   public emacsMode: EmacsExtension;
   public statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
   public editor = signal<editor.ICodeEditor | null>(null);
+  public monacoContainer =
+    viewChild.required<ElementRef<HTMLDivElement>>('monacoContainer');
 
   constructor() {
     effect(() => {
@@ -88,8 +89,16 @@ export class ChordEditorComponent implements OnDestroy {
     });
   }
 
+  public ngOnInit(): void {
+    monaco.editor.create(this.monacoContainer().nativeElement, {
+      value: SAMPLE_CHORDS_1,
+      ...MONACO_EDITOR_OPTIONS,
+    });
+  }
+
   public onEditorInit(editor: editor.IDiffEditor) {
     this.editor.set(editor.getModifiedEditor());
+    this.setCustomMarkers(editor.getModifiedEditor());
   }
 
   public ngOnDestroy(): void {
@@ -121,5 +130,35 @@ export class ChordEditorComponent implements OnDestroy {
       });
       this.emacsMode.start();
     }
+  }
+
+  private setCustomMarkers(editor: editor.ICodeEditor | null) {
+    if (!editor) {
+      return;
+    }
+    const markers: editor.IMarkerData[] = [
+      {
+        message: 'This is a custom error.',
+        severity: monaco.MarkerSeverity.Error,
+        startLineNumber: 1,
+        startColumn: 1,
+        endLineNumber: 1,
+        endColumn: 5,
+      },
+      {
+        message: 'This is a custom warning.',
+        severity: monaco.MarkerSeverity.Warning,
+        startLineNumber: 2,
+        startColumn: 6,
+        endLineNumber: 2,
+        endColumn: 10,
+      },
+    ];
+
+    monaco.editor.setModelMarkers(
+      editor.getModel(),
+      'my-custom-validation',
+      markers,
+    );
   }
 }

@@ -1,7 +1,8 @@
+import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 import { TcclWorker } from './tccl-worker';
 
 self.onmessage = () => {
-  (monaco as any).worker.initialize((ctx) => {
+  worker.initialize((ctx) => {
     return new TcclWorker(ctx);
   });
 };
