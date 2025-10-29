@@ -19,6 +19,7 @@ import { SAMPLE_CHORDS_1 } from '../../data/sample-chords.const';
 import { KeyBindings } from '../../model/setting.model';
 import { TcclChord } from '../../model/tccl.model';
 import { DeviceStore } from '../../store/device.store';
+import { EditorStore } from '../../store/editor.store';
 import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
 import { SettingStore } from '../../store/setting.store';
 import { getTcclKeyFromActionCode } from '../../util/layout.util';
@@ -80,6 +81,7 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
   public editor = signal<editor.ICodeEditor | null>(null);
   public monacoContainer =
     viewChild.required<ElementRef<HTMLDivElement>>('monacoContainer');
+  private editorStore = inject(EditorStore);
 
   constructor() {
     effect(() => {
@@ -90,8 +92,13 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
 
     effect(() => {
       const deviceChordsInTccl = this.deviceChordsInTccl();
+      this.editorStore.setContent(deviceChordsInTccl);
+    });
+
+    effect(() => {
+      const content = this.editorStore.content();
       const editor = this.editor();
-      this.setContentToEditor(editor, deviceChordsInTccl);
+      this.setContentToEditor(editor, content);
     });
   }
 

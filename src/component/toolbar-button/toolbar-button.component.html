@@ -1,0 +1,15 @@
+<button
+  mat-icon-button
+  class="!size-12"
+  [class.!cursor-pointer]="!disabled()"
+  [class.!cursor-not-allowed]="disabled()"
+  type="button"
+  [disabled]="disabled()"
+  [matTooltip]="tooltip()"
+  matTooltipPosition="right"
+  (click)="buttonClick.emit()"
+>
+  <mat-icon class="!text-[32px] !leading-[32px] !size-8">{{
+    icon() | iconGuard
+  }}</mat-icon>
+</button>

@@ -1,19 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { DeviceStore } from '../../store/device.store';
+import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.component';
 
 @Component({
-  imports: [
-    IconGuardPipe,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-  ],
+  imports: [MatProgressSpinnerModule, ToolbarButtonComponent],
   selector: 'app-connect-button',
   templateUrl: './connect-button.component.html',
 })
