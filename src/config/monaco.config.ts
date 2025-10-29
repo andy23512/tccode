@@ -7,7 +7,6 @@ export const MONACO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions 
     automaticLayout: true,
     fontFamily: 'Consolas, "Courier New", monospace',
     fontSize: 20,
-    minimap: { enabled: false },
     scrollBeyondLastLine: false,
     theme: TCCL_THEME_NAME,
     wordWrap: 'off',
