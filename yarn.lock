@@ -4059,11 +4059,6 @@
     error-stack-parser "^2.1.4"
     html-entities "^2.6.0"
 
-"@rxjs-ninja/rxjs-utility@^5.1.3":
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/@rxjs-ninja/rxjs-utility/-/rxjs-utility-5.1.3.tgz#b2223f282a2cea07b867663dc87afa3a57e56397"
-  integrity sha512-IXsviGWUGF6ClZjvk8vIrKtHLUOFAd7+TZHm7dlnPZiOLH51Lv+4Ne3naLx03ek9lCWK0qTYFeWvsFhZkAvBMA==
-
 "@schematics/angular@20.3.7", "@schematics/angular@~20.3.0":
   version "20.3.7"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-20.3.7.tgz#acf7ad95d5b6aa5c29819933fa0ac665d267e23b"
