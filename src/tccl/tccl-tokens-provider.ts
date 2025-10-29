@@ -8,7 +8,7 @@ import {
   Recognizer,
 } from 'antlr4ng';
 import type { languages } from 'monaco-editor';
-import { createLexer } from './tccl-parser';
+import { createLexer } from '../language-service/tccl-parser';
 type ILineTokens = languages.ILineTokens;
 type IToken = languages.IToken;
 
