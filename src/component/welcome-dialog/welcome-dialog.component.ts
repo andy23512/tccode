@@ -10,7 +10,7 @@ import { SettingStore } from '../../store/setting.store';
   templateUrl: './welcome-dialog.component.html',
 })
 export class WelcomeDialogComponent {
-  public settingStore = inject(SettingStore);
+  private settingStore = inject(SettingStore);
   public showWelcomeDialogWhenStart =
     this.settingStore.showWelcomeDialogWhenStart;
 

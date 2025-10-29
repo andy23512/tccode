@@ -33,10 +33,10 @@ import { getTcclKeyFromActionCode } from '../../util/layout.util';
   },
 })
 export class ChordEditorComponent implements OnInit, OnDestroy {
-  public keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
-  public deviceChordLibrary = inject(DeviceStore).chordLibrary;
-  public keyBindings = inject(SettingStore).keyBindings;
-  public deviceChordsInTccl = computed<string>(() => {
+  private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
+  private deviceChordLibrary = inject(DeviceStore).chordLibrary;
+  private keyBindings = inject(SettingStore).keyBindings;
+  private deviceChordsInTccl = computed<string>(() => {
     const keyboardLayout = this.keyboardLayout();
     const deviceChords = this.deviceChordLibrary()?.chords;
     if (!keyboardLayout || !deviceChords) {
@@ -75,11 +75,11 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
       .map(({ input, output }) => `${input} = ${output}`)
       .join('\n');
   });
-  public vimMode: VimMode;
-  public emacsMode: EmacsExtension;
-  public statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
-  public editor = signal<editor.ICodeEditor | null>(null);
-  public monacoContainer =
+  private vimMode: VimMode;
+  private emacsMode: EmacsExtension;
+  private statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
+  private editor = signal<editor.ICodeEditor | null>(null);
+  private monacoContainer =
     viewChild.required<ElementRef<HTMLDivElement>>('monacoContainer');
   private editorStore = inject(EditorStore);
 
@@ -115,7 +115,7 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
     this.emacsMode?.dispose();
   }
 
-  public setKeyBindings(
+  private setKeyBindings(
     editor: editor.ICodeEditor | null,
     keyBindings: KeyBindings,
   ) {

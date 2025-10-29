@@ -9,7 +9,7 @@ import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.compone
   templateUrl: './connect-button.component.html',
 })
 export class ConnectButtonComponent {
-  public deviceStore = inject(DeviceStore);
+  private deviceStore = inject(DeviceStore);
   public deviceConnected = this.deviceStore.isConnected;
 
   public isWebSerialApiSupported = 'serial' in navigator;

@@ -8,10 +8,10 @@ import { Component } from '@angular/core';
   },
 })
 export class LogoComponent {
-  public r1 = 16;
-  public r2 = this.r1 / 1.618;
-  public thetaInRad = Math.asin(this.r2 / this.r1);
-  public chordLine = {
+  private r1 = 16;
+  private r2 = this.r1 / 1.618;
+  private thetaInRad = Math.asin(this.r2 / this.r1);
+  private chordLine = {
     x1: this.r2,
     x2: this.r2,
     y1: -this.r1 * Math.cos(this.thetaInRad),

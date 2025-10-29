@@ -32,7 +32,7 @@ import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.compone
   },
 })
 export class ToolbarComponent {
-  public matDialog = inject(MatDialog);
+  private matDialog = inject(MatDialog);
   public isWebSerialApiSupported = 'serial' in navigator;
   private editorStore = inject(EditorStore);
 

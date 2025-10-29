@@ -12,7 +12,7 @@ import { SerialLogStore } from '../../store/serial-log.store';
   templateUrl: './serial-log-dialog.component.html',
 })
 export class SerialLogDialogComponent {
-  public serialLogStore = inject(SerialLogStore);
+  private serialLogStore = inject(SerialLogStore);
   public serialLogItems = this.serialLogStore.items;
 
   public SerialLogItemType = SerialLogItemType;

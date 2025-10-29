@@ -14,8 +14,8 @@ import { SettingStore } from '../store/setting.store';
   },
 })
 export class AppComponent implements OnInit {
-  public settingStore = inject(SettingStore);
-  public matDialog = inject(MatDialog);
+  private settingStore = inject(SettingStore);
+  private matDialog = inject(MatDialog);
 
   public ngOnInit(): void {
     const showWelcomeDialogWhenStart =

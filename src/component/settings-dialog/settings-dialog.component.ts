@@ -19,7 +19,7 @@ import { SettingStore } from '../../store/setting.store';
   templateUrl: './settings-dialog.component.html',
 })
 export class SettingsDialogComponent {
-  public settingStore = inject(SettingStore);
+  private settingStore = inject(SettingStore);
   public showWelcomeDialogWhenStart =
     this.settingStore.showWelcomeDialogWhenStart;
   public keyBindings = this.settingStore.keyBindings;
