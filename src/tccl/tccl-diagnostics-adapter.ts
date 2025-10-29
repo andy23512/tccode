@@ -1,8 +1,8 @@
 import type { editor, Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
-import { TCCL_LANGUAGE_ID } from '../config/tccl-language.config';
 import { TcclError } from '../language-service/tccl-error-listener';
-import { WorkerAccessor } from './setup';
+import { TCCL_LANGUAGE_ID } from './tccl-config';
+import { WorkerAccessor } from './tccl-setup';
 
 export class TcclDiagnosticsAdapter {
   constructor(private worker: WorkerAccessor) {

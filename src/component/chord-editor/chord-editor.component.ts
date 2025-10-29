@@ -87,6 +87,12 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
       const editor = this.editor();
       this.setKeyBindings(editor, keyBindings);
     });
+
+    effect(() => {
+      const deviceChordsInTccl = this.deviceChordsInTccl();
+      const editor = this.editor();
+      this.setContentToEditor(editor, deviceChordsInTccl);
+    });
   }
 
   public ngOnInit(): void {
@@ -126,5 +132,16 @@ export class ChordEditorComponent implements OnInit, OnDestroy {
       });
       this.emacsMode.start();
     }
+  }
+
+  private setContentToEditor(
+    editor: editor.ICodeEditor | null,
+    content: string,
+  ): void {
+    if (!editor) {
+      return;
+    }
+    const model = editor.getModel();
+    model.setValue(content);
   }
 }
