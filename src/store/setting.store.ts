@@ -8,6 +8,7 @@ import { KeyBindings, Setting } from '../model/setting.model';
 const INITIAL_SETTING: Setting = {
   showWelcomeDialogWhenStart: true,
   keyBindings: KeyBindings.Classic,
+  detectConflictsWithBopomofoChords: false,
 };
 
 export const SettingStore = signalStore(

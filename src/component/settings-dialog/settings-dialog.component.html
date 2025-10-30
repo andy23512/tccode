@@ -1,21 +1,37 @@
 <h2 mat-dialog-title>Settings</h2>
-<mat-dialog-content class="!text-base">
-  <mat-checkbox
-    [color]="'primary'"
-    [checked]="showWelcomeDialogWhenStart()"
-    (change)="setShowWelcomeDialogWhenStart($event.checked)"
-    >Show the welcome dialog when start</mat-checkbox
-  >
-  <br />
-  <br />
-  <mat-form-field>
+<mat-dialog-content class="!text-base !flex flex-col gap-3">
+  <div class="flex flex-col gap-2">
+    <mat-label>Welcome Dialog</mat-label>
+    <mat-checkbox
+      [color]="'primary'"
+      [checked]="showWelcomeDialogWhenStart()"
+      (change)="setShowWelcomeDialogWhenStart($event.checked)"
+      >Show the welcome dialog when start</mat-checkbox
+    >
+  </div>
+  <div class="flex flex-col gap-2">
     <mat-label>Key bindings</mat-label>
-    <mat-select [value]="keyBindings()" (valueChange)="setKeyBindings($event)">
-      @for (k of keyBindingOptions; track k.value) {
-        <mat-option [value]="k.value">{{ k.label }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-select
+        [value]="keyBindings()"
+        (valueChange)="setKeyBindings($event)"
+      >
+        @for (k of keyBindingOptions; track k.value) {
+          <mat-option [value]="k.value">{{ k.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="flex flex-col gap-2">
+    <mat-label>Chord Conflict Detection</mat-label>
+    <mat-checkbox
+      [color]="'primary'"
+      [checked]="detectConflictsWithBopomofoChords()"
+      (change)="setDetectConflictsWithBopomofoChords($event.checked)"
+    >
+      Detect conflicts with Bopomofo chords (on TanChord 36 V2 layout)
+    </mat-checkbox>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button matButton mat-dialog-close>Close</button>

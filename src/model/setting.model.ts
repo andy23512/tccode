@@ -7,4 +7,5 @@ export enum KeyBindings {
 export interface Setting {
   showWelcomeDialogWhenStart: boolean;
   keyBindings: KeyBindings;
+  detectConflictsWithBopomofoChords: boolean;
 }

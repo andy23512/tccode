@@ -28,6 +28,8 @@ export class SettingsDialogComponent {
     { label: 'Vim', value: KeyBindings.Vim },
     { label: 'Emacs', value: KeyBindings.Emacs },
   ];
+  public detectConflictsWithBopomofoChords =
+    this.settingStore.detectConflictsWithBopomofoChords;
 
   public setShowWelcomeDialogWhenStart(value: boolean) {
     this.settingStore.set('showWelcomeDialogWhenStart', value);
@@ -35,5 +37,9 @@ export class SettingsDialogComponent {
 
   public setKeyBindings(value: KeyBindings) {
     this.settingStore.set('keyBindings', value);
+  }
+
+  public setDetectConflictsWithBopomofoChords(value: boolean) {
+    this.settingStore.set('detectConflictsWithBopomofoChords', value);
   }
 }
