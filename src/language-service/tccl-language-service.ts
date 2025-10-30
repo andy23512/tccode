@@ -66,7 +66,7 @@ function checkSemanticRules(
             startColumn: 0,
             startLineNumber: chordInfo.lineNumber,
             endLineNumber: chordInfo.lineNumber,
-            message: `This chord conflicts with Bopomofo chord ${bopomofoChordOutput}.`,
+            message: `This chord conflicts with Bopomofo chord 「${bopomofoChordOutput}」.`,
           }));
         }),
     );
