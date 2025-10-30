@@ -1,6 +1,7 @@
 import type { worker } from 'monaco-editor';
 import { TcclError } from '../language-service/tccl-error-listener';
 import { TcclLanguageService } from '../language-service/tccl-language-service';
+import { TcclValidateOptions } from '../language-service/tccl-validate-option';
 
 type IWorkerContext = worker.IWorkerContext;
 
@@ -11,9 +12,9 @@ export class TcclWorker {
     this.languageService = new TcclLanguageService();
   }
 
-  public doValidation(): Promise<TcclError[]> {
+  public doValidation(option: TcclValidateOptions): Promise<TcclError[]> {
     const code = this.getTextDocument();
-    return Promise.resolve(this.languageService.validate(code));
+    return Promise.resolve(this.languageService.validate(code, option));
   }
 
   private getTextDocument(): string {

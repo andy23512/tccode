@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import type { editor, Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import { TcclError } from '../language-service/tccl-error-listener';
+import { SettingStore } from '../store/setting.store';
 import { TCCL_LANGUAGE_ID } from './tccl-config';
 import { TcclWorkerAccessorService } from './tccl-worker-accessor.service';
 
@@ -10,6 +11,7 @@ export class TcclDiagnosticsAdapterService {
   private readonly tcclWorkerAccessorService = inject(
     TcclWorkerAccessorService,
   );
+  private readonly settingStore = inject(SettingStore);
 
   constructor() {
     const onModelAdd = (model: editor.IModel): void => {
@@ -28,8 +30,12 @@ export class TcclDiagnosticsAdapterService {
   private async validate(resource: Uri): Promise<void> {
     // get the worker proxy
     const worker = await this.tcclWorkerAccessorService.getWorker(resource);
+    const detectConflictsWithBopomofoChords =
+      this.settingStore.detectConflictsWithBopomofoChords();
     // call the validate methods proxy from the language service and get errors
-    const errorMarkers = await worker.doValidation();
+    const errorMarkers = await worker.doValidation({
+      detectConflictsWithBopomofoChords,
+    });
     // get the current model(editor or file) which is only one
     const model = monaco.editor.getModel(resource);
     // add the error markers and underline them with severity of error

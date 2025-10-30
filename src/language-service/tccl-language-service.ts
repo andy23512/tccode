@@ -1,17 +1,20 @@
 import { TcclFileContext } from '../antlr/TcclParser';
 import { TcclError } from './tccl-error-listener';
 import { parseAndGetAstRoot, parseAndGetSyntaxErrors } from './tccl-parser';
+import { TcclValidateOptions } from './tccl-validate-option';
 
 export class TcclLanguageService {
-  public validate(code: string): TcclError[] {
+  public validate(code: string, option: TcclValidateOptions): TcclError[] {
     const syntaxErrors: TcclError[] = parseAndGetSyntaxErrors(code);
     const ast: TcclFileContext = parseAndGetAstRoot(code);
-    // Later we will append semantic errors
-    return syntaxErrors.concat(checkSemanticRules(ast));
+    return syntaxErrors.concat(checkSemanticRules(ast, option));
   }
 }
 
-function checkSemanticRules(ast: TcclFileContext): TcclError[] {
+function checkSemanticRules(
+  ast: TcclFileContext,
+  option: TcclValidateOptions,
+): TcclError[] {
   interface ChordInfo {
     lineNumber: number;
     chord: string;
