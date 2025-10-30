@@ -1,3 +1,4 @@
+import { inject } from '@angular/core';
 import type { Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import {
@@ -5,12 +6,11 @@ import {
   TCCL_THEME_DATA,
   TCCL_THEME_NAME,
 } from './tccl-config';
-import { TcclDiagnosticsAdapter } from './tccl-diagnostics-adapter';
-import { TcclTokensProvider } from './tccl-tokens-provider';
+import { TcclDiagnosticsAdapterService } from './tccl-diagnostics-adapter.service';
+import { TcclTokensProviderService } from './tccl-tokens-provider.service';
 import { TcclWorker } from './tccl-worker';
-import { TcclWorkerManager } from './tccl-worker-manager';
 
-export function setupTcclLanguage() {
+export function setupTcclLanguage(): void {
   window.MonacoEnvironment = {
     getWorker: function () {
       return new Worker(new URL('./tccl.worker', import.meta.url));
@@ -20,17 +20,12 @@ export function setupTcclLanguage() {
   monaco.languages.register({ id: TCCL_LANGUAGE_ID });
   monaco.languages.setTokensProvider(
     TCCL_LANGUAGE_ID,
-    new TcclTokensProvider(),
+    inject(TcclTokensProviderService),
   );
   monaco.editor.defineTheme(TCCL_THEME_NAME, TCCL_THEME_DATA);
 
-  const client = new TcclWorkerManager();
-
-  const worker: WorkerAccessor = (...uris: Uri[]): Promise<TcclWorker> => {
-    return client.getLanguageServiceWorker(...uris);
-  };
   //Call the errors provider
-  new TcclDiagnosticsAdapter(worker);
+  inject(TcclDiagnosticsAdapterService);
 }
 
 export type WorkerAccessor = (...uris: Uri[]) => Promise<TcclWorker>;

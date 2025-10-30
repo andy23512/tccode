@@ -1,11 +1,17 @@
+import { inject, Injectable } from '@angular/core';
 import type { editor, Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import { TcclError } from '../language-service/tccl-error-listener';
 import { TCCL_LANGUAGE_ID } from './tccl-config';
-import { WorkerAccessor } from './tccl-setup';
+import { TcclWorkerAccessorService } from './tccl-worker-accessor.service';
 
-export class TcclDiagnosticsAdapter {
-  constructor(private worker: WorkerAccessor) {
+@Injectable({ providedIn: 'root' })
+export class TcclDiagnosticsAdapterService {
+  private readonly tcclWorkerAccessorService = inject(
+    TcclWorkerAccessorService,
+  );
+
+  constructor() {
     const onModelAdd = (model: editor.IModel): void => {
       let handle: any;
       model.onDidChangeContent(() => {
@@ -21,7 +27,7 @@ export class TcclDiagnosticsAdapter {
 
   private async validate(resource: Uri): Promise<void> {
     // get the worker proxy
-    const worker = await this.worker(resource);
+    const worker = await this.tcclWorkerAccessorService.getWorker(resource);
     // call the validate methods proxy from the language service and get errors
     const errorMarkers = await worker.doValidation();
     // get the current model(editor or file) which is only one

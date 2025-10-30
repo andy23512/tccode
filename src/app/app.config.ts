@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { provideRouter } from '@angular/router';
-import { setupTcclLanguage } from '../tccl/tccl-setup';
+import { setupTcclLanguage } from '../tccl/setup-tccl-language';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -14,9 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideAppInitializer(() => {
-      setupTcclLanguage();
-    }),
+    provideAppInitializer(setupTcclLanguage),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: {

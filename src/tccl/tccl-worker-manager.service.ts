@@ -1,9 +1,11 @@
+import { Injectable } from '@angular/core';
 import type { Uri, editor } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import { TCCL_LANGUAGE_ID } from './tccl-config';
 import { TcclWorker } from './tccl-worker';
 
-export class TcclWorkerManager {
+@Injectable({ providedIn: 'root' })
+export class TcclWorkerManagerService {
   private worker: editor.MonacoWebWorker<TcclWorker>;
   private workerClientProxy: Promise<TcclWorker>;
 

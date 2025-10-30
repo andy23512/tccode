@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import {
   ANTLRErrorListener,
   ATNConfigSet,
@@ -22,7 +23,8 @@ export class TcclState implements languages.IState {
   }
 }
 
-export class TcclTokensProvider implements languages.TokensProvider {
+@Injectable({ providedIn: 'root' })
+export class TcclTokensProviderService implements languages.TokensProvider {
   public getInitialState(): languages.IState {
     return new TcclState();
   }
