@@ -26,13 +26,13 @@ import { getTcclKeyFromActionCode } from '../../util/layout.util';
 
 @Component({
   imports: [FormsModule],
-  selector: 'app-chord-editor',
-  templateUrl: './chord-editor.component.html',
+  selector: 'app-editor',
+  templateUrl: './editor.component.html',
   host: {
     class: 'flex flex-col',
   },
 })
-export class ChordEditorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy {
   private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
   private deviceChordLibrary = inject(DeviceStore).chordLibrary;
   private keyBindings = inject(SettingStore).keyBindings;

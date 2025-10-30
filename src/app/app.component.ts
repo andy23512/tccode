@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ChordEditorComponent } from '../component/chord-editor/chord-editor.component';
+import { EditorComponent } from '../component/editor/editor.component';
 import { ToolbarComponent } from '../component/toolbar/toolbar.component';
 import { WelcomeDialogComponent } from '../component/welcome-dialog/welcome-dialog.component';
 import { SettingStore } from '../store/setting.store';
 
 @Component({
-  imports: [ChordEditorComponent, ToolbarComponent],
+  imports: [EditorComponent, ToolbarComponent],
   selector: 'app-root',
   templateUrl: './app.component.html',
   host: {
