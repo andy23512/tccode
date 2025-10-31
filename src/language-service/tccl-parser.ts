@@ -9,13 +9,22 @@ export function createLexer(code: string) {
   return lexer;
 }
 
+export function getTokenStream(code: string): CommonTokenStream {
+  const lexer = createLexer(code);
+  return new CommonTokenStream(lexer);
+}
+
+export function getParser(tokenStream: CommonTokenStream): TcclParser {
+  return new TcclParser(tokenStream);
+}
+
 function parse(code: string): { ast: TcclFileContext; errors: TcclError[] } {
   const lexer = createLexer(code);
   lexer.removeErrorListeners();
   const tcclErrorsListener = new TcclErrorListener();
   lexer.addErrorListener(tcclErrorsListener);
   const tokenStream = new CommonTokenStream(lexer);
-  const parser = new TcclParser(tokenStream);
+  const parser = getParser(tokenStream);
   parser.removeErrorListeners();
   parser.addErrorListener(tcclErrorsListener);
   const ast = parser.tcclFile();

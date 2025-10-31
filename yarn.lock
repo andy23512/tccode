@@ -5250,6 +5250,13 @@ antlr-ng@^1.0.10:
     stringtemplate4ts "1.0.9"
     unicode-properties "1.4.1"
 
+antlr4-c3@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/antlr4-c3/-/antlr4-c3-3.4.4.tgz#79d9c18b73a333c10013b9245113909cc51fafdb"
+  integrity sha512-ixp1i17ypbRzZnffdarIfCVEXJwPydtDt61SHMGkc+UCD7rrbfvHESTMTgx8jFhUgKAgcHyt9060kQ8nU3vlxA==
+  dependencies:
+    antlr4ng "3.0.16"
+
 antlr4ng@3.0.15:
   version "3.0.15"
   resolved "https://registry.yarnpkg.com/antlr4ng/-/antlr4ng-3.0.15.tgz#8ed2ac92e4b604974775dbac3eeaf6d9ef1965aa"

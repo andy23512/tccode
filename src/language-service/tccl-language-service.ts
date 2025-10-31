@@ -1,8 +1,15 @@
-import { TcclFileContext } from '../antlr/TcclParser';
+import { CodeCompletionCore } from 'antlr4-c3';
+import type { languages } from 'monaco-editor';
+import { TcclFileContext, TcclParser } from '../antlr/TcclParser';
 import { BOPOMOFO_CHORD_MAP } from '../data/bopomofo.const';
 import { convertChordInputKeysToIdentifier } from '../util/chord-identifier.util';
 import { TcclError } from './tccl-error-listener';
-import { parseAndGetAstRoot, parseAndGetSyntaxErrors } from './tccl-parser';
+import {
+  getParser,
+  getTokenStream,
+  parseAndGetAstRoot,
+  parseAndGetSyntaxErrors,
+} from './tccl-parser';
 import { TcclValidateOptions } from './tccl-validate-option';
 
 export class TcclLanguageService {
@@ -10,6 +17,40 @@ export class TcclLanguageService {
     const syntaxErrors: TcclError[] = parseAndGetSyntaxErrors(code);
     const ast: TcclFileContext = parseAndGetAstRoot(code);
     return syntaxErrors.concat(checkSemanticRules(ast, option));
+  }
+
+  public autoComplete(
+    code: string,
+    atIndex: number,
+  ): languages.CompletionItem[] {
+    const tokenStream = getTokenStream(code);
+    const parser = getParser(tokenStream);
+    const core = new CodeCompletionCore(parser);
+    for (const rule of [
+      TcclParser.RULE_tcclFile,
+      TcclParser.RULE_chord,
+      TcclParser.RULE_chordInput,
+      TcclParser.RULE_chordOutput,
+    ]) {
+      core.preferredRules = new Set([rule]);
+      const candidates = core.collectCandidates(atIndex);
+      console.log(rule, candidates.rules, candidates.tokens);
+      for (const ct of candidates.tokens) {
+        console.log(ct);
+        console.log(parser.vocabulary.getDisplayNames());
+        console.log(parser.vocabulary.getDisplayName(ct[0]));
+      }
+      for (const cr of candidates.rules) {
+        console.log(
+          cr[0],
+          TcclParser.RULE_tcclFile,
+          TcclParser.RULE_chord,
+          TcclParser.RULE_chordInput,
+          TcclParser.RULE_chordOutput,
+        );
+      }
+    }
+    return [];
   }
 }
 
