@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import type { Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
+import { TcclCompletionItemProviderService } from './tccl-completion-item-provider.service';
 import {
   TCCL_LANGUAGE_ID,
   TCCL_THEME_DATA,
@@ -21,6 +22,10 @@ export function setupTcclLanguage(): void {
   monaco.languages.setTokensProvider(
     TCCL_LANGUAGE_ID,
     inject(TcclTokensProviderService),
+  );
+  monaco.languages.registerCompletionItemProvider(
+    TCCL_LANGUAGE_ID,
+    inject(TcclCompletionItemProviderService),
   );
   monaco.editor.defineTheme(TCCL_THEME_NAME, TCCL_THEME_DATA);
 

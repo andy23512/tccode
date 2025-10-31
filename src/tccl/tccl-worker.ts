@@ -1,4 +1,4 @@
-import type { worker } from 'monaco-editor';
+import type { languages, Range, worker } from 'monaco-editor';
 import { TcclError } from '../language-service/tccl-error-listener';
 import { TcclLanguageService } from '../language-service/tccl-language-service';
 import { TcclValidateOptions } from '../language-service/tccl-validate-option';
@@ -12,13 +12,28 @@ export class TcclWorker {
     this.languageService = new TcclLanguageService();
   }
 
-  public doValidation(option: TcclValidateOptions): Promise<TcclError[]> {
+  public async doValidation(option: TcclValidateOptions): Promise<TcclError[]> {
     const code = this.getTextDocument();
-    return Promise.resolve(this.languageService.validate(code, option));
+    if (!code) {
+      return [];
+    }
+    return this.languageService.validate(code, option);
+  }
+
+  public async getSuggestions(
+    input: string,
+    range: Range,
+    atIndex: number,
+  ): Promise<languages.CompletionItem[]> {
+    const suggestions = this.languageService.autoComplete(input, atIndex);
+    return [...suggestions];
   }
 
   private getTextDocument(): string {
-    const model = this._ctx.getMirrorModels()[0]; // When there are multiple files open, this will be an array
-    return model.getValue();
+    return this.getModel().getValue();
+  }
+
+  private getModel(): worker.IMirrorModel {
+    return this._ctx.getMirrorModels()[0]; // When there are multiple files open, this will be an array
   }
 }
