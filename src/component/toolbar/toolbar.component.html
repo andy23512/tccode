@@ -2,21 +2,7 @@
   <app-logo class="size-8"></app-logo>
 </div>
 <app-connect-button></app-connect-button>
-<app-toolbar-button
-  tooltip="Load chord library"
-  icon="forms_add_on"
-  [matMenuTriggerFor]="loadChordLibraryMenu"
-></app-toolbar-button>
-<mat-menu #loadChordLibraryMenu="matMenu" xPosition="after">
-  <button mat-menu-item (click)="loadChordLibrarySample(1)">
-    <mat-icon>{{ 'looks_one' | iconGuard }}</mat-icon>
-    <span>Sample 1</span>
-  </button>
-  <button mat-menu-item (click)="loadChordLibrarySample(2)">
-    <mat-icon>{{ 'looks_two' | iconGuard }}</mat-icon>
-    <span>Sample 2</span>
-  </button>
-</mat-menu>
+<app-load-button></app-load-button>
 <div class="flex-1"></div>
 <app-toolbar-button
   tooltip="Settings"

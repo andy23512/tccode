@@ -15,7 +15,6 @@ import * as monaco from 'monaco-editor';
 import { EmacsExtension } from 'monaco-emacs';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { MONACO_EDITOR_OPTIONS } from '../../config/monaco.config';
-import { SAMPLE_CHORDS_1 } from '../../data/sample-chords.const';
 import { KeyBindings } from '../../model/setting.model';
 import { TcclChord } from '../../model/tccl.model';
 import { DeviceStore } from '../../store/device.store';
@@ -91,11 +90,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      const deviceChordsInTccl = this.deviceChordsInTccl();
-      this.editorStore.appendContent(deviceChordsInTccl);
-    });
-
-    effect(() => {
       const content = this.editorStore.content();
       const editor = this.editor();
       this.setContentToEditor(editor, content);
@@ -104,10 +98,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const editor = monaco.editor.create(this.monacoContainer().nativeElement, {
-      value: SAMPLE_CHORDS_1,
+      value: '',
       ...MONACO_EDITOR_OPTIONS,
     });
     this.editor.set(editor);
+    editor.getModel().onDidChangeContent(() => {
+      this.editorStore.setContent(editor.getModel().getValue());
+    });
   }
 
   public ngOnDestroy(): void {
@@ -149,6 +146,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       return;
     }
     const model = editor.getModel();
-    model.setValue(content);
+    if (model.getValue() !== content) {
+      model.setValue(content);
+    }
   }
 }
