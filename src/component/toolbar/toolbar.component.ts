@@ -38,7 +38,7 @@ export class ToolbarComponent {
 
   public loadChordLibrarySample(index: 1 | 2) {
     const chordLibrary = index === 1 ? SAMPLE_CHORDS_1 : SAMPLE_CHORDS_2;
-    this.editorStore.setContent(chordLibrary);
+    this.editorStore.appendContent(chordLibrary);
   }
 
   public openSettingsDialog() {

@@ -11,8 +11,10 @@ export const EditorStore = signalStore(
   withDevtools('editor'),
   withState(initialState),
   withMethods((store) => ({
-    setContent(content: string): void {
-      patchState(store, { content });
+    appendContent(content: string): void {
+      patchState(store, (state) => ({
+        content: state.content ? state.content + '\n' + content : content,
+      }));
     },
   })),
 );

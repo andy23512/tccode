@@ -92,7 +92,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     effect(() => {
       const deviceChordsInTccl = this.deviceChordsInTccl();
-      this.editorStore.setContent(deviceChordsInTccl);
+      this.editorStore.appendContent(deviceChordsInTccl);
     });
 
     effect(() => {
