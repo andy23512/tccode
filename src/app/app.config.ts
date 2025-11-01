@@ -8,6 +8,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { provideRouter } from '@angular/router';
 import { setupTcclLanguage } from '../tccl/setup-tccl-language';
+import { setupMonacoKeybindings } from '../util/monaco.util';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideAppInitializer(setupTcclLanguage),
+    provideAppInitializer(setupMonacoKeybindings),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: {
