@@ -10,6 +10,16 @@
     >
   </div>
   <div class="flex flex-col gap-2">
+    <mat-label>Auto Connect</mat-label>
+    <mat-checkbox
+      [color]="'primary'"
+      [checked]="autoConnectToDevice()"
+      (change)="setAutoConnectToDevice($event.checked)"
+      >Auto connect to device when you save to or load from device if there is
+      only one supported device detected</mat-checkbox
+    >
+  </div>
+  <div class="flex flex-col gap-2">
     <mat-label>Key bindings</mat-label>
     <mat-form-field>
       <mat-select

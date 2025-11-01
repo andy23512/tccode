@@ -9,6 +9,7 @@ const INITIAL_SETTING: Setting = {
   showWelcomeDialogWhenStart: true,
   keyBindings: KeyBindings.Classic,
   detectConflictsWithBopomofoChords: false,
+  autoConnectToDevice: false,
 };
 
 export const SettingStore = signalStore(

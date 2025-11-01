@@ -10,7 +10,6 @@ import {
   tap,
   toArray,
 } from 'rxjs';
-import { CHARACHORDER_DEVICE_PORTS } from '../data/charachorder-device-ports.const';
 import {
   SerialCommand,
   SerialCommandArgMap,
@@ -19,6 +18,7 @@ import { Chord, ChordLibraryLoadStatus } from '../model/chord.model';
 import { SerialLogItemType } from '../model/serial-log.model';
 import { SerialLogStore } from '../store/serial-log.store';
 import { parseChordActions, parsePhrase } from '../util/raw-chord.util';
+import { SerialPortService } from './serial-port.service';
 
 // Reference: https://github.com/archocron/ngx-serial/blob/fd1cf846cc5dba2bb2a935f44845d072964b566c/projects/ngx-serial/src/lib/ngx-serial.ts
 
@@ -48,6 +48,8 @@ class LineBreakTransformer {
 
 @Injectable({ providedIn: 'root' })
 export class SerialService {
+  private serialPortService = inject(SerialPortService);
+
   private port!: SerialPort;
   private webSerialDataSubject = new Subject<string>();
   private webSerialData$ = this.webSerialDataSubject.asObservable();
@@ -60,9 +62,7 @@ export class SerialService {
 
   public async connect() {
     try {
-      this.port = await navigator.serial.requestPort({
-        filters: [...CHARACHORDER_DEVICE_PORTS.values()],
-      });
+      this.port = await this.serialPortService.getPort();
       await this.port.open({ baudRate: 115200 });
       const textEncoder = new TextEncoderStream();
       if (!this.port.writable) {
@@ -161,6 +161,9 @@ export class SerialService {
   private async startReadLoop() {
     while (this.port.readable) {
       const textDecoder = new TextDecoderStream();
+      if (this.port.readable.locked) {
+        break;
+      }
       this.readableStreamClosed = this.port.readable.pipeTo(
         textDecoder.writable as unknown as WritableStream<
           Uint8Array<ArrayBufferLike>
@@ -173,6 +176,7 @@ export class SerialService {
         while (true) {
           const { value, done } = await this.reader.read();
           if (done) {
+            this.reader.releaseLock();
             break;
           }
           if (value) {

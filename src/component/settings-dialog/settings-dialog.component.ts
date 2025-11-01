@@ -30,6 +30,7 @@ export class SettingsDialogComponent {
   ];
   public detectConflictsWithBopomofoChords =
     this.settingStore.detectConflictsWithBopomofoChords;
+  public autoConnectToDevice = this.settingStore.autoConnectToDevice;
 
   public setShowWelcomeDialogWhenStart(value: boolean) {
     this.settingStore.set('showWelcomeDialogWhenStart', value);
@@ -41,5 +42,9 @@ export class SettingsDialogComponent {
 
   public setDetectConflictsWithBopomofoChords(value: boolean) {
     this.settingStore.set('detectConflictsWithBopomofoChords', value);
+  }
+
+  public setAutoConnectToDevice(value: boolean) {
+    this.settingStore.set('autoConnectToDevice', value);
   }
 }

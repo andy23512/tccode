@@ -8,4 +8,5 @@ export interface Setting {
   showWelcomeDialogWhenStart: boolean;
   keyBindings: KeyBindings;
   detectConflictsWithBopomofoChords: boolean;
+  autoConnectToDevice: boolean;
 }
