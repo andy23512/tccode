@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { ConnectButtonComponent } from '../connect-button/connect-button.component';
 import { LoadButtonComponent } from '../load-button/load-button.component';
 import { LogoComponent } from '../logo/logo.component';
 import { SerialLogDialogComponent } from '../serial-log-dialog/serial-log-dialog.component';
@@ -12,7 +11,6 @@ import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.compone
 
 @Component({
   imports: [
-    ConnectButtonComponent,
     LoadButtonComponent,
     LogoComponent,
     MatButtonModule,

@@ -15,10 +15,10 @@ import {
   SerialCommand,
   SerialCommandArgMap,
 } from '../data/serial-command.enum';
-import { Chord, ChordLibraryLoadStatus } from '../model/device.model';
+import { Chord, ChordLibraryLoadStatus } from '../model/chord.model';
 import { SerialLogItemType } from '../model/serial-log.model';
 import { SerialLogStore } from '../store/serial-log.store';
-import { parseChordActions, parsePhrase } from '../util/chord.util';
+import { parseChordActions, parsePhrase } from '../util/raw-chord.util';
 
 // Reference: https://github.com/archocron/ngx-serial/blob/fd1cf846cc5dba2bb2a935f44845d072964b566c/projects/ngx-serial/src/lib/ngx-serial.ts
 

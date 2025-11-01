@@ -1,4 +1,4 @@
-export const SAMPLE_CHORDS_1 = `
+const SAMPLE_CHORDS_1 = `
 b + c = because
 y + o + u = you
 b + a + k = back
@@ -6,7 +6,7 @@ d + o + w + n = down
 i + m + p = important
 `.trim();
 
-export const SAMPLE_CHORDS_2 = `
+const SAMPLE_CHORDS_2 = `
 [ + ] = - [ ]
 a + n + o = annotation
 b + n = backend
@@ -35,3 +35,8 @@ s + u + b = subscribe
 u + p = update
 v + i = viewer
 `.trim();
+
+export const SAMPLE_CHORD_LISTS = {
+  1: SAMPLE_CHORDS_1,
+  2: SAMPLE_CHORDS_2,
+};

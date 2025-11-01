@@ -4,12 +4,16 @@
   [matMenuTriggerFor]="loadMenu"
 ></app-toolbar-button>
 <mat-menu #loadMenu="matMenu" xPosition="after">
+  <button mat-menu-item (click)="loadFromDevice()">
+    <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
+    <span>From Device</span>
+  </button>
   <button mat-menu-item (click)="loadSample(1)">
     <mat-icon>{{ 'looks_one' | iconGuard }}</mat-icon>
-    <span>Load Sample 1</span>
+    <span>Sample 1</span>
   </button>
   <button mat-menu-item (click)="loadSample(2)">
     <mat-icon>{{ 'looks_two' | iconGuard }}</mat-icon>
-    <span>Load Sample 2</span>
+    <span>Sample 2</span>
   </button>
 </mat-menu>

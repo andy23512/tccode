@@ -1,6 +1,5 @@
 import {
   Component,
-  computed,
   effect,
   ElementRef,
   inject,
@@ -16,12 +15,8 @@ import { EmacsExtension } from 'monaco-emacs';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { MONACO_EDITOR_OPTIONS } from '../../config/monaco.config';
 import { KeyBindings } from '../../model/setting.model';
-import { TcclChord } from '../../model/tccl.model';
-import { DeviceStore } from '../../store/device.store';
 import { EditorStore } from '../../store/editor.store';
-import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
 import { SettingStore } from '../../store/setting.store';
-import { getTcclKeyFromActionCode } from '../../util/layout.util';
 
 @Component({
   imports: [FormsModule],
@@ -32,48 +27,7 @@ import { getTcclKeyFromActionCode } from '../../util/layout.util';
   },
 })
 export class EditorComponent implements OnInit, OnDestroy {
-  private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
-  private deviceChordLibrary = inject(DeviceStore).chordLibrary;
   private keyBindings = inject(SettingStore).keyBindings;
-  private deviceChordsInTccl = computed<string>(() => {
-    const keyboardLayout = this.keyboardLayout();
-    const deviceChords = this.deviceChordLibrary()?.chords;
-    if (!keyboardLayout || !deviceChords) {
-      return '';
-    }
-    const tcclChords: TcclChord[] = deviceChords.map((c) => {
-      const outputKeys = c.output.map((actionCode) =>
-        getTcclKeyFromActionCode(actionCode, keyboardLayout),
-      );
-      const inputKeys = c.input.filter(Boolean).map((actionCode) => {
-        const key = getTcclKeyFromActionCode(actionCode, keyboardLayout);
-        const indexInOutput = outputKeys.findIndex(
-          (k) => k.toLowerCase() === key.toLowerCase(),
-        );
-        return {
-          key,
-          indexInOutput: indexInOutput !== -1 ? indexInOutput : Infinity,
-        };
-      });
-      inputKeys.sort((a, b) => {
-        const compareIndexInOutput = Math.sign(
-          a.indexInOutput - b.indexInOutput,
-        );
-        if (compareIndexInOutput !== 0) {
-          return compareIndexInOutput;
-        }
-        return a.key.localeCompare(b.key);
-      });
-      return {
-        input: inputKeys.map((k) => k.key).join(' + '),
-        output: outputKeys.join(''),
-      };
-    });
-    tcclChords.sort((a, b) => a.output.localeCompare(b.output));
-    return tcclChords
-      .map(({ input, output }) => `${input} = ${output}`)
-      .join('\n');
-  });
   private vimMode: VimMode;
   private emacsMode: EmacsExtension;
   private statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
