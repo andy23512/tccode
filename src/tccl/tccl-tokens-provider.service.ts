@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ANTLRErrorListener,
-  ATNConfigSet,
-  BitSet,
-  DFA,
-  Parser,
-  RecognitionException,
-  Recognizer,
-} from 'antlr4ng';
+import { ANTLRErrorListener, RecognitionException, Recognizer } from 'antlr4ng';
 import type { languages } from 'monaco-editor';
 import { createLexer } from '../language-service/tccl-parser';
 type ILineTokens = languages.ILineTokens;
@@ -29,10 +21,7 @@ export class TcclTokensProviderService implements languages.TokensProvider {
     return new TcclState();
   }
 
-  public tokenize(
-    line: string,
-    state: languages.IState,
-  ): languages.ILineTokens {
+  public tokenize(line: string): languages.ILineTokens {
     // So far we ignore the state, which is not great for performance reasons
     return tokensForLine(line);
   }
@@ -64,44 +53,23 @@ export function tokensForLine(input: string): languages.ILineTokens {
   const errorStartingPoints: number[] = [];
 
   class ErrorCollectorListener implements ANTLRErrorListener {
-    reportAmbiguity(
-      recognizer: Parser,
-      dfa: DFA,
-      startIndex: number,
-      stopIndex: number,
-      exact: boolean,
-      ambigAlts: BitSet | undefined,
-      configs: ATNConfigSet,
-    ): void {
+    reportAmbiguity(): void {
       throw new Error('Method not implemented.');
     }
-    reportAttemptingFullContext(
-      recognizer: Parser,
-      dfa: DFA,
-      startIndex: number,
-      stopIndex: number,
-      conflictingAlts: BitSet | undefined,
-      configs: ATNConfigSet,
-    ): void {
+    reportAttemptingFullContext(): void {
       throw new Error('Method not implemented.');
     }
-    reportContextSensitivity(
-      recognizer: Parser,
-      dfa: DFA,
-      startIndex: number,
-      stopIndex: number,
-      prediction: number,
-      configs: ATNConfigSet,
-    ): void {
+    reportContextSensitivity(): void {
       throw new Error('Method not implemented.');
     }
+
     syntaxError(
       recognizer: Recognizer<any>,
       offendingSymbol: any,
       line: number,
       column: number,
       msg: string,
-      e: RecognitionException | undefined,
+      e: RecognitionException | null,
     ) {
       errorStartingPoints.push(column);
     }
@@ -123,8 +91,10 @@ export function tokensForLine(input: string): languages.ILineTokens {
         done = true;
       } else {
         const tokenTypeName = lexer.symbolicNames[token.type];
-        const myToken = new TcclToken(tokenTypeName, token.column);
-        myTokens.push(myToken);
+        if (tokenTypeName) {
+          const myToken = new TcclToken(tokenTypeName, token.column);
+          myTokens.push(myToken);
+        }
       }
     }
   } while (!done);

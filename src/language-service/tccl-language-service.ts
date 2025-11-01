@@ -24,6 +24,9 @@ function checkSemanticRules(
   const chordMap = new Map<string, ChordInfo[]>();
   let errors: TcclError[] = [];
   ast.chord().forEach((chordNode) => {
+    if (!chordNode.stop) {
+      return;
+    }
     const chordInputNode = chordNode.chordInput();
     const chordInputKeys = chordInputNode
       .CHORD_INPUT_KEY()
@@ -34,8 +37,9 @@ function checkSemanticRules(
       lineNumber: chordNode.stop.line,
       chord: chordNode.toString(),
     };
-    if (chordMap.has(chordInputIdentifier)) {
-      chordMap.get(chordInputIdentifier).push(chordInfo);
+    const targetChordInfoList = chordMap.get(chordInputIdentifier);
+    if (targetChordInfoList) {
+      targetChordInfoList.push(chordInfo);
     } else {
       chordMap.set(chordInputIdentifier, [chordInfo]);
     }

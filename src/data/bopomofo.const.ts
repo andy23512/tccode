@@ -496,7 +496,7 @@ const TAN_CHORD_36_V2_LAYOUT: Record<BPMFSymbol, string> = {
 export const BOPOMOFO_CHORD_MAP: Map<string, string> = new Map(
   BOPOMOFO_COMBINATIONS.filter((bc) => bc.length > 1).map((bc) => [
     convertChordInputKeysToIdentifier(
-      bc.split('').map((b) => TAN_CHORD_36_V2_LAYOUT[b]),
+      bc.split('').map((b) => TAN_CHORD_36_V2_LAYOUT[b as BPMFSymbol]),
     ),
     bc,
   ]),

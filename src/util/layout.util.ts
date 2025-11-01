@@ -50,11 +50,8 @@ export function convertKeyboardLayoutToCharacterKeyCodeMap(
 
 export function getTcclKeyFromActionCode(
   actionCode: number,
-  keyboardLayout: KeyBoardLayout | null,
+  keyboardLayout: KeyBoardLayout,
 ): string | null {
-  if (!keyboardLayout) {
-    return null;
-  }
   const action = ACTIONS.find((a) => a.codeId === actionCode);
   if (action?.type === ActionType.WSK && action.keyCode) {
     const keyboardLayoutKey = keyboardLayout.layout[action.keyCode];

@@ -14,7 +14,7 @@ export function convertChordListToTcclFile(
     const inputKeys = c.input.filter(Boolean).map((actionCode) => {
       const key = getTcclKeyFromActionCode(actionCode, keyboardLayout);
       const indexInOutput = outputKeys.findIndex(
-        (k) => k.toLowerCase() === key.toLowerCase(),
+        (k) => k && key && k.toLowerCase() === key.toLowerCase(),
       );
       return {
         key,
@@ -25,6 +25,15 @@ export function convertChordListToTcclFile(
       const compareIndexInOutput = Math.sign(a.indexInOutput - b.indexInOutput);
       if (compareIndexInOutput !== 0) {
         return compareIndexInOutput;
+      }
+      if (a.key === b.key) {
+        return 0;
+      }
+      if (a.key === null || typeof a.key === 'undefined') {
+        return 1;
+      }
+      if (b.key === null || typeof b.key === 'undefined') {
+        return -1;
       }
       return a.key.localeCompare(b.key);
     });

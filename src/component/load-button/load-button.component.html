@@ -2,6 +2,7 @@
   tooltip="Load"
   icon="forms_add_on"
   [matMenuTriggerFor]="loadMenu"
+  [menu]="loadMenu"
 ></app-toolbar-button>
 <mat-menu #loadMenu="matMenu" xPosition="after">
   <button mat-menu-item (click)="loadFromDevice()">

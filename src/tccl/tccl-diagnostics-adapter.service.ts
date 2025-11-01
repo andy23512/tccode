@@ -53,11 +53,13 @@ export class TcclDiagnosticsAdapterService {
     // get the current model(editor or file) which is only one
     const model = monaco.editor.getModel(resource);
     // add the error markers and underline them with severity of error
-    monaco.editor.setModelMarkers(
-      model,
-      TCCL_LANGUAGE_ID,
-      errorMarkers.map(toDiagnostics),
-    );
+    if (model) {
+      monaco.editor.setModelMarkers(
+        model,
+        TCCL_LANGUAGE_ID,
+        errorMarkers.map(toDiagnostics),
+      );
+    }
   }
 }
 

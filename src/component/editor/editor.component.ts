@@ -28,9 +28,10 @@ import { SettingStore } from '../../store/setting.store';
 })
 export class EditorComponent implements OnInit, OnDestroy {
   private keyBindings = inject(SettingStore).keyBindings;
-  private vimMode: VimMode;
-  private emacsMode: EmacsExtension;
-  private statusBar = viewChild<ElementRef<HTMLDivElement>>('statusBar');
+  private vimMode: VimMode | null = null;
+  private emacsMode: EmacsExtension | null = null;
+  private statusBar =
+    viewChild.required<ElementRef<HTMLDivElement>>('statusBar');
   private editor = signal<editor.ICodeEditor | null>(null);
   private monacoContainer =
     viewChild.required<ElementRef<HTMLDivElement>>('monacoContainer');
@@ -56,8 +57,12 @@ export class EditorComponent implements OnInit, OnDestroy {
       ...MONACO_EDITOR_OPTIONS,
     });
     this.editor.set(editor);
-    editor.getModel().onDidChangeContent(() => {
-      this.editorStore.setContent(editor.getModel().getValue());
+    const model = editor.getModel();
+    if (!model) {
+      throw Error('Editor has no model.');
+    }
+    model.onDidChangeContent(() => {
+      this.editorStore.setContent(model.getValue());
     });
   }
 
@@ -100,7 +105,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       return;
     }
     const model = editor.getModel();
-    if (model.getValue() !== content) {
+    if (model && model.getValue() !== content) {
       model.setValue(content);
     }
   }

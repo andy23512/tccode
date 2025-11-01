@@ -37,7 +37,7 @@ class LineBreakTransformer {
   ) {
     this.container += chunk;
     const lines = this.container.split(this.controlCharacter);
-    this.container = lines.pop();
+    this.container = lines.pop() as string;
     lines.forEach((line) => controller.enqueue(line));
   }
 
@@ -65,6 +65,9 @@ export class SerialService {
       });
       await this.port.open({ baudRate: 115200 });
       const textEncoder = new TextEncoderStream();
+      if (!this.port.writable) {
+        throw Error('Port is not writable.');
+      }
       this.writableStreamClosed = textEncoder.readable.pipeTo(
         this.port.writable,
       );
@@ -124,9 +127,7 @@ export class SerialService {
 
   public async send<T extends SerialCommand>(
     command: T,
-    ...args: SerialCommandArgMap[T] extends undefined
-      ? [undefined?]
-      : SerialCommandArgMap[T]
+    ...args: SerialCommandArgMap[T]
   ) {
     const data = args ? [command, ...args].join(' ') : command;
     return this.sendData(data);

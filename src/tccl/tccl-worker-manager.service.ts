@@ -6,12 +6,8 @@ import { TcclWorker } from './tccl-worker';
 
 @Injectable({ providedIn: 'root' })
 export class TcclWorkerManagerService {
-  private worker: editor.MonacoWebWorker<TcclWorker>;
-  private workerClientProxy: Promise<TcclWorker>;
-
-  constructor() {
-    this.worker = null;
-  }
+  private worker: editor.MonacoWebWorker<TcclWorker> | null = null;
+  private workerClientProxy: Promise<TcclWorker> | null = null;
 
   private getClientProxy(): Promise<TcclWorker> {
     if (!this.workerClientProxy) {
@@ -30,7 +26,7 @@ export class TcclWorkerManagerService {
 
   async getLanguageServiceWorker(...resources: Uri[]): Promise<TcclWorker> {
     const _client: TcclWorker = await this.getClientProxy();
-    await this.worker.withSyncedResources(resources);
+    await this.worker?.withSyncedResources(resources);
     return _client;
   }
 }

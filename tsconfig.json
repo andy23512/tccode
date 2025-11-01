@@ -8,7 +8,8 @@
     "paths": {},
     "isolatedModules": true,
     "typeRoots": ["node_modules/@types", "src/type"],
-    "libReplacement": true
+    "libReplacement": true,
+    "strict": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

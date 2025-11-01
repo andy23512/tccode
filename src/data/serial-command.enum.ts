@@ -7,8 +7,8 @@ export enum SerialCommand {
 }
 
 export type SerialCommandArgMap = {
-  [SerialCommand.Id]: undefined;
-  [SerialCommand.Version]: undefined;
-  [SerialCommand.GetChordMapCount]: undefined;
+  [SerialCommand.Id]: [];
+  [SerialCommand.Version]: [];
+  [SerialCommand.GetChordMapCount]: [];
   [SerialCommand.GetChordMapByIndex]: [number];
 };
