@@ -3,6 +3,7 @@ export type Icon =
   | 'arrow_drop_up'
   | 'article'
   | 'developer_board'
+  | 'file_open'
   | 'forms_add_on'
   | 'looks_one'
   | 'looks_two'

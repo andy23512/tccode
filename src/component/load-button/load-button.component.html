@@ -3,10 +3,22 @@
   icon="forms_add_on"
   [menu]="loadMenu"
 ></app-toolbar-button>
+<input
+  #fileInput
+  class="hidden"
+  type="file"
+  accept=".json,.tccl,.txt"
+  aria-label="file input for selecting a chord library file to load into this editor"
+  (change)="onFileInputChange()"
+/>
 <mat-menu #loadMenu="matMenu" xPosition="after">
   <button mat-menu-item (click)="loadFromDevice()">
     <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
     <span>From Device</span>
+  </button>
+  <button mat-menu-item (click)="openFileSelectionDialog()">
+    <mat-icon>{{ 'file_open' | iconGuard }}</mat-icon>
+    <span>From File</span>
   </button>
   <button mat-menu-item (click)="loadSample(1)">
     <mat-icon>{{ 'looks_one' | iconGuard }}</mat-icon>
