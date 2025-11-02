@@ -7,25 +7,25 @@
   #fileInput
   class="hidden"
   type="file"
-  accept=".json,.tccl,.txt"
+  accept=".json,.txt"
   aria-label="file input for selecting a chord library file to load into this editor"
   (change)="onFileInputChange()"
 />
 <mat-menu #loadMenu="matMenu" xPosition="after">
   <button mat-menu-item (click)="loadFromDevice()">
     <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
-    <span>From Device</span>
+    <span>Load from device</span>
   </button>
   <button mat-menu-item (click)="openFileSelectionDialog()">
     <mat-icon>{{ 'draft' | iconGuard }}</mat-icon>
-    <span>File</span>
+    <span>Load from file</span>
   </button>
   <button mat-menu-item (click)="loadSample(1)">
     <mat-icon>{{ 'looks_one' | iconGuard }}</mat-icon>
-    <span>Sample 1</span>
+    <span>Load sample 1</span>
   </button>
   <button mat-menu-item (click)="loadSample(2)">
     <mat-icon>{{ 'looks_two' | iconGuard }}</mat-icon>
-    <span>Sample 2</span>
+    <span>Load sample 2</span>
   </button>
 </mat-menu>

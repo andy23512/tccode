@@ -1,0 +1,11 @@
+<app-toolbar-button
+  tooltip="Save"
+  icon="save"
+  [menu]="saveMenu"
+></app-toolbar-button>
+<mat-menu #saveMenu="matMenu" xPosition="after">
+  <button mat-menu-item (click)="saveAsTcclFile()">
+    <mat-icon>{{ 'draft' | iconGuard }}</mat-icon>
+    <span>Save as TCCL file</span>
+  </button>
+</mat-menu>

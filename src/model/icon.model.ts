@@ -8,6 +8,7 @@ export type Icon =
   | 'forms_add_on'
   | 'looks_one'
   | 'looks_two'
+  | 'save'
   | 'settings'
   | 'usb'
   | 'usb_off';
