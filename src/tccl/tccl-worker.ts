@@ -1,4 +1,5 @@
-import type { languages, Range, worker } from 'monaco-editor';
+import type { Position, worker } from 'monaco-editor';
+import { TcclCompletionItem } from '../language-service/tccl-completion-item';
 import { TcclError } from '../language-service/tccl-error-listener';
 import { TcclLanguageService } from '../language-service/tccl-language-service';
 import { TcclValidateOptions } from '../language-service/tccl-validate-option';
@@ -22,11 +23,9 @@ export class TcclWorker {
 
   public async getSuggestions(
     input: string,
-    range: Range,
-    atIndex: number,
-  ): Promise<languages.CompletionItem[]> {
-    const suggestions = this.languageService.autoComplete(input, atIndex);
-    return [...suggestions];
+    position: Position,
+  ): Promise<TcclCompletionItem[]> {
+    return this.languageService.autoComplete(input, position);
   }
 
   private getTextDocument(): string {

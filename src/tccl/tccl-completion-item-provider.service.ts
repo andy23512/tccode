@@ -11,28 +11,44 @@ export class TcclCompletionItemProviderService
     TcclWorkerAccessorService,
   );
 
-  public triggerCharacters = [' '];
+  public triggerCharacters = [
+    ' ',
+    ...'abcdefghijklmnopqrstuvwxyz'.split(''),
+    ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+  ];
 
   public async provideCompletionItems(
     model: editor.ITextModel,
     position: Position,
   ): Promise<languages.CompletionList> {
-    const input = model.getValue();
-    if (!input) return;
-
-    const word = model.getWordUntilPosition(position);
-    const range = new monaco.Range(
-      position.lineNumber,
-      word.startColumn,
-      position.lineNumber,
-      word.endColumn,
+    const input = model.getValueInRange(
+      new monaco.Range(1, 1, position.lineNumber, position.column),
     );
-    const atIndex = model.getOffsetAt(range.getStartPosition());
+    const currentLine = model.getValueInRange(
+      new monaco.Range(
+        position.lineNumber,
+        1,
+        position.lineNumber,
+        position.column,
+      ),
+    );
+    const match = currentLine.match(/ +$/);
+    const spaceCount = match ? match[0].length : 0;
     const worker = await this.tcclWorkerAccessorService.getWorker(model.uri);
-    const suggestions = await worker.getSuggestions(input, range, atIndex);
+    const suggestions = await worker.getSuggestions(input, position);
     return {
       incomplete: false,
-      suggestions,
+      suggestions: suggestions.map(({ value, optionType }) => ({
+        label: value,
+        kind: optionType,
+        insertText: value,
+        range: new monaco.Range(
+          position.lineNumber,
+          position.column - spaceCount,
+          position.lineNumber,
+          position.column,
+        ),
+      })),
     };
   }
 }

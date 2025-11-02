@@ -18,7 +18,11 @@ export function getParser(tokenStream: CommonTokenStream): TcclParser {
   return new TcclParser(tokenStream);
 }
 
-function parse(code: string): { ast: TcclFileContext; errors: TcclError[] } {
+export function parseTccl(code: string): {
+  ast: TcclFileContext;
+  errors: TcclError[];
+  parser: TcclParser;
+} {
   const lexer = createLexer(code);
   lexer.removeErrorListeners();
   const tcclErrorsListener = new TcclErrorListener();
@@ -29,15 +33,5 @@ function parse(code: string): { ast: TcclFileContext; errors: TcclError[] } {
   parser.addErrorListener(tcclErrorsListener);
   const ast = parser.tcclFile();
   const errors: TcclError[] = tcclErrorsListener.getErrors();
-  return { ast, errors };
-}
-
-export function parseAndGetAstRoot(code: string): TcclFileContext {
-  const { ast } = parse(code);
-  return ast;
-}
-
-export function parseAndGetSyntaxErrors(code: string): TcclError[] {
-  const { errors } = parse(code);
-  return errors;
+  return { ast, errors, parser };
 }

@@ -1,31 +1,32 @@
 import { CodeCompletionCore } from 'antlr4-c3';
-import type { languages } from 'monaco-editor';
+import { ParseTree, TerminalNode } from 'antlr4ng';
+import type { languages, Position } from 'monaco-editor';
 import { TcclFileContext, TcclParser } from '../antlr/TcclParser';
 import { BOPOMOFO_CHORD_MAP } from '../data/bopomofo.const';
 import { convertChordInputKeysToIdentifier } from '../util/chord-identifier.util';
+import { TcclCompletionItem } from './tccl-completion-item';
 import { TcclError } from './tccl-error-listener';
-import {
-  getParser,
-  getTokenStream,
-  parseAndGetAstRoot,
-  parseAndGetSyntaxErrors,
-} from './tccl-parser';
+import { parseTccl } from './tccl-parser';
 import { TcclValidateOptions } from './tccl-validate-option';
 
 export class TcclLanguageService {
   public validate(code: string, option: TcclValidateOptions): TcclError[] {
-    const syntaxErrors: TcclError[] = parseAndGetSyntaxErrors(code);
-    const ast: TcclFileContext = parseAndGetAstRoot(code);
-    return syntaxErrors.concat(checkSemanticRules(ast, option));
+    const { ast, errors } = parseTccl(code);
+    return errors.concat(checkSemanticRules(ast, option));
   }
 
-  public autoComplete(
-    code: string,
-    atIndex: number,
-  ): languages.CompletionItem[] {
-    const tokenStream = getTokenStream(code);
-    const parser = getParser(tokenStream);
+  public autoComplete(code: string, position: Position): TcclCompletionItem[] {
+    const { ast, parser } = parseTccl(code);
+    const tokenIndex = computeTokenIndex(ast, position);
+    if (typeof tokenIndex === 'undefined') {
+      return [];
+    }
     const core = new CodeCompletionCore(parser);
+    const completionItems: {
+      value: string;
+      optionType: languages.CompletionItemKind;
+    }[] = [];
+    const operatorSet = new Set<string>();
     for (const rule of [
       TcclParser.RULE_tcclFile,
       TcclParser.RULE_chord,
@@ -33,24 +34,22 @@ export class TcclLanguageService {
       TcclParser.RULE_chordOutput,
     ]) {
       core.preferredRules = new Set([rule]);
-      const candidates = core.collectCandidates(atIndex);
-      console.log(rule, candidates.rules, candidates.tokens);
+      const candidates = core.collectCandidates(tokenIndex);
       for (const ct of candidates.tokens) {
-        console.log(ct);
-        console.log(parser.vocabulary.getDisplayNames());
-        console.log(parser.vocabulary.getDisplayName(ct[0]));
-      }
-      for (const cr of candidates.rules) {
-        console.log(
-          cr[0],
-          TcclParser.RULE_tcclFile,
-          TcclParser.RULE_chord,
-          TcclParser.RULE_chordInput,
-          TcclParser.RULE_chordOutput,
-        );
+        let name = parser.vocabulary.getDisplayName(ct[0]) as string;
+        if (name === "' + '" || name === "' = '") {
+          name = name.replace(/'/g, '');
+          operatorSet.add(name);
+        }
       }
     }
-    return [];
+    [...operatorSet].forEach((operator) => {
+      completionItems.push({
+        value: operator,
+        optionType: 11, // TODO
+      });
+    });
+    return completionItems;
   }
 }
 
@@ -117,4 +116,43 @@ function checkSemanticRules(
     );
   }
   return errors;
+}
+
+function computeTokenIndex(parseTree: ParseTree, caretPosition: Position) {
+  if (parseTree instanceof TerminalNode) {
+    return computeTokenIndexOfTerminalNode(parseTree, caretPosition);
+  }
+  return computeTokenIndexOfChildNode(parseTree, caretPosition);
+}
+
+function computeTokenIndexOfTerminalNode(
+  parseTree: TerminalNode,
+  caretPosition: Position,
+): number | undefined {
+  const start = parseTree.symbol.column;
+  const stop = parseTree.symbol.column + parseTree.getText().length;
+  if (
+    parseTree.symbol.line === caretPosition.lineNumber &&
+    start <= caretPosition.column &&
+    stop >= caretPosition.column
+  ) {
+    return parseTree.symbol.tokenIndex;
+  }
+  return undefined;
+}
+
+function computeTokenIndexOfChildNode(
+  parseTree: ParseTree,
+  caretPosition: Position,
+): number | undefined {
+  for (let i = 0; i < parseTree.getChildCount(); i++) {
+    const index: number | undefined = computeTokenIndex(
+      parseTree.getChild(i) as ParseTree,
+      caretPosition,
+    );
+    if (index !== undefined) {
+      return index;
+    }
+  }
+  return undefined;
 }
