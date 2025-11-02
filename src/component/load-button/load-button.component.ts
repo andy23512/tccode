@@ -48,20 +48,7 @@ export class LoadButtonComponent {
       return;
     }
     const file = fileInputElement.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      if (!result) {
-        return;
-      }
-      if (file.name.endsWith('.json')) {
-        this.chordLoaderService.loadFromJson(result);
-      } else {
-        this.chordLoaderService.loadFromText(result);
-      }
-    };
-
-    reader.readAsText(fileInputElement.files[0]);
+    this.chordLoaderService.loadFromFile(file);
   }
 
   public loadSample(index: keyof typeof SAMPLE_CHORD_LISTS) {

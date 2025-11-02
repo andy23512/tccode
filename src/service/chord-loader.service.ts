@@ -28,7 +28,24 @@ export class ChordLoaderService {
     }
   }
 
-  public async loadFromJson(input: string) {
+  public loadFromFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      if (!result) {
+        return;
+      }
+      if (file.name.endsWith('.json')) {
+        this.loadFromJson(result);
+      } else {
+        this.loadFromText(result);
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  private loadFromJson(input: string) {
     const data = JSON.parse(input);
     if (!data || !data.chords) {
       return;
@@ -50,7 +67,7 @@ export class ChordLoaderService {
     this.matSnackBar.open('Chords are successfully loaded from JSON.');
   }
 
-  public loadFromText(input: string) {
+  private loadFromText(input: string) {
     this.editorStore.appendContent(input);
     this.matSnackBar.open('Chords are successfully loaded from file.');
   }

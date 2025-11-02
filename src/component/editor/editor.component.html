@@ -1,2 +1,19 @@
-<div #monacoContainer class="flex-1 min-h-0"></div>
+<div
+  #monacoContainer
+  class="flex-1 min-h-0"
+  (drop)="onDrop($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+></div>
 <div #statusBar class="flex-none text-xl font-code bg-[#1E1E1E]"></div>
+<div
+  [class.hidden]="!isDragOver()"
+  class="absolute top-0 left-0 size-full flex items-center justify-center border-dashed border-[#39C5BB] border-4 pointer-events-none z-10 bg-black/50"
+>
+  <div class="flex items-center gap-4">
+    <mat-icon class="!text-[48px] !leading-[48px] !size-12 text-[#39C5BB]">{{
+      'draft' | iconGuard
+    }}</mat-icon>
+    <span class="text-2xl text-[#39C5BB]">Load this file into editor</span>
+  </div>
+</div>

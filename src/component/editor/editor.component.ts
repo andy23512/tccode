@@ -9,21 +9,24 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import type { editor } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import { EmacsExtension } from 'monaco-emacs';
 import { initVimMode, VimMode } from 'monaco-vim';
 import { MONACO_EDITOR_OPTIONS } from '../../config/monaco.config';
 import { KeyBindings } from '../../model/setting.model';
+import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
+import { ChordLoaderService } from '../../service/chord-loader.service';
 import { EditorStore } from '../../store/editor.store';
 import { SettingStore } from '../../store/setting.store';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, MatIconModule, IconGuardPipe],
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   host: {
-    class: 'flex flex-col',
+    class: 'flex flex-col relative',
   },
 })
 export class EditorComponent implements OnInit, OnDestroy {
@@ -36,6 +39,8 @@ export class EditorComponent implements OnInit, OnDestroy {
   private monacoContainer =
     viewChild.required<ElementRef<HTMLDivElement>>('monacoContainer');
   private editorStore = inject(EditorStore);
+  private chordLoaderService = inject(ChordLoaderService);
+  public isDragOver = signal(false);
 
   constructor() {
     effect(() => {
@@ -108,5 +113,28 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (model && model.getValue() !== content) {
       model.setValue(content);
     }
+  }
+
+  public onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+    const files = event.dataTransfer?.files;
+    if (files && files.length === 1) {
+      const file = files[0];
+      this.chordLoaderService.loadFromFile(file);
+    }
+  }
+
+  public onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(true);
+  }
+
+  public onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
   }
 }
