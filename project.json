@@ -30,7 +30,10 @@
             "output": "/assets/monaco/"
           }
         ],
-        "styles": ["./src/styles.scss"],
+        "styles": [
+          "./src/styles.scss",
+          "./node_modules/monaco-editor/min/vs/editor/editor.main.css"
+        ],
         "webWorkerTsConfig": "tsconfig.worker.json"
       },
       "configurations": {
