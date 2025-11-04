@@ -155,7 +155,6 @@ export class SerialService {
     this.writer.close();
     await this.writableStreamClosed;
     await this.port.close();
-    this.serialLogStore.clear();
   }
 
   private async startReadLoop() {
