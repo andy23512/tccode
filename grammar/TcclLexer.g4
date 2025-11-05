@@ -2,6 +2,15 @@ lexer grammar TcclLexer;
 
 /* Lexer Rules */
 
+tokens {
+	INDENT,
+	DEDENT
+}
+
+options {
+	superClass = TcclLexerBase;
+}
+
 fragment LOWERCASE : [a-z];
 fragment UPPERCASE : [A-Z];
 fragment SYMBOL : ('[' | ']' | '.' | '/' | '-');

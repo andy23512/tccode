@@ -3,6 +3,7 @@ import { AbstractParseTreeVisitor } from "antlr4ng";
 
 
 import { TcclFileContext } from "./TcclParser.js";
+import { ChordNodeContext } from "./TcclParser.js";
 import { ChordContext } from "./TcclParser.js";
 import { ChordInputContext } from "./TcclParser.js";
 import { ChordOutputContext } from "./TcclParser.js";
@@ -22,6 +23,12 @@ export class TcclParserVisitor<Result> extends AbstractParseTreeVisitor<Result> 
      * @return the visitor result
      */
     visitTcclFile?: (ctx: TcclFileContext) => Result;
+    /**
+     * Visit a parse tree produced by `TcclParser.chordNode`.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    visitChordNode?: (ctx: ChordNodeContext) => Result;
     /**
      * Visit a parse tree produced by `TcclParser.chord`.
      * @param ctx the parse tree

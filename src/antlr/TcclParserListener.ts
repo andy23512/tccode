@@ -3,6 +3,7 @@ import { ErrorNode, ParseTreeListener, ParserRuleContext, TerminalNode } from "a
 
 
 import { TcclFileContext } from "./TcclParser.js";
+import { ChordNodeContext } from "./TcclParser.js";
 import { ChordContext } from "./TcclParser.js";
 import { ChordInputContext } from "./TcclParser.js";
 import { ChordOutputContext } from "./TcclParser.js";
@@ -23,6 +24,16 @@ export class TcclParserListener implements ParseTreeListener {
      * @param ctx the parse tree
      */
     exitTcclFile?: (ctx: TcclFileContext) => void;
+    /**
+     * Enter a parse tree produced by `TcclParser.chordNode`.
+     * @param ctx the parse tree
+     */
+    enterChordNode?: (ctx: ChordNodeContext) => void;
+    /**
+     * Exit a parse tree produced by `TcclParser.chordNode`.
+     * @param ctx the parse tree
+     */
+    exitChordNode?: (ctx: ChordNodeContext) => void;
     /**
      * Enter a parse tree produced by `TcclParser.chord`.
      * @param ctx the parse tree
