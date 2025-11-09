@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Abstract Syntax Tree</h2>
+<mat-dialog-content class="overflow-auto">
+  <mat-tree #tree [dataSource]="ast()" [childrenAccessor]="childrenAccessor">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <button matIconButton disabled></button>
+      {{ getNodeText(node) }}
+    </mat-tree-node>
+    <mat-tree-node
+      *matTreeNodeDef="let node; when: hasChild"
+      matTreeNodePadding
+      matTreeNodeToggle
+      [cdkTreeNodeTypeaheadLabel]="node.getText()"
+    >
+      <button
+        matIconButton
+        matTreenodeToggle
+        [attr.aria-label]="'Toggle' + node.getText()"
+      >
+        <mat-icon>{{
+          (tree.isExpanded(node) ? 'expand_more' : 'chevron_right') | iconGuard
+        }}</mat-icon>
+      </button>
+      {{ getNodeText(node) }}
+    </mat-tree-node>
+  </mat-tree>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton mat-dialog-close>Close</button>
+</mat-dialog-actions>
