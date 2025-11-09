@@ -8,7 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTreeModule } from '@angular/material/tree';
-import { ParserRuleContext, ParseTree } from 'antlr4ng';
+import { ParserRuleContext, ParseTree, TerminalNode } from 'antlr4ng';
+import { TcclLexer } from '../../antlr/TcclLexer';
 import {
   ChordContext,
   ChordInputContext,
@@ -48,6 +49,7 @@ export class AbstractSyntaxTreeDialogComponent {
   public hasChild = (_: number, node: ParseTree) => node.getChildCount() > 0;
 
   public getNodeText(node: ParseTree) {
+    const text = node.getText();
     if (node instanceof ParserRuleContext) {
       const ruleName = TcclParser.ruleNames[node.ruleIndex];
       if (
@@ -55,9 +57,13 @@ export class AbstractSyntaxTreeDialogComponent {
         node instanceof ChordInputContext ||
         node instanceof ChordOutputContext
       ) {
-        return `${ruleName}: ${node.getText()}`;
+        return `${ruleName}: ${text}`;
       }
       return ruleName;
+    }
+    if (node instanceof TerminalNode) {
+      const tokenName = TcclLexer.symbolicNames[node.symbol.type];
+      return text.trim() ? `${tokenName}: ${text}` : tokenName;
     }
     return node.getText();
   }
