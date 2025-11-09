@@ -25,6 +25,7 @@
     "@ngrx/signals": "^20.1.0",
     "antlr4-c3": "^3.4.4",
     "antlr4ng": "^3.0.16",
+    "detect-indent": "^7.0.2",
     "monaco-editor": "^0.54.0",
     "monaco-emacs": "^0.3.0",
     "monaco-vim": "^0.4.2",
