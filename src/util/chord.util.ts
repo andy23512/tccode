@@ -1,7 +1,33 @@
-import { Chord } from '../model/chord.model';
+import { Chord, ChordInNumberListForm } from '../model/chord.model';
 import { KeyBoardLayout } from '../model/keyboard-layout.model';
 import { TcclChord } from '../model/tccl.model';
 import { getTcclKeyFromActionCode } from './layout.util';
+import { hashChord } from './raw-chord.util';
+
+export function getParentHashFromChordInput(
+  chordInput: number[],
+): number | null {
+  if (chordInput[3] !== 0) {
+    return null;
+  }
+  const parentHash = chordInput
+    .slice(0, 3)
+    .reduce((a, b, i) => a | (b << (i * 10)));
+  if (parentHash === 0) return null;
+  return parentHash;
+}
+
+export function convertChordInNumberListFormToChord([
+  input,
+  output,
+]: ChordInNumberListForm): Chord {
+  return {
+    hash: hashChord(input),
+    parentHash: getParentHashFromChordInput(input),
+    input,
+    output,
+  };
+}
 
 export function convertChordListToTcclFile(
   chords: Chord[],

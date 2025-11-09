@@ -1,7 +1,14 @@
+export type ChordInNumberListForm = [number[], number[]];
+
 export interface Chord {
-  index: number;
+  hash: number;
   input: number[];
   output: number[];
+  parentHash: number | null;
+}
+
+export interface ChordWithChildren extends Chord {
+  children: ChordWithChildren[];
 }
 
 export interface ChordLibraryLoadStatus {

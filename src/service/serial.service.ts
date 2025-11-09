@@ -14,9 +14,14 @@ import {
   SerialCommand,
   SerialCommandArgMap,
 } from '../data/serial-command.enum';
-import { Chord, ChordLibraryLoadStatus } from '../model/chord.model';
+import {
+  Chord,
+  ChordInNumberListForm,
+  ChordLibraryLoadStatus,
+} from '../model/chord.model';
 import { SerialLogItemType } from '../model/serial-log.model';
 import { SerialLogStore } from '../store/serial-log.store';
+import { convertChordInNumberListFormToChord } from '../util/chord.util';
 import { parseChordActions, parsePhrase } from '../util/raw-chord.util';
 import { SerialPortService } from './serial-port.service';
 
@@ -102,11 +107,13 @@ export class SerialService {
               from(this.send(SerialCommand.GetChordMapByIndex, i)).pipe(
                 map((r) => {
                   const [chordActions, phrase] = r.split(' ');
-                  return {
-                    index: i,
-                    input: parseChordActions(chordActions),
-                    output: parsePhrase(phrase),
-                  };
+                  const chordInNumberListForm: ChordInNumberListForm = [
+                    parseChordActions(chordActions),
+                    parsePhrase(phrase),
+                  ];
+                  return convertChordInNumberListFormToChord(
+                    chordInNumberListForm,
+                  );
                 }),
               ),
             ),

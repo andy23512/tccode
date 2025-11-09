@@ -2,10 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { lastValueFrom } from 'rxjs';
 import { SAMPLE_CHORD_LISTS } from '../data/sample-chords.const';
-import { Chord } from '../model/chord.model';
+import { Chord, ChordInNumberListForm } from '../model/chord.model';
 import { EditorStore } from '../store/editor.store';
 import { KeyboardLayoutStore } from '../store/keyboard-layout.store';
-import { convertChordListToTcclFile } from '../util/chord.util';
+import {
+  convertChordInNumberListFormToChord,
+  convertChordListToTcclFile,
+} from '../util/chord.util';
 import { SerialService } from './serial.service';
 
 @Injectable({ providedIn: 'root' })
@@ -50,12 +53,8 @@ export class ChordLoaderService {
     if (!data || !data.chords) {
       return;
     }
-    const chords: Chord[] = (data.chords as [number[], number[]][]).map(
-      ([input, output], index) => ({
-        index,
-        input,
-        output,
-      }),
+    const chords: Chord[] = (data.chords as ChordInNumberListForm[]).map(
+      convertChordInNumberListFormToChord,
     );
     const keyboardLayout = this.keyboardLayout();
     if (!keyboardLayout || !chords || chords.length === 0) {
