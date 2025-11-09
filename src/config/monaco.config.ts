@@ -11,4 +11,5 @@ export const MONACO_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions 
     theme: TCCL_THEME_NAME,
     wordWrap: 'off',
     renderWhitespace: 'all',
+    tabSize: 2,
   };
