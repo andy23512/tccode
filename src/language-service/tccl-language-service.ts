@@ -75,13 +75,14 @@ function checkSemanticRules(
   class Visitor extends TcclParserVisitor<void> {
     public visitChordNode = (chordNodeContext: ChordNodeContext): void => {
       const chordContext = chordNodeContext.chord();
-      if (!chordContext.stop || !chordContext.start) {
+      const chordInputContext = chordContext.chordInput();
+      if (!chordInputContext.stop || !chordInputContext.start) {
         return;
       }
       const chordInfo: ChordInfo = {
-        lineNumber: chordContext.stop.line,
-        startColumn: chordContext.start.column,
-        endColumn: chordContext.stop.column,
+        lineNumber: chordInputContext.start.line,
+        startColumn: chordInputContext.start.column,
+        endColumn: chordInputContext.stop.column + 1,
         chord: chordContext.toString(),
       };
       const chordInputPathIdentifier =
