@@ -4,28 +4,35 @@ import { TcclChord } from '../model/tccl.model';
 import { getTcclKeyFromActionCode } from './layout.util';
 import { hashChord } from './raw-chord.util';
 
-export function getParentHashFromChordInput(
-  chordInput: number[],
+export function getParentHashFromChordAction(
+  chordAction: number[],
 ): number | null {
-  if (chordInput[3] !== 0) {
+  if (chordAction[3] !== 0) {
     return null;
   }
-  const parentHash = chordInput
+  const parentHash = chordAction
     .slice(0, 3)
     .reduce((a, b, i) => a | (b << (i * 10)));
   if (parentHash === 0) return null;
   return parentHash;
 }
 
+export function getInputFromChordAction(chordAction: number[]): number[] {
+  if (chordAction[3] !== 0) {
+    return chordAction;
+  }
+  return chordAction.slice(3);
+}
+
 export function convertChordInNumberListFormToChord([
-  input,
-  output,
+  action,
+  phrase,
 ]: ChordInNumberListForm): Chord {
   return {
-    hash: hashChord(input),
-    parentHash: getParentHashFromChordInput(input),
-    input,
-    output,
+    hash: hashChord(action),
+    parentHash: getParentHashFromChordAction(action),
+    input: getInputFromChordAction(action),
+    output: phrase,
   };
 }
 

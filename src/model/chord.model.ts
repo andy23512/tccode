@@ -1,3 +1,4 @@
+// [action, phrase]. The action would contain entries for parent hash if the chord has a parent
 export type ChordInNumberListForm = [number[], number[]];
 
 export interface Chord {
