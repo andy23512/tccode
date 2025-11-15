@@ -8,8 +8,9 @@ export interface Chord {
   parentHash: number | null;
 }
 
-export interface ChordWithChildren extends Chord {
-  children: ChordWithChildren[];
+export interface ChordTreeNode extends Chord {
+  level: number;
+  children: ChordTreeNode[];
 }
 
 export interface ChordLibraryLoadStatus {

@@ -2,12 +2,17 @@ import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { lastValueFrom } from 'rxjs';
 import { SAMPLE_CHORD_LISTS } from '../data/sample-chords.const';
-import { Chord, ChordInNumberListForm } from '../model/chord.model';
+import {
+  Chord,
+  ChordInNumberListForm,
+  ChordTreeNode,
+} from '../model/chord.model';
 import { EditorStore } from '../store/editor.store';
 import { KeyboardLayoutStore } from '../store/keyboard-layout.store';
 import {
   convertChordInNumberListFormToChord,
-  convertChordListToTcclFile,
+  convertChordsToChordTreeNodes,
+  convertChordTreeNodesToTcclFile,
 } from '../util/chord.util';
 import { SerialService } from './serial.service';
 
@@ -24,8 +29,10 @@ export class ChordLoaderService {
     await this.serialService.disconnect();
     const keyboardLayout = this.keyboardLayout();
     if (chords && chords.length && keyboardLayout) {
+      const chordTreeNodes = convertChordsToChordTreeNodes(chords);
+      const indent = this.editorStore.indent();
       this.editorStore.appendContent(
-        convertChordListToTcclFile(chords, keyboardLayout),
+        convertChordTreeNodesToTcclFile(chordTreeNodes, keyboardLayout, indent),
       );
       this.matSnackBar.open('Chords are successfully loaded from device.');
     }
@@ -60,8 +67,11 @@ export class ChordLoaderService {
     if (!keyboardLayout || !chords || chords.length === 0) {
       return;
     }
+    const chordTreeNodes: ChordTreeNode[] =
+      convertChordsToChordTreeNodes(chords);
+    const indent = this.editorStore.indent();
     this.editorStore.appendContent(
-      convertChordListToTcclFile(chords, keyboardLayout),
+      convertChordTreeNodesToTcclFile(chordTreeNodes, keyboardLayout, indent),
     );
     this.matSnackBar.open('Chords are successfully loaded from JSON.');
   }

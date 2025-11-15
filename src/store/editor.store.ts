@@ -2,7 +2,15 @@ import {
   withDevtools,
   withStorageSync,
 } from '@angular-architects/ngrx-toolkit';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { computed } from '@angular/core';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
+import detectIndent from 'detect-indent';
 import { EditorState } from '../model/editor-state.model';
 
 const initialState: EditorState = {
@@ -19,6 +27,12 @@ export const EditorStore = signalStore(
     },
   }),
   withState(initialState),
+  withComputed((state) => ({
+    indent: computed<string>(() => {
+      const content = state.content();
+      return detectIndent(content).indent || '  ';
+    }),
+  })),
   withMethods((store) => ({
     appendContent(content: string): void {
       patchState(store, (state) => ({

@@ -1,6 +1,9 @@
-import { Chord, ChordInNumberListForm } from '../model/chord.model';
+import {
+  Chord,
+  ChordInNumberListForm,
+  ChordTreeNode,
+} from '../model/chord.model';
 import { KeyBoardLayout } from '../model/keyboard-layout.model';
-import { TcclChord } from '../model/tccl.model';
 import { getTcclKeyFromActionCode } from './layout.util';
 import { hashChord } from './raw-chord.util';
 
@@ -36,11 +39,32 @@ export function convertChordInNumberListFormToChord([
   };
 }
 
-export function convertChordListToTcclFile(
+export function convertChordsToChordTreeNodes(
   chords: Chord[],
+  parentHash: number | null = null,
+  level = 0,
+): ChordTreeNode[] {
+  return chords
+    .filter((chord) => chord.parentHash === parentHash)
+    .map((chord) => ({
+      ...chord,
+      level,
+      children: convertChordsToChordTreeNodes(chords, chord.hash, level + 1),
+    }));
+}
+
+export function convertChordTreeNodesToTcclFile(
+  chordTreeNodes: ChordTreeNode[],
   keyboardLayout: KeyBoardLayout,
-) {
-  const tcclChords: TcclChord[] = chords.map((c) => {
+  indent: string,
+): string {
+  function processChordTreeNodes(nodes: ChordTreeNode[], level = 0) {
+    nodes.forEach((node) => {
+      processChordNode(node, level);
+      processChordTreeNodes(node.children, level + 1);
+    });
+  }
+  function processChordNode(c: ChordTreeNode, level: number) {
     const outputKeys = c.output.map((actionCode) =>
       getTcclKeyFromActionCode(actionCode, keyboardLayout),
     );
@@ -70,13 +94,13 @@ export function convertChordListToTcclFile(
       }
       return a.key.localeCompare(b.key);
     });
-    return {
-      input: inputKeys.map((k) => k.key).join(' + '),
-      output: outputKeys.join(''),
-    };
-  });
-  tcclChords.sort((a, b) => a.output.localeCompare(b.output));
-  return tcclChords
-    .map(({ input, output }) => `${input} = ${output}`)
-    .join('\n');
+    const input = inputKeys.map((k) => k.key).join(' + ');
+    const output = outputKeys.join('');
+    const line = indent.repeat(level) + `${input} = ${output}`;
+    outputLines.push(line);
+  }
+
+  const outputLines: string[] = [];
+  processChordTreeNodes(chordTreeNodes);
+  return outputLines.join('\n') + '\n';
 }
