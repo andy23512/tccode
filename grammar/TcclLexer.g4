@@ -11,10 +11,12 @@ options {
 	superClass = TcclLexerBase;
 }
 
+fragment ACTION_CODE : '<' [0-9]+ '>';
 fragment LOWERCASE : [a-z];
 fragment UPPERCASE : [A-Z];
+fragment NUMBER : [0-9];
 fragment SYMBOL : ('[' | ']' | '.' | '/' | '-');
-fragment NON_SPACE_KEY : (LOWERCASE | UPPERCASE | SYMBOL);
+fragment NON_SPACE_KEY : (ACTION_CODE | LOWERCASE | UPPERCASE | NUMBER | SYMBOL);
 fragment SPACE : ' ';
 fragment SPACES: [ \t]+;
 

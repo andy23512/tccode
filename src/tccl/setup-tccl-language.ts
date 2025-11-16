@@ -9,6 +9,7 @@ import {
 } from './tccl-config';
 import { TcclDiagnosticsAdapterService } from './tccl-diagnostics-adapter.service';
 import { TcclFoldingRangeProviderService } from './tccl-folding-range-provider.service';
+import { TcclHoverProvider } from './tccl-hover-provider.service';
 import { TcclTokensProviderService } from './tccl-tokens-provider.service';
 import { TcclWorker } from './tccl-worker';
 
@@ -31,6 +32,10 @@ export function setupTcclLanguage(): void {
   monaco.languages.registerFoldingRangeProvider(
     TCCL_LANGUAGE_ID,
     inject(TcclFoldingRangeProviderService),
+  );
+  monaco.languages.registerHoverProvider(
+    TCCL_LANGUAGE_ID,
+    inject(TcclHoverProvider),
   );
   monaco.editor.defineTheme(TCCL_THEME_NAME, TCCL_THEME_DATA);
 

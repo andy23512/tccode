@@ -2,6 +2,8 @@ import { NonWSKCode, WSKCode } from './key-code.model';
 
 interface BaseAction {
   codeId: number;
+  title?: string;
+  description?: string;
 }
 
 export enum ActionType {
@@ -50,7 +52,10 @@ export type NonKeyActionName =
   | 'RightHandRing1Center'
   | 'RightHandPinkyCenter'
   | 'RightHandMiddle2Center'
-  | 'RightHandRing2Center';
+  | 'RightHandRing2Center'
+  | 'HoldCompound'
+  | 'ReleaseCompound'
+  | 'Join';
 
 export interface WSKAction extends BaseAction {
   type: ActionType.WSK;
