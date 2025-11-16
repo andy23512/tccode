@@ -9,6 +9,8 @@ export type Icon =
   | 'draft'
   | 'expand_more'
   | 'forms_add_on'
+  | 'lock'
+  | 'lock_open_right'
   | 'looks_one'
   | 'looks_two'
   | 'save'

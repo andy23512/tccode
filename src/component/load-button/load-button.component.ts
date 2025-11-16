@@ -11,6 +11,7 @@ import { SAMPLE_CHORD_LISTS } from '../../data/sample-chords.const';
 import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { ChordLoaderService } from '../../service/chord-loader.service';
 import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.component';
+import { SettingStore } from '../../store/setting.store';
 
 @Component({
   selector: 'app-load-button',
@@ -24,6 +25,8 @@ import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.compone
   ],
 })
 export class LoadButtonComponent {
+  private settingStore = inject(SettingStore);
+  public editorLocked = this.settingStore.editorLocked;
   private chordLoaderService = inject(ChordLoaderService);
   private fileInput =
     viewChild.required<ElementRef<HTMLInputElement>>('fileInput');

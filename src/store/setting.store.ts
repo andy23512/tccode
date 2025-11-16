@@ -10,6 +10,7 @@ const INITIAL_SETTING: Setting = {
   keyBindings: KeyBindings.Classic,
   detectConflictsWithBopomofoChords: false,
   autoConnectToDevice: false,
+  editorLocked: false,
 };
 
 export const SettingStore = signalStore(

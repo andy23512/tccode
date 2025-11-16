@@ -1,0 +1,7 @@
+<app-toolbar-button
+  [tooltip]="
+    editorLocked() ? 'Unlock the editor' : 'Lock the editor (Read-only)'
+  "
+  [icon]="editorLocked() ? 'lock' : 'lock_open_right'"
+  (click)="toggleEditorLocked()"
+></app-toolbar-button>

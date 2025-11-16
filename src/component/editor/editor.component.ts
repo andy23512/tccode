@@ -41,6 +41,8 @@ export class EditorComponent implements OnInit, OnDestroy {
   private editorStore = inject(EditorStore);
   private chordLoaderService = inject(ChordLoaderService);
   public isDragOver = signal(false);
+  private settingStore = inject(SettingStore);
+  public editorLocked = this.settingStore.editorLocked;
 
   constructor() {
     effect(() => {
@@ -53,6 +55,12 @@ export class EditorComponent implements OnInit, OnDestroy {
       const content = this.editorStore.content();
       const editor = this.editor();
       this.setContentToEditor(editor, content);
+    });
+
+    effect(() => {
+      const editorLocked = this.editorLocked();
+      const editor = this.editor();
+      editor?.updateOptions({ readOnly: editorLocked });
     });
   }
 

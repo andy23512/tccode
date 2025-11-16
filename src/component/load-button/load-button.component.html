@@ -2,6 +2,7 @@
   tooltip="Load"
   icon="forms_add_on"
   [menu]="loadMenu"
+  [disabled]="editorLocked()"
 ></app-toolbar-button>
 <input
   #fileInput

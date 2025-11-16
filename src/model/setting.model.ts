@@ -9,4 +9,5 @@ export interface Setting {
   keyBindings: KeyBindings;
   detectConflictsWithBopomofoChords: boolean;
   autoConnectToDevice: boolean;
+  editorLocked: boolean;
 }

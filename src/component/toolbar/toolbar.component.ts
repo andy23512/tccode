@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { AbstractSyntaxTreeDialogComponent } from '../abstract-syntax-tree-dialog/abstract-syntax-tree-dialog.component';
 import { LoadButtonComponent } from '../load-button/load-button.component';
+import { LockButtonComponent } from '../lock-button/lock-button.component';
 import { LogoComponent } from '../logo/logo.component';
 import { SaveButtonComponent } from '../save-button/save-button.component';
 import { SerialLogDialogComponent } from '../serial-log-dialog/serial-log-dialog.component';
@@ -20,6 +21,7 @@ import { ToolbarButtonComponent } from '../toolbar-button/toolbar-button.compone
     MatMenuModule,
     ToolbarButtonComponent,
     SaveButtonComponent,
+    LockButtonComponent,
   ],
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
