@@ -14,6 +14,7 @@ export interface TcclError {
   endColumn: number;
   message: string;
   code: string;
+  severity: 'warning' | 'error';
 }
 
 export class TcclErrorListener implements ANTLRErrorListener {
@@ -64,6 +65,7 @@ export class TcclErrorListener implements ANTLRErrorListener {
       endColumn: charPositionInLine + 1,
       message,
       code: '1',
+      severity: 'error',
     });
   }
 

@@ -120,6 +120,7 @@ function checkSemanticRules(
           startLineNumber: chordInfo.lineNumber,
           endLineNumber: chordInfo.lineNumber,
           message: 'Multiple chords with same chord input path are detected.',
+          severity: 'error',
         })),
       ),
   );
@@ -136,6 +137,7 @@ function checkSemanticRules(
             startLineNumber: chordInfo.lineNumber,
             endLineNumber: chordInfo.lineNumber,
             message: `This chord conflicts with Bopomofo chord 「${bopomofoChordOutput}」.`,
+            severity: 'warning',
           }));
         }),
     );

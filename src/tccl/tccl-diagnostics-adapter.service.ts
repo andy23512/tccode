@@ -66,6 +66,9 @@ export class TcclDiagnosticsAdapterService {
 function toDiagnostics(error: TcclError): editor.IMarkerData {
   return {
     ...error,
-    severity: monaco.MarkerSeverity.Error,
+    severity:
+      error.severity === 'error'
+        ? monaco.MarkerSeverity.Error
+        : monaco.MarkerSeverity.Warning,
   };
 }
