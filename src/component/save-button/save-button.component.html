@@ -4,6 +4,10 @@
   [menu]="saveMenu"
 ></app-toolbar-button>
 <mat-menu #saveMenu="matMenu" xPosition="after">
+  <button mat-menu-item (click)="openSaveToDeviceDialog()">
+    <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
+    <span>Save to device</span>
+  </button>
   <button mat-menu-item (click)="saveAsTcclFile()">
     <mat-icon>{{ 'draft' | iconGuard }}</mat-icon>
     <span>Save as TCCL file</span>

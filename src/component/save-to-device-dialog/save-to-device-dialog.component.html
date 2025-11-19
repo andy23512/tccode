@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Save to Device</h2>
+<mat-dialog-content>
+  <mat-stepper #stepper [linear]="true">
+    <mat-step [completed]="noEditorError()">
+      <ng-template matStepLabel>Check editor errors</ng-template>
+      @if (noEditorError()) {
+        <span
+          >No error detected in the editor. Click next and go to next
+          step.</span
+        >
+      } @else {
+        <span
+          >Error(s) detected in the editor. Please fix the error(s) and try
+          again.</span
+        >
+      }
+    </mat-step>
+  </mat-stepper>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton matDialogClose>Close Dialog</button>
+  <button matButton (click)="stepper.next()" [disabled]="!noEditorError()">
+    Next
+  </button>
+</mat-dialog-actions>
