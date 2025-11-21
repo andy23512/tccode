@@ -4,10 +4,23 @@
   [menu]="saveMenu"
 ></app-toolbar-button>
 <mat-menu #saveMenu="matMenu" xPosition="after">
-  <button mat-menu-item (click)="openSaveToDeviceDialog()">
-    <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
-    <span>Save to device</span>
-  </button>
+  <div
+    [matTooltip]="
+      hasEditorError()
+        ? 'Error(s) detected in the editor. They should be fixed before saving to device.'
+        : null
+    "
+  >
+    <button
+      mat-menu-item
+      (click)="openSaveToDeviceDialog()"
+      [disabled]="hasEditorError()"
+      disabledInteractive
+    >
+      <mat-icon>{{ 'developer_board' | iconGuard }}</mat-icon>
+      <span>Save to device</span>
+    </button>
+  </div>
   <button mat-menu-item (click)="saveAsTcclFile()">
     <mat-icon>{{ 'draft' | iconGuard }}</mat-icon>
     <span>Save as TCCL file</span>
