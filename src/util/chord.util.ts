@@ -59,6 +59,48 @@ export function convertChordsToChordTreeNodes(
     }));
 }
 
+export function convertChordTreeNodeToTcclStringForm(
+  node: Omit<ChordTreeNode, 'children'>,
+  keyboardLayout: KeyBoardLayout,
+  hideOutput = false,
+): string {
+  const outputKeys = node.output.map((actionCode) =>
+    getTcclKeyFromActionCode(actionCode, keyboardLayout, 'output'),
+  );
+  const inputKeys = node.input.filter(Boolean).map((actionCode) => {
+    const key = getTcclKeyFromActionCode(actionCode, keyboardLayout, 'input');
+    const indexInOutput = outputKeys.findIndex(
+      (k) => k && key && k.toLowerCase() === key.toLowerCase(),
+    );
+    return {
+      key,
+      indexInOutput: indexInOutput !== -1 ? indexInOutput : Infinity,
+    };
+  });
+  inputKeys.sort((a, b) => {
+    const compareIndexInOutput = Math.sign(a.indexInOutput - b.indexInOutput);
+    if (compareIndexInOutput !== 0) {
+      return compareIndexInOutput;
+    }
+    if (a.key === b.key) {
+      return 0;
+    }
+    if (a.key === null || typeof a.key === 'undefined') {
+      return 1;
+    }
+    if (b.key === null || typeof b.key === 'undefined') {
+      return -1;
+    }
+    return a.key.localeCompare(b.key);
+  });
+  const input = inputKeys.map((k) => k.key).join(' + ');
+  if (hideOutput) {
+    return input;
+  }
+  const output = outputKeys.join('');
+  return `${input} = ${output}`;
+}
+
 export function convertChordTreeNodesToTcclFile(
   chordTreeNodes: ChordTreeNode[],
   keyboardLayout: KeyBoardLayout,
@@ -71,38 +113,9 @@ export function convertChordTreeNodesToTcclFile(
     });
   }
   function processChordNode(c: ChordTreeNode, level: number) {
-    const outputKeys = c.output.map((actionCode) =>
-      getTcclKeyFromActionCode(actionCode, keyboardLayout, 'output'),
-    );
-    const inputKeys = c.input.filter(Boolean).map((actionCode) => {
-      const key = getTcclKeyFromActionCode(actionCode, keyboardLayout, 'input');
-      const indexInOutput = outputKeys.findIndex(
-        (k) => k && key && k.toLowerCase() === key.toLowerCase(),
-      );
-      return {
-        key,
-        indexInOutput: indexInOutput !== -1 ? indexInOutput : Infinity,
-      };
-    });
-    inputKeys.sort((a, b) => {
-      const compareIndexInOutput = Math.sign(a.indexInOutput - b.indexInOutput);
-      if (compareIndexInOutput !== 0) {
-        return compareIndexInOutput;
-      }
-      if (a.key === b.key) {
-        return 0;
-      }
-      if (a.key === null || typeof a.key === 'undefined') {
-        return 1;
-      }
-      if (b.key === null || typeof b.key === 'undefined') {
-        return -1;
-      }
-      return a.key.localeCompare(b.key);
-    });
-    const input = inputKeys.map((k) => k.key).join(' + ');
-    const output = outputKeys.join('');
-    const line = indent.repeat(level) + `${input} = ${output}`;
+    const line =
+      indent.repeat(level) +
+      convertChordTreeNodeToTcclStringForm(c, keyboardLayout);
     outputLines.push(line);
   }
 

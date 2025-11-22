@@ -1,5 +1,6 @@
 export type Icon =
   | 'account_tree'
+  | 'add'
   | 'arrow_drop_down'
   | 'arrow_drop_up'
   | 'article'
@@ -13,6 +14,7 @@ export type Icon =
   | 'lock_open_right'
   | 'looks_one'
   | 'looks_two'
+  | 'remove'
   | 'save'
   | 'settings'
   | 'usb'

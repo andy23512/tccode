@@ -104,7 +104,6 @@ export function getCharacterActionCodeMapFromKeyboardLayout(
       });
     },
   );
-  console.log(map);
   return map;
 }
 

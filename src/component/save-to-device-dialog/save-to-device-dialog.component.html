@@ -1,11 +1,38 @@
 <h2 mat-dialog-title>Save to Device</h2>
-<mat-dialog-content>
-  <mat-stepper #stepper [linear]="true">
-    <mat-step>
-      <ng-template matStepLabel>Load Chords from Device</ng-template>
-    </mat-step>
-  </mat-stepper>
+<mat-dialog-content class="!flex flex-col gap-3 !overflow-hidden">
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  } @else {
+    <div class="flex-none text-xl">
+      Please confirm the changes to apply before saving, and make sure you have
+      backed up your chords with the official device manager.
+    </div>
+    <div class="flex-1 flex overflow-hidden">
+      <article class="flex-1 h-full flex flex-col gap-2 overflow-hidden">
+        <h3 class="flex-none flex items-center gap-1 text-primary text-xl">
+          <mat-icon>{{ 'add' | iconGuard }}</mat-icon>
+          Chords to be added
+        </h3>
+        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+          @for (chord of addedChords(); track $index) {
+            <div>{{ chord }}</div>
+          }
+        </div>
+      </article>
+      <article class="flex-1 h-full flex flex-col gap-2 overflow-hidden">
+        <h3 class="flex-none flex items-center gap-1 text-secondary text-xl">
+          <mat-icon>{{ 'remove' | iconGuard }}</mat-icon>
+          Chords to be removed
+        </h3>
+        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+          @for (chord of removedChords(); track $index) {
+            <div>{{ chord }}</div>
+          }
+        </div>
+      </article>
+    </div>
+  }
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button matButton matDialogClose>Close Dialog</button>
+  <button matButton matDialogClose>Cancel</button>
 </mat-dialog-actions>
