@@ -1,3 +1,4 @@
+import { SUPPORTED_NON_SPACE_KEY_SET } from '../const/character-key-set.const';
 import { ACTIONS } from '../data/actions.const';
 import { ActionType } from '../model/action.model';
 import { WSKCode } from '../model/key-code.model';
@@ -51,23 +52,24 @@ export function convertKeyboardLayoutToCharacterKeyCodeMap(
 export function getTcclKeyFromActionCode(
   actionCode: number,
   keyboardLayout: KeyBoardLayout,
-): string | null {
+  type: 'input' | 'output',
+): string {
+  let key = `<${actionCode}>`;
   const action = ACTIONS.find((a) => a.codeId === actionCode);
   if (action?.type === ActionType.WSK && action.keyCode) {
     const keyboardLayoutKey = keyboardLayout.layout[action.keyCode];
     const modifier = action.withShift ? 'withShift' : 'unmodified';
     const character = keyboardLayoutKey?.[modifier];
-    if (!character) {
-      return null;
+    if (character && SUPPORTED_NON_SPACE_KEY_SET.has(character)) {
+      key = character;
     }
-    return character;
   } else if (
     action?.type === ActionType.NonWSK &&
     action.keyCode === 'Space' &&
-    action.codeId === 544
+    action.codeId === 544 &&
+    type === 'output'
   ) {
-    return ' ';
-  } else {
-    return `<${actionCode}>`;
+    key = ' ';
   }
+  return key;
 }

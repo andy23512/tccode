@@ -66,10 +66,10 @@ export function convertChordTreeNodesToTcclFile(
   }
   function processChordNode(c: ChordTreeNode, level: number) {
     const outputKeys = c.output.map((actionCode) =>
-      getTcclKeyFromActionCode(actionCode, keyboardLayout),
+      getTcclKeyFromActionCode(actionCode, keyboardLayout, 'output'),
     );
     const inputKeys = c.input.filter(Boolean).map((actionCode) => {
-      const key = getTcclKeyFromActionCode(actionCode, keyboardLayout);
+      const key = getTcclKeyFromActionCode(actionCode, keyboardLayout, 'input');
       const indexInOutput = outputKeys.findIndex(
         (k) => k && key && k.toLowerCase() === key.toLowerCase(),
       );
