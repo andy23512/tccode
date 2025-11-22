@@ -1,10 +1,16 @@
+import { ChordNodeContext } from '../antlr/TcclParser';
+import { parseTccl } from '../language-service/tccl-parser';
 import {
   Chord,
   ChordInNumberListForm,
   ChordTreeNode,
 } from '../model/chord.model';
 import { KeyBoardLayout } from '../model/keyboard-layout.model';
-import { getTcclKeyFromActionCode } from './layout.util';
+import {
+  getActionCodeFromTcclKey,
+  getCharacterActionCodeMapFromKeyboardLayout,
+  getTcclKeyFromActionCode,
+} from './layout.util';
 import { hashChord } from './raw-chord.util';
 
 export function getParentHashFromChordAction(
@@ -103,4 +109,64 @@ export function convertChordTreeNodesToTcclFile(
   const outputLines: string[] = [];
   processChordTreeNodes(chordTreeNodes);
   return outputLines.join('\n') + '\n';
+}
+
+export function convertInputAndParentHashToActions(
+  input: number[],
+  parentHash: number | null,
+) {
+  console.log(input, parentHash);
+  const parent = parentHash || 0;
+  const zeros = 12 - 3 - input.length;
+
+  return [
+    ...Array.from({ length: 3 }, (_, i) => (parent >> (i * 10)) & 0x3ff),
+    ...Array.from({ length: zeros }, () => 0),
+    ...input,
+  ];
+}
+
+export function convertTcclFileToChordTreeNodes(
+  tcclFile: string,
+  keyboardLayout: KeyBoardLayout,
+): ChordTreeNode[] {
+  const characterActionCodeMap =
+    getCharacterActionCodeMapFromKeyboardLayout(keyboardLayout);
+  function processTcclChordNode(
+    tcn: ChordNodeContext,
+    level = 0,
+    parentHash: number | null = null,
+  ): ChordTreeNode {
+    const tcclChordNode = tcn.chord();
+    const input = tcclChordNode
+      .chordInput()
+      .CHORD_INPUT_KEY()
+      .map((k) =>
+        getActionCodeFromTcclKey(k.getText(), characterActionCodeMap, 'input'),
+      );
+    input.sort((a, b) => a - b);
+    const output = tcclChordNode
+      .chordOutput()
+      .CHORD_OUTPUT_KEY()
+      .map((k) =>
+        getActionCodeFromTcclKey(k.getText(), characterActionCodeMap, 'output'),
+      );
+    const childrenNodes = tcn.chordNode();
+    const actions = convertInputAndParentHashToActions(input, parentHash);
+    console.log(actions);
+    const hash = hashChord(actions);
+    return {
+      level,
+      children: childrenNodes
+        ? childrenNodes.map((n) => processTcclChordNode(n, level + 1, hash))
+        : [],
+      input,
+      output,
+      hash,
+      parentHash,
+    };
+  }
+  const ast = parseTccl(tcclFile).ast;
+  const tcclChordNodes = ast.chordNode();
+  return tcclChordNodes.map((tcn) => processTcclChordNode(tcn));
 }
