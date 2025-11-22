@@ -12506,6 +12506,11 @@ tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
+tree-object-diff@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/tree-object-diff/-/tree-object-diff-3.0.0.tgz#0df3c0ae97400888cd7ee3b8a9cce9d43cf3c622"
+  integrity sha512-SMt3yKaHg4Tgp/03t+myyGhZi0GggJxCZL+HhrLyJRxZAZkhM9KjAhzdsGZZPLzhm9rsr1smeIYjsogw7z+dtA==
+
 trim-repeated@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-repeated/-/trim-repeated-1.0.0.tgz#e3646a2ea4e891312bf7eace6cfb05380bc01c21"

@@ -19,9 +19,7 @@ import { KeyBindings } from '../../model/setting.model';
 import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { ChordLoaderService } from '../../service/chord-loader.service';
 import { EditorStore } from '../../store/editor.store';
-import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
 import { SettingStore } from '../../store/setting.store';
-import { convertTcclFileToChordTreeNodes } from '../../util/chord.util';
 
 @Component({
   imports: [FormsModule, MatIconModule, IconGuardPipe],
@@ -45,7 +43,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   public isDragOver = signal(false);
   private settingStore = inject(SettingStore);
   public editorLocked = this.settingStore.editorLocked;
-  private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
 
   constructor() {
     effect(() => {
@@ -64,19 +61,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       const editorLocked = this.editorLocked();
       const editor = this.editor();
       editor?.updateOptions({ readOnly: editorLocked });
-    });
-
-    effect(() => {
-      const content = this.editorStore.content();
-      const keyboardLayout = this.keyboardLayout();
-      if (!keyboardLayout) {
-        return;
-      }
-      const chordTreeNodes = convertTcclFileToChordTreeNodes(
-        content,
-        keyboardLayout,
-      );
-      console.log(chordTreeNodes);
     });
   }
 

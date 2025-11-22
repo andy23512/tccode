@@ -23,13 +23,25 @@ export class ChordLoaderService {
   private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
   private matSnackBar = inject(MatSnackBar);
 
-  public async loadFromDevice() {
+  public async loadChordTreeNodesFromDevice(
+    { disconnect = true }: { disconnect: boolean } = { disconnect: true },
+  ): Promise<ChordTreeNode[]> {
     await this.serialService.connect();
     const { chords } = await lastValueFrom(this.serialService.loadChords());
-    await this.serialService.disconnect();
+    if (disconnect) {
+      await this.serialService.disconnect();
+    }
+    if (!chords) {
+      return [];
+    }
+    const chordTreeNodes = convertChordsToChordTreeNodes(chords);
+    return chordTreeNodes;
+  }
+
+  public async loadFromDevice() {
+    const chordTreeNodes = await this.loadChordTreeNodesFromDevice();
     const keyboardLayout = this.keyboardLayout();
-    if (chords && chords.length && keyboardLayout) {
-      const chordTreeNodes = convertChordsToChordTreeNodes(chords);
+    if (chordTreeNodes.length > 0 && keyboardLayout) {
       const indent = this.editorStore.indent();
       this.editorStore.appendContent(
         convertChordTreeNodesToTcclFile(chordTreeNodes, keyboardLayout, indent),

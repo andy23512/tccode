@@ -38,8 +38,8 @@ export function convertChordInNumberListFormToChord([
   phrase,
 ]: ChordInNumberListForm): Chord {
   return {
-    hash: hashChord(action),
-    parentHash: getParentHashFromChordAction(action),
+    id: hashChord(action),
+    parentId: getParentHashFromChordAction(action),
     input: getInputFromChordAction(action),
     output: phrase,
   };
@@ -51,11 +51,11 @@ export function convertChordsToChordTreeNodes(
   level = 0,
 ): ChordTreeNode[] {
   return chords
-    .filter((chord) => chord.parentHash === parentHash)
+    .filter((chord) => chord.parentId === parentHash)
     .map((chord) => ({
       ...chord,
       level,
-      children: convertChordsToChordTreeNodes(chords, chord.hash, level + 1),
+      children: convertChordsToChordTreeNodes(chords, chord.id, level + 1),
     }));
 }
 
@@ -115,12 +115,16 @@ export function convertInputAndParentHashToActions(
   input: number[],
   parentHash: number | null,
 ) {
-  console.log(input, parentHash);
-  const parent = parentHash || 0;
+  if (!parentHash) {
+    const zeros = 12 - input.length;
+    return [...Array.from({ length: zeros }, () => 0), ...input];
+  }
   const zeros = 12 - 3 - input.length;
-
+  if (zeros <= 0) {
+    throw Error('chord action overflow.');
+  }
   return [
-    ...Array.from({ length: 3 }, (_, i) => (parent >> (i * 10)) & 0x3ff),
+    ...Array.from({ length: 3 }, (_, i) => (parentHash >> (i * 10)) & 0x3ff),
     ...Array.from({ length: zeros }, () => 0),
     ...input,
   ];
@@ -153,7 +157,6 @@ export function convertTcclFileToChordTreeNodes(
       );
     const childrenNodes = tcn.chordNode();
     const actions = convertInputAndParentHashToActions(input, parentHash);
-    console.log(actions);
     const hash = hashChord(actions);
     return {
       level,
@@ -162,8 +165,8 @@ export function convertTcclFileToChordTreeNodes(
         : [],
       input,
       output,
-      hash,
-      parentHash,
+      id: hash,
+      parentId: parentHash,
     };
   }
   const ast = parseTccl(tcclFile).ast;

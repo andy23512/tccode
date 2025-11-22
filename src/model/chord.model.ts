@@ -2,10 +2,10 @@
 export type ChordInNumberListForm = [number[], number[]];
 
 export interface Chord {
-  hash: number;
+  id: number; // hash
   input: number[];
   output: number[];
-  parentHash: number | null;
+  parentId: number | null; // parentHash
 }
 
 export interface ChordTreeNode extends Chord {
