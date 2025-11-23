@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -20,6 +21,7 @@ import { ChordTreeNode } from '../../model/chord.model';
 import { KeyBoardLayout } from '../../model/keyboard-layout.model';
 import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { ChordLoaderService } from '../../service/chord-loader.service';
+import { SerialService } from '../../service/serial.service';
 import { EditorStore } from '../../store/editor.store';
 import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
 import {
@@ -63,10 +65,11 @@ function convertChordDiffItemsToStringItems(
     IconGuardPipe,
   ],
 })
-export class SaveToDeviceDialogComponent implements OnInit {
+export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
   public editorStore = inject(EditorStore);
   private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
   private chordLoaderService = inject(ChordLoaderService);
+  private serialService = inject(SerialService);
 
   public loading = signal(true);
   public addedChords = signal<string[]>([]);
@@ -155,5 +158,9 @@ export class SaveToDeviceDialogComponent implements OnInit {
       convertChordDiffItemsToStringItems(removeChords, keyboardLayout),
     );
     this.loading.set(false);
+  }
+
+  public async ngOnDestroy(): Promise<void> {
+    await this.serialService.disconnect();
   }
 }
