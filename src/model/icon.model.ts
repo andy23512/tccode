@@ -8,6 +8,7 @@ export type Icon =
   | 'developer_board'
   | 'docs'
   | 'draft'
+  | 'edit'
   | 'expand_more'
   | 'forms_add_on'
   | 'lock'

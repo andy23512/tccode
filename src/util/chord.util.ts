@@ -59,11 +59,10 @@ export function convertChordsToChordTreeNodes(
     }));
 }
 
-export function convertChordTreeNodeToTcclStringForm(
+export function convertChordTreeNodeToTcclInputAndOutput(
   node: Omit<ChordTreeNode, 'children'>,
   keyboardLayout: KeyBoardLayout,
-  hideOutput = false,
-): string {
+): { input: string; output: string } {
   const outputKeys = node.output.map((actionCode) =>
     getTcclKeyFromActionCode(actionCode, keyboardLayout, 'output'),
   );
@@ -94,10 +93,25 @@ export function convertChordTreeNodeToTcclStringForm(
     return a.key.localeCompare(b.key);
   });
   const input = inputKeys.map((k) => k.key).join(' + ');
-  if (hideOutput) {
+  const output = outputKeys.join('');
+  return { input, output };
+}
+
+export function convertChordTreeNodeToTcclStringForm(
+  node: Omit<ChordTreeNode, 'children'>,
+  keyboardLayout: KeyBoardLayout,
+  show: 'all' | 'input' | 'output' = 'all',
+): string {
+  const { input, output } = convertChordTreeNodeToTcclInputAndOutput(
+    node,
+    keyboardLayout,
+  );
+  if (show === 'input') {
     return input;
   }
-  const output = outputKeys.join('');
+  if (show === 'output') {
+    return output;
+  }
   return `${input} = ${output}`;
 }
 

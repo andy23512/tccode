@@ -11,6 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatTabsModule } from '@angular/material/tabs';
 import {
   CHANGE_TYPE,
   DiffTreeNode,
@@ -25,6 +26,7 @@ import { SerialService } from '../../service/serial.service';
 import { EditorStore } from '../../store/editor.store';
 import { KeyboardLayoutStore } from '../../store/keyboard-layout.store';
 import {
+  convertChordTreeNodeToTcclInputAndOutput,
   convertChordTreeNodeToTcclStringForm,
   convertTcclFileToChordTreeNodes,
 } from '../../util/chord.util';
@@ -34,6 +36,32 @@ type ChordDiffNode = FlatTreeNodeValue<ChordTreeNode> & { id: number };
 interface ChordDiffItem {
   node: ChordDiffNode;
   ancestors: ChordDiffNode[];
+}
+
+interface ChordUpdateItem extends ChordDiffItem {
+  oldNode: ChordDiffNode;
+}
+
+function convertChordUpdateItemsToStringItems(
+  chordUpdateItem: ChordUpdateItem[],
+  keyboardLayout: KeyBoardLayout,
+): { fullInput: string; newOutput: string; oldOutput: string }[] {
+  return chordUpdateItem.map((item) => {
+    const { input, output: oldOutput } =
+      convertChordTreeNodeToTcclInputAndOutput(item.oldNode, keyboardLayout);
+    const { output: newOutput } = convertChordTreeNodeToTcclInputAndOutput(
+      item.node,
+      keyboardLayout,
+    );
+    const ancestorsInStringForm = item.ancestors.map((a) =>
+      convertChordTreeNodeToTcclStringForm(a, keyboardLayout, 'input'),
+    );
+    return {
+      fullInput: [...ancestorsInStringForm, input].join(' | '),
+      newOutput,
+      oldOutput,
+    };
+  });
 }
 
 function convertChordDiffItemsToStringItems(
@@ -46,7 +74,7 @@ function convertChordDiffItemsToStringItems(
       keyboardLayout,
     );
     const ancestorsInStringForm = item.ancestors.map((a) =>
-      convertChordTreeNodeToTcclStringForm(a, keyboardLayout, true),
+      convertChordTreeNodeToTcclStringForm(a, keyboardLayout, 'input'),
     );
     return [...ancestorsInStringForm, chordInStringForm].join(' | ');
   });
@@ -63,6 +91,7 @@ function convertChordDiffItemsToStringItems(
     MatProgressBarModule,
     MatIconModule,
     IconGuardPipe,
+    MatTabsModule,
   ],
 })
 export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
@@ -74,6 +103,9 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
   public loading = signal(true);
   public addedChords = signal<string[]>([]);
   public removedChords = signal<string[]>([]);
+  public updatedChords = signal<
+    { fullInput: string; oldOutput: string; newOutput: string }[]
+  >([]);
 
   public async ngOnInit(): Promise<void> {
     const content = this.editorStore.content();
@@ -109,6 +141,7 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
     );
     const addedChords: ChordDiffItem[] = [];
     const removeChords: ChordDiffItem[] = [];
+    const updatedChords: ChordUpdateItem[] = [];
 
     function processDiffTreeNodes(
       nodes: DiffTreeNode<ChordTreeNode>[],
@@ -147,6 +180,15 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
             });
           }
           break;
+        case CHANGE_TYPE.Updated:
+          if (node.detail.oldNode && node.detail.newNode) {
+            updatedChords.push({
+              node: node.detail.newNode as ChordDiffNode,
+              oldNode: node.detail.oldNode as ChordDiffNode,
+              ancestors,
+            });
+          }
+          break;
       }
     }
 
@@ -156,6 +198,9 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
     );
     this.removedChords.set(
       convertChordDiffItemsToStringItems(removeChords, keyboardLayout),
+    );
+    this.updatedChords.set(
+      convertChordUpdateItemsToStringItems(updatedChords, keyboardLayout),
     );
     this.loading.set(false);
   }

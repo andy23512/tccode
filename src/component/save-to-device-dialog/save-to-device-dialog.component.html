@@ -7,30 +7,48 @@
       Please confirm the changes to apply before saving, and make sure you have
       backed up your chords with the official device manager.
     </div>
-    <div class="flex-1 flex overflow-hidden">
-      <article class="flex-1 h-full flex flex-col gap-2 overflow-hidden">
-        <h3 class="flex-none flex items-center gap-1 text-primary text-xl">
+    <mat-tab-group class="flex-1 flex overflow-hidden">
+      <mat-tab>
+        <ng-template mat-tab-label>
           <mat-icon>{{ 'add' | iconGuard }}</mat-icon>
           Chords to be added
-        </h3>
+        </ng-template>
         <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
           @for (chord of addedChords(); track $index) {
             <div>{{ chord }}</div>
           }
         </div>
-      </article>
-      <article class="flex-1 h-full flex flex-col gap-2 overflow-hidden">
-        <h3 class="flex-none flex items-center gap-1 text-secondary text-xl">
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>{{ 'edit' | iconGuard }}</mat-icon>
+          Chords to be updated
+        </ng-template>
+        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+          @for (chord of updatedChords(); track $index) {
+            <div class="flex items-center">
+              <span>{{ chord.fullInput }} =&nbsp;</span>
+              <span class="line-through">{{ chord.oldOutput }}</span>
+              <mat-icon [inline]="true">{{
+                'chevron_right' | iconGuard
+              }}</mat-icon>
+              <span>{{ chord.newOutput }}</span>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
           <mat-icon>{{ 'remove' | iconGuard }}</mat-icon>
           Chords to be removed
-        </h3>
+        </ng-template>
         <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
           @for (chord of removedChords(); track $index) {
             <div>{{ chord }}</div>
           }
         </div>
-      </article>
-    </div>
+      </mat-tab>
+    </mat-tab-group>
   }
 </mat-dialog-content>
 <mat-dialog-actions>
