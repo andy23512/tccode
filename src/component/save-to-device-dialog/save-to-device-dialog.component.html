@@ -8,46 +8,52 @@
       backed up your chords with the official device manager.
     </div>
     <mat-tab-group class="flex-1 flex overflow-hidden">
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>{{ 'add' | iconGuard }}</mat-icon>
-          Chords to be added
-        </ng-template>
-        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-          @for (chord of addedChords(); track $index) {
-            <div>{{ chord }}</div>
-          }
-        </div>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>{{ 'edit' | iconGuard }}</mat-icon>
-          Chords to be updated
-        </ng-template>
-        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-          @for (chord of updatedChords(); track $index) {
-            <div class="flex items-center">
-              <span>{{ chord.fullInput }} =&nbsp;</span>
-              <span class="line-through">{{ chord.oldOutput }}</span>
-              <mat-icon [inline]="true">{{
-                'chevron_right' | iconGuard
-              }}</mat-icon>
-              <span>{{ chord.newOutput }}</span>
-            </div>
-          }
-        </div>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon>{{ 'remove' | iconGuard }}</mat-icon>
-          Chords to be removed
-        </ng-template>
-        <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-          @for (chord of removedChords(); track $index) {
-            <div>{{ chord }}</div>
-          }
-        </div>
-      </mat-tab>
+      @if (addedChords().length > 0) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>{{ 'add' | iconGuard }}</mat-icon>
+            Chord(s) to be added
+          </ng-template>
+          <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+            @for (chord of addedChords(); track $index) {
+              <div>{{ chord }}</div>
+            }
+          </div>
+        </mat-tab>
+      }
+      @if (updatedChords().length > 0) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>{{ 'edit' | iconGuard }}</mat-icon>
+            Chord(s) to be updated
+          </ng-template>
+          <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+            @for (chord of updatedChords(); track $index) {
+              <div class="flex items-center">
+                <span>{{ chord.fullInput }} =&nbsp;</span>
+                <span class="line-through">{{ chord.oldOutput }}</span>
+                <mat-icon [inline]="true">{{
+                  'chevron_right' | iconGuard
+                }}</mat-icon>
+                <span>{{ chord.newOutput }}</span>
+              </div>
+            }
+          </div>
+        </mat-tab>
+      }
+      @if (removedChords().length > 0) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>{{ 'remove' | iconGuard }}</mat-icon>
+            Chord(s) to be removed
+          </ng-template>
+          <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
+            @for (chord of removedChords(); track $index) {
+              <div>{{ chord }}</div>
+            }
+          </div>
+        </mat-tab>
+      }
     </mat-tab-group>
   }
 </mat-dialog-content>
