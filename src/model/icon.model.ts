@@ -11,6 +11,7 @@ export type Icon =
   | 'edit'
   | 'expand_more'
   | 'forms_add_on'
+  | 'info'
   | 'lock'
   | 'lock_open_right'
   | 'looks_3'

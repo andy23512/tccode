@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { AbstractSyntaxTreeDialogComponent } from '../abstract-syntax-tree-dialog/abstract-syntax-tree-dialog.component';
+import { InformationDialogComponent } from '../information-dialog/information-dialog.component';
 import { LoadButtonComponent } from '../load-button/load-button.component';
 import { LockButtonComponent } from '../lock-button/lock-button.component';
 import { LogoComponent } from '../logo/logo.component';
@@ -46,6 +47,13 @@ export class ToolbarComponent {
 
   public openAbstractSyntaxTreeDialog() {
     this.matDialog.open(AbstractSyntaxTreeDialogComponent, {
+      width: '80vw',
+      maxWidth: '80vw',
+    });
+  }
+
+  public openInformationDialog() {
+    this.matDialog.open(InformationDialogComponent, {
       width: '80vw',
       maxWidth: '80vw',
     });

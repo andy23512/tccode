@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Information</h2>
+<mat-dialog-content class="!text-base">
+  <p>
+    This website, TanChord Code (TC Code in short), is an unofficial,
+    experimental editor that allows you to edit the chord library of your
+    CharaChorder device, similar to editing code in a code editor.
+  </p>
+  <h2 class="pb-2 pt-5 text-xl font-bold">TCCL Language</h2>
+  <p>
+    This editor allows you to describe the chord library with a format similar
+    to the
+    <a
+      class="underline"
+      href="https://docs.charachorder.com/Chords.html#chord-notation"
+      target="_blank"
+      rel="noopener"
+      >chord notation</a
+    >
+    described in the CharaChorder official document. I call this language
+    TanChord Code Library language, TCCL in short.
+  </p>
+  <h2 class="pb-2 pt-5 text-xl font-bold">Main Procedure</h2>
+  <p>
+    The main procedure in this editor is composed of three parts, loading,
+    editing and saving chords.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg font-bold text-primary flex items-center gap-1">
+    <mat-icon>{{ 'forms_add_on' | iconGuard }}</mat-icon>
+    Loading Chords
+  </h3>
+  <p>
+    You can load your existing chord library from a device, a JSON backup file
+    from the official device manager, a TCCL or TXT file in TCCL format, or a
+    built-in sample. The loaded chord library would be added to the end of the
+    editor content.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg font-bold text-primary flex items-center gap-1">
+    <mat-icon>{{ 'edit' | iconGuard }}</mat-icon>
+    Editing Chords
+  </h3>
+  <p>
+    In the main area of this editor, you can edit the chord library. There are
+    some built-in checkers for duplicated chords and syntax errors, similar to
+    error checkers in some code editors.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg font-bold text-primary flex items-center gap-1">
+    <mat-icon>{{ 'save' | iconGuard }}</mat-icon>
+    Saving Chords
+  </h3>
+  <p>
+    After you finish your edits, you can save the chord library to a device or a
+    TCCL file.
+  </p>
+  <h2 class="pb-2 pt-5 text-xl font-bold">Side Features</h2>
+  <h3 class="pb-2 text-lg flex items-center gap-1">
+    <mat-icon>{{ 'lock' | iconGuard }}</mat-icon>
+    Editor Lock
+  </h3>
+  <p>
+    Make the editor read-only. It's for when you only want to navigate the chord
+    library without making changes.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg flex items-center gap-1">
+    <mat-icon>{{ 'settings' | iconGuard }}</mat-icon>
+    Settings
+  </h3>
+  <p>
+    Tweak some settings of this tool, such as the welcome dialog, auto connect,
+    editor key bindings (classic / emacs / vim), and Bopomofo chord conflict
+    detection.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg flex items-center gap-1">
+    <mat-icon>{{ 'article' | iconGuard }}</mat-icon>
+    Serial Log
+  </h3>
+  <p>
+    The logging for the Web serial input and output. It's mainly for debugging
+    serial commands.
+  </p>
+  <h3 class="pb-2 pt-6 text-lg flex items-center gap-1">
+    <mat-icon>{{ 'account_tree' | iconGuard }}</mat-icon>
+    Abstract Syntax Tree
+  </h3>
+  <p>
+    The abstract syntax tree of the content in the editor. It's mainly for
+    debugging the TCCL grammar, lexer, and parser.
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton mat-dialog-close>Close</button>
+</mat-dialog-actions>

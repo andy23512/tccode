@@ -10,6 +10,11 @@
   icon="settings"
   (buttonClick)="openSettingsDialog()"
 ></app-toolbar-button>
+<app-toolbar-button
+  tooltip="Infomation"
+  icon="info"
+  (buttonClick)="openInformationDialog()"
+></app-toolbar-button>
 @if (isWebSerialApiSupported) {
   <app-toolbar-button
     tooltip="Serial log"
