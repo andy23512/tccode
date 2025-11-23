@@ -1,15 +1,17 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import {
@@ -30,6 +32,10 @@ import {
   convertChordTreeNodeToTcclStringForm,
   convertTcclFileToChordTreeNodes,
 } from '../../util/chord.util';
+import {
+  stringifyChordActions,
+  stringifyPhrase,
+} from '../../util/raw-chord.util';
 
 type ChordDiffNode = FlatTreeNodeValue<ChordTreeNode> & { id: number };
 
@@ -99,13 +105,27 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
   private keyboardLayout = inject(KeyboardLayoutStore).selectedEntity;
   private chordLoaderService = inject(ChordLoaderService);
   private serialService = inject(SerialService);
+  private matSnackBar = inject(MatSnackBar);
+  private matDialogRef =
+    inject<MatDialogRef<SaveToDeviceDialogComponent>>(MatDialogRef);
 
   public loading = signal(true);
-  public addedChords = signal<string[]>([]);
-  public removedChords = signal<string[]>([]);
-  public updatedChords = signal<
+  public addedChords = signal<ChordDiffItem[]>([]);
+  public removedChords = signal<ChordDiffItem[]>([]);
+  public updatedChords = signal<ChordUpdateItem[]>([]);
+  public addedChordsForDisplay = signal<string[]>([]);
+  public removedChordsForDisplay = signal<string[]>([]);
+  public updatedChordsForDisplay = signal<
     { fullInput: string; oldOutput: string; newOutput: string }[]
   >([]);
+  public hasChange = computed<boolean>(() => {
+    return (
+      this.addedChords().length +
+        this.updatedChords().length +
+        this.removedChords().length >
+      0
+    );
+  });
 
   public async ngOnInit(): Promise<void> {
     const content = this.editorStore.content();
@@ -127,6 +147,7 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
         level: -1,
         input: [],
         output: [],
+        actions: [],
         parentId: null,
         children: chordTreeNodesFromDevice,
       },
@@ -135,8 +156,19 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
         level: -1,
         input: [],
         output: [],
+        actions: [],
         parentId: null,
         children: chordTreeNodesFromEditor,
+      },
+      {
+        valueEquality: (a, b) => {
+          return (
+            a.actions.length === b.actions.length &&
+            a.actions.every((e, index) => e === b.actions[index]) &&
+            a.output.length === b.output.length &&
+            a.output.every((e, index) => e === b.output[index])
+          );
+        },
       },
     );
     const addedChords: ChordDiffItem[] = [];
@@ -193,16 +225,39 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
     }
 
     processDiffTreeNodes(rawDiff.diffTree[0].children, []);
-    this.addedChords.set(
+    this.addedChords.set(addedChords);
+    this.addedChordsForDisplay.set(
       convertChordDiffItemsToStringItems(addedChords, keyboardLayout),
     );
-    this.removedChords.set(
+    this.removedChords.set(removeChords);
+    this.removedChordsForDisplay.set(
       convertChordDiffItemsToStringItems(removeChords, keyboardLayout),
     );
-    this.updatedChords.set(
+    this.updatedChords.set(updatedChords);
+    this.updatedChordsForDisplay.set(
       convertChordUpdateItemsToStringItems(updatedChords, keyboardLayout),
     );
     this.loading.set(false);
+  }
+
+  public async saveChordsToDevice(): Promise<void> {
+    const serialCommands: string[] = [];
+    this.addedChords().forEach((c) => {
+      const command = `CML C3 ${stringifyChordActions(c.node.actions)} ${stringifyPhrase(c.node.output)}`;
+      serialCommands.push(command);
+    });
+    this.updatedChords().forEach((c) => {
+      const command = `CML C3 ${stringifyChordActions(c.node.actions)} ${stringifyPhrase(c.node.output)}`;
+      serialCommands.push(command);
+    });
+    this.removedChords().forEach((c) => {
+      const command = `CML C4 ${stringifyChordActions(c.node.actions)}`;
+      serialCommands.push(command);
+    });
+    this.serialService.batchSend(serialCommands).subscribe(() => {
+      this.matSnackBar.open('Chords are successfully saved to device.');
+      this.matDialogRef.close();
+    });
   }
 
   public async ngOnDestroy(): Promise<void> {

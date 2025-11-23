@@ -11,9 +11,11 @@ module.exports = {
     fontFamily: {
       code: ['Consolas', 'Courier New', 'monospace'],
     },
-    colors: {
-      primary: '#39C5BB',
-      secondary: '#FC4769',
+    extend: {
+      colors: {
+        primary: '#39C5BB',
+        secondary: '#FC4769',
+      },
     },
   },
   plugins: [],

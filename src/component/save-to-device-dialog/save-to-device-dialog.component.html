@@ -2,33 +2,33 @@
 <mat-dialog-content class="!flex flex-col gap-3 !overflow-hidden">
   @if (loading()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  } @else {
+  } @else if (hasChange()) {
     <div class="flex-none text-xl">
       Please confirm the changes to apply before saving, and make sure you have
       backed up your chords with the official device manager.
     </div>
     <mat-tab-group class="flex-1 flex overflow-hidden">
-      @if (addedChords().length > 0) {
+      @if (addedChordsForDisplay().length > 0) {
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon>{{ 'add' | iconGuard }}</mat-icon>
             Chord(s) to be added
           </ng-template>
           <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-            @for (chord of addedChords(); track $index) {
+            @for (chord of addedChordsForDisplay(); track $index) {
               <div>{{ chord }}</div>
             }
           </div>
         </mat-tab>
       }
-      @if (updatedChords().length > 0) {
+      @if (updatedChordsForDisplay().length > 0) {
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon>{{ 'edit' | iconGuard }}</mat-icon>
             Chord(s) to be updated
           </ng-template>
           <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-            @for (chord of updatedChords(); track $index) {
+            @for (chord of updatedChordsForDisplay(); track $index) {
               <div class="flex items-center">
                 <span>{{ chord.fullInput }} =&nbsp;</span>
                 <span class="line-through">{{ chord.oldOutput }}</span>
@@ -41,22 +41,34 @@
           </div>
         </mat-tab>
       }
-      @if (removedChords().length > 0) {
+      @if (removedChordsForDisplay().length > 0) {
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon>{{ 'remove' | iconGuard }}</mat-icon>
             Chord(s) to be removed
           </ng-template>
           <div class="flex-1 min-h-0 overflow-auto font-code text-lg">
-            @for (chord of removedChords(); track $index) {
+            @for (chord of removedChordsForDisplay(); track $index) {
               <div>{{ chord }}</div>
             }
           </div>
         </mat-tab>
       }
     </mat-tab-group>
+  } @else {
+    <div class="flex-none text-xl">
+      Nothing to save. The chord library in the editor is the same as the one in
+      the device.
+    </div>
   }
 </mat-dialog-content>
 <mat-dialog-actions>
   <button matButton matDialogClose>Cancel</button>
+  <button
+    matButton
+    (click)="saveChordsToDevice()"
+    [disabled]="loading() || !hasChange()"
+  >
+    Save
+  </button>
 </mat-dialog-actions>

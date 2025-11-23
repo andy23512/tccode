@@ -13,6 +13,7 @@ export type Icon =
   | 'forms_add_on'
   | 'lock'
   | 'lock_open_right'
+  | 'looks_3'
   | 'looks_one'
   | 'looks_two'
   | 'remove'

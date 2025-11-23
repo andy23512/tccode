@@ -4,6 +4,7 @@ export type ChordInNumberListForm = [number[], number[]];
 export interface Chord {
   id: number; // hash
   input: number[];
+  actions: number[];
   output: number[];
   parentId: number | null; // parentHash
 }

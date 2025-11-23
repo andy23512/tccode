@@ -4,7 +4,7 @@ y + o + u = you
 b + a + k = back
 d + o + w + n = down
 i + m + p = important
-`.trim();
+`.trimStart();
 
 const SAMPLE_CHORDS_2 = `
 [ + ] = - [ ]
@@ -34,9 +34,16 @@ s + t = string
 s + u + b = subscribe
 u + p = update
 v + i = viewer
-`.trim();
+`.trimStart();
+
+const SAMPLE_CHORDS_3 = `
+i + l = <559>base
+l + r = <558>lib1<574>
+  a + r = arm
+`.trimStart();
 
 export const SAMPLE_CHORD_LISTS = {
   1: SAMPLE_CHORDS_1,
   2: SAMPLE_CHORDS_2,
+  3: SAMPLE_CHORDS_3,
 };

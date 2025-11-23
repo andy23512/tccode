@@ -41,6 +41,7 @@ export function convertChordInNumberListFormToChord([
     id: hashChord(action),
     parentId: getParentHashFromChordAction(action),
     input: getInputFromChordAction(action),
+    actions: action,
     output: phrase,
   };
 }
@@ -146,10 +147,7 @@ export function convertInputAndParentHashToActions(
     const zeros = 12 - input.length;
     return [...Array.from({ length: zeros }, () => 0), ...input];
   }
-  const zeros = 12 - 3 - input.length;
-  if (zeros <= 0) {
-    throw Error('chord action overflow.');
-  }
+  const zeros = 9 - input.length;
   return [
     ...Array.from({ length: 3 }, (_, i) => (parentHash >> (i * 10)) & 0x3ff),
     ...Array.from({ length: zeros }, () => 0),
@@ -169,13 +167,15 @@ export function convertTcclFileToChordTreeNodes(
     parentHash: number | null = null,
   ): ChordTreeNode {
     const tcclChordNode = tcn.chord();
-    const input = tcclChordNode
+    const nonZeroInput = tcclChordNode
       .chordInput()
       .CHORD_INPUT_KEY()
       .map((k) =>
         getActionCodeFromTcclKey(k.getText(), characterActionCodeMap, 'input'),
       );
-    input.sort((a, b) => a - b);
+    nonZeroInput.sort((a, b) => a - b);
+    const zeros = 9 - nonZeroInput.length;
+    const input = [...Array.from({ length: zeros }, () => 0), ...nonZeroInput];
     const output = tcclChordNode
       .chordOutput()
       .CHORD_OUTPUT_KEY()
@@ -192,6 +192,7 @@ export function convertTcclFileToChordTreeNodes(
         : [],
       input,
       output,
+      actions,
       id: hash,
       parentId: parentHash,
     };

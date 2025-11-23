@@ -132,6 +132,32 @@ export class SerialService {
     });
   }
 
+  public batchSend(
+    dataList: string[],
+  ): Observable<{ complete: boolean; sent: number; total: number }> {
+    const result = {
+      complete: false,
+      sent: 0,
+      total: dataList.length,
+    };
+    return new Observable((observer) => {
+      from(dataList)
+        .pipe(
+          concatMap((data) => from(this.sendData(data))),
+          tap(() => {
+            result.sent++;
+            observer.next(result);
+          }),
+          toArray(),
+        )
+        .subscribe(() => {
+          result.complete = true;
+          observer.next(result);
+          observer.complete();
+        });
+    });
+  }
+
   public async send<T extends SerialCommand>(
     command: T,
     ...args: SerialCommandArgMap[T]
