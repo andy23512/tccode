@@ -38,7 +38,7 @@ v + i = viewer
 
 const SAMPLE_CHORDS_3 = `
 i + l = <559>base
-l + r = <558>lib1<574>
+l + r = <558>lib1
   a + r = arm
 `.trimStart();
 
