@@ -6,6 +6,7 @@ An unofficial, experimental editor that allows you to edit the chord library of 
 
 - [Website](https://andy23512.github.io/tccode/)
 - [Dev Note](https://andy23512.github.io/blog/2025/11/23/tanchord-code-tc-code-an-unofficial-experimental-code-editor-for-the-chord-library-of-charachorder-device/)
+- [TanChord Code Library (TCCL) Language Reference](https://andy23512.github.io/blog/2025/11/23/tanchord-code-library-tccl-language-reference/)
 
 ## TCCL Language
 
