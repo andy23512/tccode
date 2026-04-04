@@ -1,57 +1,9 @@
+import { ACTIONS, ActionType, KeyboardLayout } from 'tangent-cc-lib';
 import { SUPPORTED_NON_SPACE_KEY_SET } from '../const/character-key-set.const';
-import { ACTIONS } from '../data/actions.const';
-import { ActionType } from '../model/action.model';
-import { WSKCode } from '../model/key-code.model';
-import {
-  CharacterKeyCodeMap,
-  KeyBoardLayout,
-  KeyboardLayoutKey,
-} from '../model/keyboard-layout.model';
-
-export function convertKeyboardLayoutToCharacterKeyCodeMap(
-  keyboardLayout: KeyBoardLayout | null,
-): CharacterKeyCodeMap {
-  if (!keyboardLayout) {
-    return new Map();
-  }
-  return new Map(
-    (
-      Object.entries(keyboardLayout.layout) as [
-        WSKCode,
-        Partial<KeyboardLayoutKey>,
-      ][]
-    )
-      .map(([keyCode, keyboardLayoutKey]) =>
-        keyboardLayoutKey
-          ? (
-              Object.entries(keyboardLayoutKey) as [
-                keyof KeyboardLayoutKey,
-                string,
-              ][]
-            ).map(
-              ([modifier, character]) =>
-                [
-                  character,
-                  {
-                    keyCode,
-                    shiftKey:
-                      modifier === 'withShift' ||
-                      modifier === 'withShiftAltGraph',
-                    altGraphKey:
-                      modifier === 'withAltGraph' ||
-                      modifier === 'withShiftAltGraph',
-                  },
-                ] as const,
-            )
-          : [],
-      )
-      .flat(),
-  );
-}
 
 export function getTcclKeyFromActionCode(
   actionCode: number,
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
   type: 'input' | 'output',
 ): string {
   let key = `<${actionCode}>`;
@@ -60,8 +12,11 @@ export function getTcclKeyFromActionCode(
     const keyboardLayoutKey = keyboardLayout.layout[action.keyCode];
     const modifier = action.withShift ? 'withShift' : 'unmodified';
     const character = keyboardLayoutKey?.[modifier];
-    if (character && SUPPORTED_NON_SPACE_KEY_SET.has(character)) {
-      key = character;
+    if (
+      character?.type === 'text' &&
+      SUPPORTED_NON_SPACE_KEY_SET.has(character.value)
+    ) {
+      key = character.value;
     }
   } else if (
     action?.type === ActionType.NonWSK &&
@@ -75,7 +30,7 @@ export function getTcclKeyFromActionCode(
 }
 
 export function getCharacterActionCodeMapFromKeyboardLayout(
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
 ): Map<string, number> {
   const map = new Map<string, number>();
   Object.entries(keyboardLayout.layout).forEach(
@@ -87,7 +42,8 @@ export function getCharacterActionCodeMapFromKeyboardLayout(
         if (
           !['unmodified', 'withShift'].includes(modifier) ||
           !character ||
-          !SUPPORTED_NON_SPACE_KEY_SET.has(character)
+          character.type !== 'text' ||
+          !SUPPORTED_NON_SPACE_KEY_SET.has(character.value)
         ) {
           return;
         }
@@ -100,7 +56,7 @@ export function getCharacterActionCodeMapFromKeyboardLayout(
         if (!action) {
           return;
         }
-        map.set(character, action.codeId);
+        map.set(character.value, action.codeId);
       });
     },
   );

@@ -8,20 +8,22 @@ import {
   withMethods,
 } from '@ngrx/signals';
 import { setAllEntities, withEntities } from '@ngrx/signals/entities';
-import { US_QWERTY_LAYOUT } from '../data/keyboard-layouts.const';
-import { KeyBoardLayout } from '../model/keyboard-layout.model';
-import { convertKeyboardLayoutToCharacterKeyCodeMap } from '../util/layout.util';
+import {
+  KeyboardLayout,
+  convertKeyboardLayoutToCharacterKeyCodeMap,
+} from 'tangent-cc-lib';
+import { US_KEYBOARD_LAYOUT } from '../data/keyboard-layouts.const';
 import { withSelectedEntity } from './selected-entity.feature';
 
 export const KeyboardLayoutStore = signalStore(
   { providedIn: 'root' },
   withDevtools('keyboardLayout'),
-  withEntities<KeyBoardLayout>(),
+  withEntities<KeyboardLayout>(),
   withSelectedEntity(),
   withMethods((store) => ({
     load() {
-      patchState(store, setAllEntities([US_QWERTY_LAYOUT]));
-      store.setSelectedId(US_QWERTY_LAYOUT.id);
+      patchState(store, setAllEntities([US_KEYBOARD_LAYOUT]));
+      store.setSelectedId(US_KEYBOARD_LAYOUT.id);
     },
   })),
   withComputed((state) => ({

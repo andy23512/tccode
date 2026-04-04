@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import type { editor, languages, Position } from 'monaco-editor';
-import { ACTIONS } from '../data/actions.const';
-import { ActionType } from '../model/action.model';
+import { ACTIONS, ActionType } from 'tangent-cc-lib';
 import { TcclTokensProviderService } from './tccl-tokens-provider.service';
 
 @Injectable({ providedIn: 'root' })

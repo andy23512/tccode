@@ -1,3 +1,4 @@
+import { KeyboardLayout } from 'tangent-cc-lib';
 import { ChordNodeContext } from '../antlr/TcclParser';
 import { parseTccl } from '../language-service/tccl-parser';
 import {
@@ -5,7 +6,6 @@ import {
   ChordInNumberListForm,
   ChordTreeNode,
 } from '../model/chord.model';
-import { KeyBoardLayout } from '../model/keyboard-layout.model';
 import {
   getActionCodeFromTcclKey,
   getCharacterActionCodeMapFromKeyboardLayout,
@@ -62,7 +62,7 @@ export function convertChordsToChordTreeNodes(
 
 export function convertChordTreeNodeToTcclInputAndOutput(
   node: Omit<ChordTreeNode, 'children'>,
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
 ): { input: string; output: string } {
   const outputKeys = node.output.map((actionCode) =>
     getTcclKeyFromActionCode(actionCode, keyboardLayout, 'output'),
@@ -100,7 +100,7 @@ export function convertChordTreeNodeToTcclInputAndOutput(
 
 export function convertChordTreeNodeToTcclStringForm(
   node: Omit<ChordTreeNode, 'children'>,
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
   show: 'all' | 'input' | 'output' = 'all',
 ): string {
   const { input, output } = convertChordTreeNodeToTcclInputAndOutput(
@@ -118,7 +118,7 @@ export function convertChordTreeNodeToTcclStringForm(
 
 export function convertChordTreeNodesToTcclFile(
   chordTreeNodes: ChordTreeNode[],
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
   indent: string,
 ): string {
   function processChordTreeNodes(nodes: ChordTreeNode[], level = 0) {
@@ -157,7 +157,7 @@ export function convertInputAndParentHashToActions(
 
 export function convertTcclFileToChordTreeNodes(
   tcclFile: string,
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
 ): ChordTreeNode[] {
   const characterActionCodeMap =
     getCharacterActionCodeMapFromKeyboardLayout(keyboardLayout);

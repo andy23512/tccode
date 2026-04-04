@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": false,
     "target": "es2022",
     "module": "preserve",
-    "lib": ["es6"],
+    "lib": ["es2017"],
     "paths": {},
     "isolatedModules": true,
     "typeRoots": ["node_modules/@types", "src/type"],

@@ -14,6 +14,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
+import { KeyboardLayout } from 'tangent-cc-lib';
 import {
   CHANGE_TYPE,
   DiffTreeNode,
@@ -21,7 +22,6 @@ import {
   diff as treeObjectDiff,
 } from 'tree-object-diff';
 import { ChordTreeNode } from '../../model/chord.model';
-import { KeyBoardLayout } from '../../model/keyboard-layout.model';
 import { IconGuardPipe } from '../../pipe/icon-guard.pipe';
 import { ChordLoaderService } from '../../service/chord-loader.service';
 import { SerialService } from '../../service/serial.service';
@@ -50,7 +50,7 @@ interface ChordUpdateItem extends ChordDiffItem {
 
 function convertChordUpdateItemsToStringItems(
   chordUpdateItem: ChordUpdateItem[],
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
 ): { fullInput: string; newOutput: string; oldOutput: string }[] {
   return chordUpdateItem.map((item) => {
     const { input, output: oldOutput } =
@@ -72,7 +72,7 @@ function convertChordUpdateItemsToStringItems(
 
 function convertChordDiffItemsToStringItems(
   chordDiffItems: ChordDiffItem[],
-  keyboardLayout: KeyBoardLayout,
+  keyboardLayout: KeyboardLayout,
 ): string[] {
   return chordDiffItems.map((item) => {
     const chordInStringForm = convertChordTreeNodeToTcclStringForm(
