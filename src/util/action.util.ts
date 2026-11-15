@@ -25,9 +25,10 @@ export function compressActions(actions: number[]): Uint8Array {
 export function decompressActions(raw: Uint8Array): number[] {
   const actions: number[] = [];
   for (let i = 0; i < raw.length; i++) {
-    let action = raw[i]!;
+    // The `?? 0` fallbacks are unreachable: both indexes are bounds-checked above.
+    let action = raw[i] ?? 0;
     if (action > 0 && action < 32 && i + 1 < raw.length) {
-      action = (action << 8) | raw[++i]!;
+      action = (action << 8) | (raw[++i] ?? 0);
     }
     actions.push(action);
   }

@@ -2,6 +2,8 @@
 <mat-dialog-content class="overflow-auto">
   <mat-tree #tree [dataSource]="ast()" [childrenAccessor]="childrenAccessor">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <!-- Empty on purpose: reserves the toggle button's width so leaf nodes line up with expandable ones. -->
+      <!-- eslint-disable-next-line @angular-eslint/template/elements-content -->
       <button matIconButton disabled></button>
       {{ getNodeText(node) }}
     </mat-tree-node>

@@ -1,10 +1,8 @@
 import {
   ANTLRErrorListener,
-  ATNConfigSet,
-  BitSet,
-  DFA,
-  Parser,
+  ATNSimulator,
   Recognizer,
+  Token,
 } from 'antlr4ng';
 
 export interface TcclError {
@@ -18,42 +16,20 @@ export interface TcclError {
 }
 
 export class TcclErrorListener implements ANTLRErrorListener {
-  reportAmbiguity(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    exact: boolean,
-    ambigAlts: BitSet | undefined,
-    configs: ATNConfigSet,
-  ): void {
+  reportAmbiguity(): void {
     throw new Error('Method not implemented.');
   }
-  reportAttemptingFullContext(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    conflictingAlts: BitSet | undefined,
-    configs: ATNConfigSet,
-  ): void {
+  reportAttemptingFullContext(): void {
     throw new Error('Method not implemented.');
   }
-  reportContextSensitivity(
-    recognizer: Parser,
-    dfa: DFA,
-    startIndex: number,
-    stopIndex: number,
-    prediction: number,
-    configs: ATNConfigSet,
-  ): void {
+  reportContextSensitivity(): void {
     throw new Error('Method not implemented.');
   }
   private errors: TcclError[] = [];
 
   public syntaxError(
-    _recognizer: Recognizer<any>,
-    _offendingSymbol: any,
+    _recognizer: Recognizer<ATNSimulator>,
+    _offendingSymbol: Token | null,
     line: number,
     charPositionInLine: number,
     message: string,

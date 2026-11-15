@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ANTLRErrorListener, RecognitionException, Recognizer } from 'antlr4ng';
+import { ANTLRErrorListener, ATNSimulator, Recognizer, Token } from 'antlr4ng';
 import type { languages } from 'monaco-editor';
 import { createLexer } from '../language-service/tccl-parser';
 type ILineTokens = languages.ILineTokens;
@@ -10,7 +10,7 @@ export class TcclState implements languages.IState {
     return new TcclState();
   }
 
-  equals(other: languages.IState): boolean {
+  equals(): boolean {
     return true;
   }
 }
@@ -64,12 +64,10 @@ export function tokensForLine(input: string): languages.ILineTokens {
     }
 
     syntaxError(
-      recognizer: Recognizer<any>,
-      offendingSymbol: any,
-      line: number,
+      _recognizer: Recognizer<ATNSimulator>,
+      _offendingSymbol: Token | null,
+      _line: number,
       column: number,
-      msg: string,
-      e: RecognitionException | null,
     ) {
       errorStartingPoints.push(column);
     }

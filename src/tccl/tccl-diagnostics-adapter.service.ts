@@ -23,7 +23,7 @@ export class TcclDiagnosticsAdapterService {
 
   constructor() {
     const onModelAdd = (model: editor.IModel): void => {
-      let handle: any;
+      let handle: ReturnType<typeof setTimeout> | undefined;
       model.onDidChangeContent(() => {
         // here we are debouncing the user changes, so everytime a new change is done, we wait 500ms before validating
         // otherwise if the user is still typing, we cancel the

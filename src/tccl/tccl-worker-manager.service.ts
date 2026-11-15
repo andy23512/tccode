@@ -18,8 +18,7 @@ export class TcclWorkerManagerService {
           languageId: TCCL_LANGUAGE_ID,
         },
       });
-      this.workerClientProxy =
-        this.worker.getProxy() as any as Promise<TcclWorker>;
+      this.workerClientProxy = this.worker.getProxy();
     }
     return this.workerClientProxy;
   }
