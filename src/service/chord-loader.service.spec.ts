@@ -160,10 +160,22 @@ describe('ChordLoaderService', () => {
       error.mockRestore();
     });
 
-    it('does nothing when the device has no chords', async () => {
+    it('tells the user when the device has no chords', async () => {
       await service.loadFromDevice();
       expect(editor.content()).toBe('');
-      expect(snackBar.open).not.toHaveBeenCalled();
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith('The device has no chords.');
+    });
+
+    it('tells the user when no keyboard layout is selected', async () => {
+      TestBed.inject(KeyboardLayoutStore).setSelectedId(null);
+      serial.loadChords.mockReturnValue(of({ chords: [chord(ab())] }));
+      await service.loadFromDevice();
+      expect(editor.content()).toBe('');
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'Failed to load chords from the device. No keyboard layout is selected.',
+      );
     });
 
     it('uses the indentation detected in the editor for child chords', async () => {
@@ -250,11 +262,12 @@ describe('ChordLoaderService', () => {
       expect(editor.content()).toBe('');
     });
 
-    it('ignores an empty file', async () => {
+    it('tells the user when a file is empty', async () => {
       service.loadFromFile(file('empty.tccl', ''));
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await until(() => snackBar.open.mock.calls.length > 0);
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith('The file is empty.');
       expect(editor.content()).toBe('');
-      expect(snackBar.open).not.toHaveBeenCalled();
     });
 
     it.each([

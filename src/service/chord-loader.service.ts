@@ -55,13 +55,21 @@ export class ChordLoaderService {
       return;
     }
     const keyboardLayout = this.keyboardLayout();
-    if (chordTreeNodes.length > 0 && keyboardLayout) {
-      const indent = this.editorStore.indent();
-      this.editorStore.appendContent(
-        convertChordTreeNodesToTcclFile(chordTreeNodes, keyboardLayout, indent),
+    if (!keyboardLayout) {
+      this.matSnackBar.open(
+        'Failed to load chords from the device. No keyboard layout is selected.',
       );
-      this.matSnackBar.open('Chords are successfully loaded from device.');
+      return;
     }
+    if (chordTreeNodes.length === 0) {
+      this.matSnackBar.open('The device has no chords.');
+      return;
+    }
+    const indent = this.editorStore.indent();
+    this.editorStore.appendContent(
+      convertChordTreeNodesToTcclFile(chordTreeNodes, keyboardLayout, indent),
+    );
+    this.matSnackBar.open('Chords are successfully loaded from device.');
   }
 
   public loadFromFile(file: File) {
@@ -69,6 +77,7 @@ export class ChordLoaderService {
     reader.onload = (e) => {
       const result = e.target?.result as string;
       if (!result) {
+        this.matSnackBar.open('The file is empty.');
         return;
       }
       if (file.name.endsWith('.json')) {
