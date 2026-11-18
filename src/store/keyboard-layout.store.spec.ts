@@ -59,20 +59,19 @@ describe('KeyboardLayoutStore', () => {
       expect(store.characterKeyCodeMap().size).toBe(0);
     });
 
-    it('has no usable entity for an unknown id', () => {
+    it('has no selected entity (null) for an unknown id', () => {
       const store = create();
       store.setSelectedId('does-not-exist');
-      expect(store.selectedEntity()).toBeUndefined();
+      expect(store.selectedEntity()).toBeNull();
       expect(store.characterKeyCodeMap().size).toBe(0);
     });
 
-    it('can select a layout that exists in the store', () => {
+    it('has no selected entity for an id that was never loaded', () => {
       const store = create();
       const other = { ...US_KEYBOARD_LAYOUT, id: 'other' } as KeyboardLayout;
-      // Entities are only added through load(), so the selection falls back to
-      // "no entity" for ids that were never loaded.
+      // Entities are only added through load().
       store.setSelectedId(other.id);
-      expect(store.selectedEntity()).toBeUndefined();
+      expect(store.selectedEntity()).toBeNull();
     });
   });
 });

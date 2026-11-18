@@ -76,9 +76,8 @@ describe('TcclHoverProvider', () => {
     expect(provider.provideHover(model(''), pos(1))).toBeNull();
   });
 
-  // KNOWN GAP (see TEST_TODO.md): most actions in tangent-cc-lib@0.0.17 have no
-  // title/description, so the hover text contains the literal "undefined".
-  it('currently prints "undefined" for actions without a description', () => {
+  // Most actions in tangent-cc-lib@0.0.17 have no title/description.
+  it('does not print "undefined" for actions without a description', () => {
     const noDescription = ACTIONS.find(
       (a) => !(a as { description?: string }).description,
     );
@@ -88,6 +87,23 @@ describe('TcclHoverProvider', () => {
       model(`<${code}> + a = x`),
       pos(2),
     ) as { contents: { value: string }[] };
-    expect(hover.contents[0].value).toMatch(/\n\nundefined$/);
+    const value = hover.contents[0].value;
+    expect(value).not.toContain('undefined');
+    expect(value).toMatch(new RegExp(`^\\*\\*Action Code ${code}.*\\*\\*$`));
+  });
+
+  it('puts the description below the header when there is one', () => {
+    const described = ACTIONS.find(
+      (a) => (a as { description?: string }).description,
+    );
+    expect(described).toBeDefined();
+    const code = described?.codeId as number;
+    const hover = provider.provideHover(
+      model(`<${code}> + a = x`),
+      pos(2),
+    ) as { contents: { value: string }[] };
+    expect(hover.contents[0].value).toContain(
+      `\n\n${(described as { description?: string }).description}`,
+    );
   });
 });

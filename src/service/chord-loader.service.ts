@@ -68,13 +68,21 @@ export class ChordLoaderService {
   }
 
   private loadFromJson(input: string) {
-    const data = JSON.parse(input);
-    if (!data || !data.chords) {
+    let chords: Chord[];
+    try {
+      const data = JSON.parse(input);
+      if (!data || !data.chords) {
+        return;
+      }
+      chords = (data.chords as ChordInNumberListForm[]).map(
+        convertChordInNumberListFormToChord,
+      );
+    } catch {
+      this.matSnackBar.open(
+        'Failed to load chords from JSON. The file is not a valid chord backup.',
+      );
       return;
     }
-    const chords: Chord[] = (data.chords as ChordInNumberListForm[]).map(
-      convertChordInNumberListFormToChord,
-    );
     const keyboardLayout = this.keyboardLayout();
     if (!keyboardLayout || !chords || chords.length === 0) {
       return;

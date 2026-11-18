@@ -23,7 +23,7 @@ export function withSelectedEntity<Entity>() {
     withComputed(({ entityMap, selectedId }) => ({
       selectedEntity: computed(() => {
         const id = selectedId();
-        return id ? entityMap()[id] : null;
+        return id !== null ? (entityMap()[id] ?? null) : null;
       }),
     })),
   );

@@ -97,7 +97,7 @@ export function tokensForLine(input: string): languages.ILineTokens {
     }
   } while (!done);
   for (const e of errorStartingPoints) {
-    myTokens.push(new TcclToken('error.tccl', e));
+    myTokens.push(new TcclToken('error', e));
   }
   myTokens.sort((a, b) => (a.startIndex > b.startIndex ? 1 : -1));
   return new TcclLineTokens(myTokens);

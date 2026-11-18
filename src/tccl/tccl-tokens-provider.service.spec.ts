@@ -48,7 +48,7 @@ describe('tokensForLine', () => {
     const tokens = scan('a + b = @');
     const last = tokens[tokens.length - 1];
     expect(last[1]).toBe(8);
-    expect(String(last[0])).toMatch(/^error\.tccl/);
+    expect(String(last[0])).toBe('error.tccl');
   });
 
   it('keeps tokens sorted by start index', () => {

@@ -40,10 +40,13 @@ export class TcclHoverProvider implements languages.HoverProvider {
           ]
             .filter(Boolean)
             .join(' ');
+          const description = action.description
+            ? `\n\n${action.description}`
+            : '';
           return {
             contents: [
               {
-                value: `**Action Code ${match[1]}${header ? `: ${header}` : ''}**\n\n${action.description}`,
+                value: `**Action Code ${match[1]}${header ? `: ${header}` : ''}**${description}`,
               },
             ],
             range: {
