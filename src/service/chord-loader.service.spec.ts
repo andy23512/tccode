@@ -201,6 +201,26 @@ describe('ChordLoaderService', () => {
       expect(snackBar.open).not.toHaveBeenCalled();
     });
 
+    // Current behavior (see TEST_TODO.md): malformed JSON is not handled.
+    // The user gets no message and the editor stays unchanged; update these
+    // two tests when the error handling is added.
+    it.each([
+      ['truncated', '{"chords": [[1,2'],
+      ['not JSON', 'hello'],
+      ['wrong shape', '{"chords": [1, 2, 3]}'],
+    ])('gives no feedback for a malformed JSON backup (%s)', async (_, content) => {
+      service.loadFromFile(file('backup.json', content));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(editor.content()).toBe('');
+      expect(snackBar.open).not.toHaveBeenCalled();
+    });
+
+    it('lets the JSON.parse error escape from loadFromJson', () => {
+      const load = (service as unknown as { loadFromJson(s: string): void })
+        .loadFromJson;
+      expect(() => load.call(service, '{"chords": [[1,2')).toThrow(SyntaxError);
+    });
+
     it('treats only the ".json" extension as a backup (case sensitive)', async () => {
       service.loadFromFile(file('backup.JSON', '{"chords": []}'));
       await until(() => snackBar.open.mock.calls.length > 0);
