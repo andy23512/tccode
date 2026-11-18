@@ -78,9 +78,10 @@ export function convertChordTreeNodeToTcclInputAndOutput(
     };
   });
   inputKeys.sort((a, b) => {
-    const compareIndexInOutput = Math.sign(a.indexInOutput - b.indexInOutput);
-    if (compareIndexInOutput !== 0) {
-      return compareIndexInOutput;
+    // Compare explicitly: Infinity - Infinity is NaN, which the sort treats as
+    // "equal" and would skip the tie-break below.
+    if (a.indexInOutput !== b.indexInOutput) {
+      return a.indexInOutput < b.indexInOutput ? -1 : 1;
     }
     if (a.key === b.key) {
       return 0;

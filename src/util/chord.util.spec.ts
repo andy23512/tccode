@@ -194,18 +194,22 @@ describe('convertChordTreeNodeToTcclInputAndOutput', () => {
     ).toBe('A + b');
   });
 
-  // Current behavior, which probably differs from the intent: keys absent from
-  // the output all get indexInOutput = Infinity, and
-  // Math.sign(Infinity - Infinity) is NaN, so the comparator never reaches its
-  // localeCompare tie-break and these keys keep their original relative order
-  // instead of being sorted alphabetically.
-  it('keeps keys that are absent from the output in their original order, after the rest', () => {
+  it('sorts keys that are absent from the output alphabetically, after the rest', () => {
     expect(
       convertChordTreeNodeToTcclInputAndOutput(
         node({ input: pad(9, 100, 99, 97, 98), output: [98] }),
         layout,
       ).input,
-    ).toBe('b + d + c + a');
+    ).toBe('b + a + c + d');
+  });
+
+  it('sorts alphabetically when no input key appears in the output', () => {
+    expect(
+      convertChordTreeNodeToTcclInputAndOutput(
+        node({ input: pad(9, 98, 97), output: [544] }),
+        layout,
+      ).input,
+    ).toBe('a + b');
   });
 
   it('renders spaces in the output and ignores zero padding in the input', () => {
