@@ -1,5 +1,6 @@
 import type { Position } from 'monaco-editor';
 import { BOPOMOFO_CHORD_MAP } from '../data/bopomofo.const';
+import type { TcclError } from './tccl-error-listener';
 import { TcclLanguageService } from './tccl-language-service';
 
 const service = new TcclLanguageService();
@@ -161,9 +162,6 @@ describe('TcclLanguageService.autoComplete', () => {
     expect(values('a ', 1, 2)).toEqual([' + ']);
   });
 
-  it('suggests the input separator after "+"', () => {
-    expect(values('a + ', 1, 4)).toEqual([' + ']);
-  });
 
   it('suggests both separators after at least two input keys', () => {
     expect(values('a + b ', 1, 6)).toEqual([' + ', ' = ']);
@@ -185,5 +183,71 @@ describe('TcclLanguageService.autoComplete', () => {
     const [item] = service.autoComplete('a ', at(1, 2));
     expect(typeof item.value).toBe('string');
     expect(typeof item.optionType).toBe('number');
+  });
+});
+
+// The completion provider passes the text up to the caret, and the caret
+// position, so in real use the caret column is always the text length + 1.
+describe('TcclLanguageService.autoComplete as called by the completion provider', () => {
+  const atCaret = (text: string) => {
+    const lines = text.split('\n');
+    return service
+      .autoComplete(text, at(lines.length, lines[lines.length - 1].length + 1))
+      .map((item) => item.value)
+      .sort();
+  };
+
+  it.each([
+    ['a', [' + ']],
+    ['a ', [' + ']],
+    ['a + b', [' + ', ' = ']],
+    ['a + b ', [' + ', ' = ']],
+    ['a + b = x\nc', [' + ']],
+    ['a + b = x\nc ', [' + ']],
+    ['a + b = x\nc + d ', [' + ', ' = ']],
+  ])('suggests the next separator after %j', (text, expected) => {
+    expect(atCaret(text)).toEqual([...expected].sort());
+  });
+
+  it('suggests no separator where a key is expected (after " + ")', () => {
+    expect(atCaret('a + ')).toEqual([]);
+  });
+
+  it('suggests nothing inside the output', () => {
+    expect(atCaret('a + b = x')).toEqual([]);
+  });
+});
+
+// What Monaco would underline for a marker: columns are 1-based, endColumn is
+// exclusive, and columns below 1 are clamped to 1 (TextModel._validatePosition).
+function underlined(text: string, error: TcclError): string {
+  const line = text.split('\n')[error.startLineNumber - 1] ?? '';
+  return line.slice(Math.max(error.startColumn, 1) - 1, error.endColumn - 1);
+}
+
+describe('diagnostic ranges as Monaco renders them', () => {
+  it('underline the whole chord input for a duplicated chord', () => {
+    const text = 'a + b = x\nb + a = y\n';
+    expect(
+      service.validate(text, OFF).map((e) => underlined(text, e)),
+    ).toEqual(['a + b', 'b + a']);
+  });
+
+  it('underline the whole chord input for a Bopomofo conflict', () => {
+    const text = 'a + w = x\n';
+    expect(
+      service.validate(text, ON).map((e) => underlined(text, e)),
+    ).toEqual(['a + w']);
+  });
+
+  // KNOWN GAP (see TEST_TODO.md): syntax errors keep ANTLR's 0-based column in
+  // startColumn, so the marker lands one character to the left. The offending
+  // character here is "@" (index 8), but the space before it is underlined.
+  it('currently underline the character before an unexpected character', () => {
+    const text = 'a + b = @\n';
+    const [error] = service.validate(text, OFF);
+    expect(error.startColumn).toBe(8);
+    expect(text[8]).toBe('@');
+    expect(underlined(text, error)).toBe(' ');
   });
 });
