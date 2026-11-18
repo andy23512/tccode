@@ -122,15 +122,16 @@ describe('TcclErrorListener', () => {
     expect(new TcclErrorListener().getErrors()).toEqual([]);
   });
 
-  it('records syntax errors as single-character, single-line ranges', () => {
+  it('records syntax errors as single-character, single-line ranges (1-based)', () => {
     const listener = new TcclErrorListener();
     listener.syntaxError({} as never, null, 3, 7, 'boom', null);
     expect(listener.getErrors()).toEqual([
       {
         startLineNumber: 3,
         endLineNumber: 3,
-        startColumn: 7,
-        endColumn: 8,
+        // ANTLR's 0-based column 7 is Monaco's 1-based column 8.
+        startColumn: 8,
+        endColumn: 9,
         message: 'boom',
         code: '1',
         severity: 'error',

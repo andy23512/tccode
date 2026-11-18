@@ -240,14 +240,25 @@ describe('diagnostic ranges as Monaco renders them', () => {
     ).toEqual(['a + w']);
   });
 
-  // KNOWN GAP (see TEST_TODO.md): syntax errors keep ANTLR's 0-based column in
-  // startColumn, so the marker lands one character to the left. The offending
-  // character here is "@" (index 8), but the space before it is underlined.
-  it('currently underline the character before an unexpected character', () => {
+  it('underline the offending character of a syntax error', () => {
     const text = 'a + b = @\n';
     const [error] = service.validate(text, OFF);
-    expect(error.startColumn).toBe(8);
     expect(text[8]).toBe('@');
-    expect(underlined(text, error)).toBe(' ');
+    expect(underlined(text, error)).toBe('@');
+  });
+
+  // ANTLR reports the start of the unexpected token. In "a = b" the parser
+  // wanted " + " after "a", so the error is at the space (index 1) that starts
+  // " = "; likewise the spaces after "c" and "d" in "c d = y".
+  it.each([
+    ['a = b\n', [1]],
+    ['a + b = x\nc d = y\n', [1, 3]],
+  ])('underline the start of the unexpected token in %j', (text, indices) => {
+    const lines = text.split('\n');
+    const errors = service.validate(text, OFF);
+    expect(errors.map((e) => underlined(text, e))).toEqual(
+      indices.map((i, n) => lines[errors[n].startLineNumber - 1][i]),
+    );
+    expect(errors.map((e) => e.startColumn - 1)).toEqual(indices);
   });
 });

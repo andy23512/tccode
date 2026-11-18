@@ -37,8 +37,9 @@ export class TcclErrorListener implements ANTLRErrorListener {
     this.errors.push({
       startLineNumber: line,
       endLineNumber: line,
-      startColumn: charPositionInLine,
-      endColumn: charPositionInLine + 1,
+      // ANTLR columns are 0-based, Monaco's are 1-based (endColumn exclusive).
+      startColumn: charPositionInLine + 1,
+      endColumn: charPositionInLine + 2,
       message,
       code: '1',
       severity: 'error',
