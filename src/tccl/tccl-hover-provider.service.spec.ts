@@ -47,17 +47,49 @@ describe('TcclHoverProvider', () => {
     expect(hover.contents[0].value).toContain('Action Code 559');
   });
 
-  it('reports the range of the hovered token on that line', () => {
+  // Monaco columns are 1-based: column N is the position before the character
+  // at (0-based) index N - 1, and the hover position is the start of the
+  // hovered character.
+  it('reports the range of the hovered token using 1-based columns', () => {
     const hover = provider.provideHover(model('<559> + a = x'), pos(2)) as {
       range: object;
     };
-    // The range uses the lexer's 0-based start index as startColumn.
+    // "<559>" occupies indices 0-4, i.e. columns 1-5 (endColumn is exclusive).
     expect(hover.range).toEqual({
       startLineNumber: 1,
       endLineNumber: 1,
-      startColumn: 0,
-      endColumn: 5,
+      startColumn: 1,
+      endColumn: 6,
     });
+  });
+
+  it('reports the range of a token that does not start the line', () => {
+    const line = 'a + b = <559>x'; // "<559>" occupies indices 8-12
+    const hover = provider.provideHover(model(line), pos(10)) as {
+      range: object;
+    };
+    expect(hover.range).toEqual({
+      startLineNumber: 1,
+      endLineNumber: 1,
+      startColumn: 9,
+      endColumn: 14,
+    });
+  });
+
+  // Every character of the token must show the hover, including the first and
+  // the last one, and no neighbouring character may.
+  it.each([
+    ['<559> + a = x', 0, 4], // "<559>" at indices 0-4
+    ['a + b = <559>x', 8, 12], // "<559>" at indices 8-12
+  ])('shows the hover for exactly the characters of the token in %j', (line, first, last) => {
+    for (let index = 0; index < line.length; index++) {
+      const hover = provider.provideHover(model(line), pos(index + 1));
+      const inside = index >= first && index <= last;
+      expect({ index, hovered: hover !== null }).toEqual({
+        index,
+        hovered: inside,
+      });
+    }
   });
 
   it('returns null when hovering over a plain key', () => {

@@ -14,8 +14,10 @@ export class TcclHoverProvider implements languages.HoverProvider {
     const lineContent = model.getLineContent(position.lineNumber);
     const lineTokens = this.tokensProvider.tokenize(lineContent).tokens;
     lineTokens.reverse();
+    // Monaco columns are 1-based, token start indices are 0-based.
+    const hoveredIndex = position.column - 1;
     const targetTokenIndex = lineTokens.findIndex(
-      (t) => t.startIndex <= position.column,
+      (t) => t.startIndex <= hoveredIndex,
     );
     if (targetTokenIndex === -1) {
       return null;
@@ -52,8 +54,8 @@ export class TcclHoverProvider implements languages.HoverProvider {
             range: {
               startLineNumber: position.lineNumber,
               endLineNumber: position.lineNumber,
-              startColumn: targetToken.startIndex,
-              endColumn: targetToken.startIndex + token.length,
+              startColumn: targetToken.startIndex + 1,
+              endColumn: targetToken.startIndex + token.length + 1,
             },
           };
         }
