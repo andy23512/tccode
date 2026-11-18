@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { SAMPLE_CHORD_LISTS } from '../data/sample-chords.const';
 import { Chord } from '../model/chord.model';
 import { EditorStore } from '../store/editor.store';
+import { KeyboardLayoutStore } from '../store/keyboard-layout.store';
 import { convertChordInNumberListFormToChord } from '../util/chord.util';
 import { ChordLoaderService } from './chord-loader.service';
 import { SerialService } from './serial.service';
@@ -216,18 +217,37 @@ describe('ChordLoaderService', () => {
       );
     });
 
-    it('ignores a JSON file without a chords list', async () => {
+    it('tells the user when a JSON file has no chords list', async () => {
       service.loadFromFile(file('backup.json', JSON.stringify({ other: 1 })));
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await until(() => snackBar.open.mock.calls.length > 0);
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'Failed to load chords from JSON. The file has no chord list.',
+      );
       expect(editor.content()).toBe('');
-      expect(snackBar.open).not.toHaveBeenCalled();
     });
 
-    it('ignores a JSON file with an empty chords list', async () => {
+    it('tells the user when a JSON file has an empty chords list', async () => {
       service.loadFromFile(file('backup.json', JSON.stringify({ chords: [] })));
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await until(() => snackBar.open.mock.calls.length > 0);
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'The JSON file contains no chords.',
+      );
       expect(editor.content()).toBe('');
-      expect(snackBar.open).not.toHaveBeenCalled();
+    });
+
+    it('tells the user when no keyboard layout is selected', async () => {
+      TestBed.inject(KeyboardLayoutStore).setSelectedId(null);
+      service.loadFromFile(
+        file('backup.json', JSON.stringify({ chords: [ab()] })),
+      );
+      await until(() => snackBar.open.mock.calls.length > 0);
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'Failed to load chords from JSON. No keyboard layout is selected.',
+      );
+      expect(editor.content()).toBe('');
     });
 
     it('ignores an empty file', async () => {

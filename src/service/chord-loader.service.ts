@@ -86,6 +86,9 @@ export class ChordLoaderService {
     try {
       const data = JSON.parse(input);
       if (!data || !data.chords) {
+        this.matSnackBar.open(
+          'Failed to load chords from JSON. The file has no chord list.',
+        );
         return;
       }
       chords = (data.chords as ChordInNumberListForm[]).map(
@@ -98,7 +101,14 @@ export class ChordLoaderService {
       return;
     }
     const keyboardLayout = this.keyboardLayout();
-    if (!keyboardLayout || !chords || chords.length === 0) {
+    if (!keyboardLayout) {
+      this.matSnackBar.open(
+        'Failed to load chords from JSON. No keyboard layout is selected.',
+      );
+      return;
+    }
+    if (chords.length === 0) {
+      this.matSnackBar.open('The JSON file contains no chords.');
       return;
     }
     const chordTreeNodes: ChordTreeNode[] =
