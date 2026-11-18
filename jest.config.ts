@@ -12,7 +12,11 @@ export default {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  // tangent-cc-lib and detect-indent ship ESM-only `.js` files, so they must be
+  // transformed too.
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*\\.mjs$|tangent-cc-lib/|detect-indent/))',
+  ],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
