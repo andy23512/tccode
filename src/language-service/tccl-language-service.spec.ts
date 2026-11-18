@@ -65,17 +65,17 @@ describe('TcclLanguageService.validate', () => {
 
     it('reports a range that spans the chord input', () => {
       const [first, second] = service.validate('a + b = x\nb + a = y\n', OFF);
-      // ANTLR columns are 0-based; endColumn is one past the last input key.
+      // 1-based columns; endColumn is one past the last input key.
       expect(first).toMatchObject({
         startLineNumber: 1,
         endLineNumber: 1,
-        startColumn: 0,
+        startColumn: 1,
         endColumn: 6,
       });
       expect(second).toMatchObject({
         startLineNumber: 2,
         endLineNumber: 2,
-        startColumn: 0,
+        startColumn: 1,
         endColumn: 6,
       });
     });
@@ -107,7 +107,7 @@ describe('TcclLanguageService.validate', () => {
           message: 'This chord conflicts with Bopomofo chord 「ㄅㄧ」.',
           startLineNumber: 1,
           endLineNumber: 1,
-          startColumn: 0,
+          startColumn: 1,
           endColumn: 6,
         },
       ]);
@@ -126,23 +126,71 @@ describe('TcclLanguageService.validate', () => {
 
     it('can be reported together with duplicated inputs', () => {
       const errors = service.validate('a + w = x\nw + a = y\n', ON);
-      expect(errors.filter((e) => e.code === 'DUPLICATED_CHORD_INPUT')).toHaveLength(2);
-      expect(errors.filter((e) => e.code === 'BPMF_CHORD_CONFLICT')).toHaveLength(2);
+      expect(
+        errors.filter((e) => e.code === 'DUPLICATED_CHORD_INPUT'),
+      ).toHaveLength(2);
+      expect(
+        errors.filter((e) => e.code === 'BPMF_CHORD_CONFLICT'),
+      ).toHaveLength(2);
     });
   });
 
-  // KNOWN GAP (see TEST_TODO.md): the semantic visitor overrides
-  // visitChordNode without visiting children, so only top-level chords are
-  // checked. These tests record the current behavior, not the intended one.
-  describe('nested chords (current behavior)', () => {
-    it('does not detect duplicated inputs among siblings of the same parent', () => {
-      expect(
-        service.validate('a + b = x\n  c + d = y\n  d + c = z\n', OFF),
-      ).toEqual([]);
+  describe('nested chords', () => {
+    const codes = (text: string, opts = OFF) =>
+      service.validate(text, opts).map((e) => `${e.code}@${e.startLineNumber}`);
+
+    it('detects duplicated inputs among siblings of the same parent', () => {
+      expect(codes('a + b = x\n  c + d = y\n  d + c = z\n')).toEqual([
+        'DUPLICATED_CHORD_INPUT@2',
+        'DUPLICATED_CHORD_INPUT@3',
+      ]);
     });
 
-    it('does not detect Bopomofo conflicts on nested chords', () => {
+    it('underlines exactly the nested chord input', () => {
+      const text = 'a + b = x\n  c + d = y\n  d + c = z\n';
+      expect(
+        service.validate(text, OFF).map((e) => underlined(text, e)),
+      ).toEqual(['c + d', 'd + c']);
+    });
+
+    it('does not report the same input under different parents', () => {
+      expect(codes('a + b = x\n  c + d = y\ne + f = z\n  c + d = w\n')).toEqual(
+        [],
+      );
+    });
+
+    it('does not report a nested chord equal to its parent', () => {
+      expect(codes('a + b = x\n  a + b = y\n')).toEqual([]);
+    });
+
+    it('detects duplicates at deeper levels', () => {
+      expect(
+        codes('a + b = x\n  c + d = y\n    e + f = 1\n    f + e = 2\n'),
+      ).toEqual(['DUPLICATED_CHORD_INPUT@3', 'DUPLICATED_CHORD_INPUT@4']);
+    });
+
+    it('also reports the children of duplicated parents', () => {
+      // Errors are grouped by chord path, so compare the set of lines.
+      expect(
+        codes('a + b = x\n  c + d = y\nb + a = z\n  c + d = w\n').sort(),
+      ).toEqual([
+        'DUPLICATED_CHORD_INPUT@1',
+        'DUPLICATED_CHORD_INPUT@2',
+        'DUPLICATED_CHORD_INPUT@3',
+        'DUPLICATED_CHORD_INPUT@4',
+      ]);
+    });
+
+    // A nested chord only applies after its parent, so it is not compared with
+    // the (top-level) Bopomofo chords. See TEST_TODO.md.
+    it('does not check nested chords against Bopomofo chords', () => {
       expect(service.validate('c + d = x\n  a + w = y\n', ON)).toEqual([]);
+    });
+
+    it('still checks top-level chords against Bopomofo chords', () => {
+      expect(codes('c + d = x\n  e + f = y\na + w = z\n', ON)).toEqual([
+        'BPMF_CHORD_CONFLICT@3',
+      ]);
     });
   });
 });
@@ -161,7 +209,6 @@ describe('TcclLanguageService.autoComplete', () => {
   it('suggests the input separator after a first key', () => {
     expect(values('a ', 1, 2)).toEqual([' + ']);
   });
-
 
   it('suggests both separators after at least two input keys', () => {
     expect(values('a + b ', 1, 6)).toEqual([' + ', ' = ']);
@@ -228,16 +275,16 @@ function underlined(text: string, error: TcclError): string {
 describe('diagnostic ranges as Monaco renders them', () => {
   it('underline the whole chord input for a duplicated chord', () => {
     const text = 'a + b = x\nb + a = y\n';
-    expect(
-      service.validate(text, OFF).map((e) => underlined(text, e)),
-    ).toEqual(['a + b', 'b + a']);
+    expect(service.validate(text, OFF).map((e) => underlined(text, e))).toEqual(
+      ['a + b', 'b + a'],
+    );
   });
 
   it('underline the whole chord input for a Bopomofo conflict', () => {
     const text = 'a + w = x\n';
-    expect(
-      service.validate(text, ON).map((e) => underlined(text, e)),
-    ).toEqual(['a + w']);
+    expect(service.validate(text, ON).map((e) => underlined(text, e))).toEqual([
+      'a + w',
+    ]);
   });
 
   it('underline the offending character of a syntax error', () => {

@@ -67,6 +67,7 @@ function checkSemanticRules(
     startColumn: number;
     endColumn: number;
     chord: string;
+    isTopLevel: boolean;
   }
   const chordInputPathMap = new Map<string, ChordInfo[]>();
   const chordInputMap = new Map<string, ChordInfo[]>();
@@ -81,9 +82,14 @@ function checkSemanticRules(
       }
       const chordInfo: ChordInfo = {
         lineNumber: chordInputContext.start.line,
-        startColumn: chordInputContext.start.column,
-        endColumn: chordInputContext.stop.column + 1,
+        // Monaco columns are 1-based and endColumn is exclusive.
+        startColumn: chordInputContext.start.column + 1,
+        endColumn:
+          chordInputContext.stop.column +
+          (chordInputContext.stop.text?.length ?? 1) +
+          1,
         chord: chordContext.toString(),
+        isTopLevel: !(chordNodeContext.parent instanceof ChordNodeContext),
       };
       const chordInputPathIdentifier =
         getChordInputIdentifierPathFromChordNodeContext(chordNodeContext);
@@ -104,6 +110,8 @@ function checkSemanticRules(
       } else {
         chordInputMap.set(chordInputIdentifier, [chordInfo]);
       }
+      // Nested (indented) chords are checked against their siblings too.
+      this.visitChildren(chordNodeContext);
     };
   }
 
@@ -116,7 +124,7 @@ function checkSemanticRules(
         chordInfos.map((chordInfo) => ({
           code: 'DUPLICATED_CHORD_INPUT',
           startColumn: chordInfo.startColumn,
-          endColumn: chordInfo.endColumn + 1,
+          endColumn: chordInfo.endColumn,
           startLineNumber: chordInfo.lineNumber,
           endLineNumber: chordInfo.lineNumber,
           message: 'Multiple chords with same chord input path are detected.',
@@ -130,15 +138,19 @@ function checkSemanticRules(
         .filter(([identifier]) => BOPOMOFO_CHORD_MAP.has(identifier))
         .flatMap(([identifier, chordInfos]) => {
           const bopomofoChordOutput = BOPOMOFO_CHORD_MAP.get(identifier);
-          return chordInfos.map((chordInfo) => ({
-            code: 'BPMF_CHORD_CONFLICT',
-            startColumn: chordInfo.startColumn,
-            endColumn: chordInfo.endColumn + 1,
-            startLineNumber: chordInfo.lineNumber,
-            endLineNumber: chordInfo.lineNumber,
-            message: `This chord conflicts with Bopomofo chord 「${bopomofoChordOutput}」.`,
-            severity: 'warning',
-          }));
+          // Bopomofo chords are top-level chords; a nested chord only applies
+          // after its parent, so it is not compared against them.
+          return chordInfos
+            .filter((chordInfo) => chordInfo.isTopLevel)
+            .map((chordInfo) => ({
+              code: 'BPMF_CHORD_CONFLICT',
+              startColumn: chordInfo.startColumn,
+              endColumn: chordInfo.endColumn,
+              startLineNumber: chordInfo.lineNumber,
+              endLineNumber: chordInfo.lineNumber,
+              message: `This chord conflicts with Bopomofo chord 「${bopomofoChordOutput}」.`,
+              severity: 'warning',
+            }));
         }),
     );
   }
