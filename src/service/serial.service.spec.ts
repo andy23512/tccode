@@ -10,10 +10,7 @@ import { firstValueFrom, toArray } from 'rxjs';
 import { SerialCommand } from '../data/serial-command.enum';
 import { SerialLogItemType } from '../model/serial-log.model';
 import { SerialLogStore } from '../store/serial-log.store';
-import {
-  stringifyChordActions,
-  stringifyPhrase,
-} from '../util/raw-chord.util';
+import { stringifyChordActions, stringifyPhrase } from '../util/raw-chord.util';
 import { SerialPortService } from './serial-port.service';
 import { SerialService } from './serial.service';
 
@@ -228,6 +225,76 @@ describe('SerialService', () => {
     });
   });
 
+  describe('response timeout', () => {
+    const silentOn = (silent: string) => (command: string) =>
+      command === silent ? undefined : deviceWithChords()(command);
+
+    it('rejects send() when the device does not answer', async () => {
+      setup(silentOn('ID'));
+      service.responseTimeoutMs = 50;
+      await expect(service.connect()).rejects.toThrow(
+        'The device did not answer "ID" within 50 ms.',
+      );
+    });
+
+    it('closes the port when connect() fails after the port was opened', async () => {
+      setup(silentOn('ID'));
+      service.responseTimeoutMs = 50;
+      await service.connect().catch(() => undefined);
+      expect(device.port.close).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not time out when the device answers in time', async () => {
+      setup();
+      service.responseTimeoutMs = 50;
+      expect(await connect()).toEqual({ version: 'V1.2.3', id: 'ABC123' });
+    });
+
+    it('has a default timeout of 5 seconds', () => {
+      setup();
+      expect(service.responseTimeoutMs).toBe(5000);
+    });
+
+    it('errors loadChords() instead of hanging when a chord is not answered', async () => {
+      const chord: [number[], number[]] = [pad12(97, 98), [99, 100]];
+      setup((command) =>
+        command === 'CML C1 1'
+          ? undefined
+          : deviceWithChords([chord, chord])(command),
+      );
+      await connect();
+      service.responseTimeoutMs = 50;
+      await expect(
+        firstValueFrom(service.loadChords().pipe(toArray())),
+      ).rejects.toThrow('The device did not answer "CML C1 1"');
+    });
+
+    it('errors loadChords() when the chord count is not answered', async () => {
+      setup(silentOn('CML C0'));
+      await connect();
+      service.responseTimeoutMs = 50;
+      await expect(
+        firstValueFrom(service.loadChords().pipe(toArray())),
+      ).rejects.toThrow('The device did not answer "CML C0"');
+    });
+
+    it('errors batchSend() and stops sending after an unanswered item', async () => {
+      setup((command) =>
+        command === 'SECOND 2'
+          ? undefined
+          : (deviceWithChords()(command) ?? [`${command} OK\r\n`]),
+      );
+      await connect();
+      service.responseTimeoutMs = 50;
+      await expect(
+        firstValueFrom(
+          service.batchSend(['FIRST 1', 'SECOND 2', 'THIRD 3']).pipe(toArray()),
+        ),
+      ).rejects.toThrow('The device did not answer "SECOND 2"');
+      expect(device.written.slice(2)).toEqual(['FIRST 1', 'SECOND 2']);
+    });
+  });
+
   describe('loadChords', () => {
     const chordA: [number[], number[]] = [pad12(97, 98), [99, 100]];
     const chordB: [number[], number[]] = [pad12(99, 100), [97]];
@@ -306,7 +373,11 @@ describe('SerialService', () => {
       await firstValueFrom(
         service.batchSend(['FIRST 1', 'SECOND 2', 'THIRD 3']).pipe(toArray()),
       );
-      expect(device.written.slice(2)).toEqual(['FIRST 1', 'SECOND 2', 'THIRD 3']);
+      expect(device.written.slice(2)).toEqual([
+        'FIRST 1',
+        'SECOND 2',
+        'THIRD 3',
+      ]);
     });
 
     it('reports progress and completes', async () => {

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { SAMPLE_CHORD_LISTS } from '../data/sample-chords.const';
 import { Chord } from '../model/chord.model';
 import { EditorStore } from '../store/editor.store';
@@ -107,6 +107,25 @@ describe('ChordLoaderService', () => {
       expect(serial.disconnect).toHaveBeenCalled();
     });
 
+    it('disconnects and rethrows when reading the chords fails', async () => {
+      serial.loadChords.mockReturnValue(throwError(() => new Error('timeout')));
+      await expect(service.loadChordTreeNodesFromDevice()).rejects.toThrow(
+        'timeout',
+      );
+      expect(serial.disconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('tells the user when reading the chords fails', async () => {
+      const error = jest.spyOn(console, 'error').mockImplementation();
+      serial.loadChords.mockReturnValue(throwError(() => new Error('timeout')));
+      await service.loadFromDevice();
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'Failed to communicate with the device.',
+      );
+      expect(editor.content()).toBe('');
+      error.mockRestore();
+    });
+
     it('does not read chords when connecting fails', async () => {
       serial.connect.mockRejectedValue(new Error('no port'));
       await expect(service.loadChordTreeNodesFromDevice()).rejects.toThrow(
@@ -131,7 +150,9 @@ describe('ChordLoaderService', () => {
       serial.connect.mockRejectedValue(new Error('No port selected'));
       await service.loadFromDevice();
       expect(snackBar.open).toHaveBeenCalledTimes(1);
-      expect(snackBar.open).toHaveBeenCalledWith('Failed to connect to the device.');
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'Failed to communicate with the device.',
+      );
       expect(editor.content()).toBe('');
       expect(serial.loadChords).not.toHaveBeenCalled();
       expect(error).toHaveBeenCalled();
@@ -167,14 +188,17 @@ describe('ChordLoaderService', () => {
     const file = (name: string, content: string) =>
       new File([content], name, { type: 'text/plain' });
 
-    it.each(['chords.tccl', 'chords.txt'])('appends the text of %s', async (name) => {
-      service.loadFromFile(file(name, 'a + b = cd\n'));
-      await until(() => snackBar.open.mock.calls.length > 0);
-      expect(editor.content()).toBe('a + b = cd\n');
-      expect(snackBar.open).toHaveBeenCalledWith(
-        'Chords are successfully loaded from file.',
-      );
-    });
+    it.each(['chords.tccl', 'chords.txt'])(
+      'appends the text of %s',
+      async (name) => {
+        service.loadFromFile(file(name, 'a + b = cd\n'));
+        await until(() => snackBar.open.mock.calls.length > 0);
+        expect(editor.content()).toBe('a + b = cd\n');
+        expect(snackBar.open).toHaveBeenCalledWith(
+          'Chords are successfully loaded from file.',
+        );
+      },
+    );
 
     it('does not validate text files', async () => {
       service.loadFromFile(file('x.txt', 'this is not tccl'));
@@ -217,15 +241,18 @@ describe('ChordLoaderService', () => {
       ['truncated', '{"chords": [[1,2'],
       ['not JSON', 'hello'],
       ['wrong shape', '{"chords": [1, 2, 3]}'],
-    ])('tells the user a malformed JSON backup was not loaded (%s)', async (_, content) => {
-      service.loadFromFile(file('backup.json', content));
-      await until(() => snackBar.open.mock.calls.length > 0);
-      expect(snackBar.open).toHaveBeenCalledTimes(1);
-      expect(snackBar.open).toHaveBeenCalledWith(
-        'Failed to load chords from JSON. The file is not a valid chord backup.',
-      );
-      expect(editor.content()).toBe('');
-    });
+    ])(
+      'tells the user a malformed JSON backup was not loaded (%s)',
+      async (_, content) => {
+        service.loadFromFile(file('backup.json', content));
+        await until(() => snackBar.open.mock.calls.length > 0);
+        expect(snackBar.open).toHaveBeenCalledTimes(1);
+        expect(snackBar.open).toHaveBeenCalledWith(
+          'Failed to load chords from JSON. The file is not a valid chord backup.',
+        );
+        expect(editor.content()).toBe('');
+      },
+    );
 
     it('treats only the ".json" extension as a backup (case sensitive)', async () => {
       service.loadFromFile(file('backup.JSON', '{"chords": []}'));

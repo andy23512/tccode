@@ -8,6 +8,8 @@ import {
   Observable,
   Subject,
   tap,
+  throwError,
+  timeout,
   toArray,
 } from 'rxjs';
 import {
@@ -65,6 +67,9 @@ export class SerialService {
 
   private serialLogStore = inject(SerialLogStore);
 
+  /** How long to wait for the device to answer one command. */
+  public responseTimeoutMs = 5000;
+
   /** Rejects when no port can be obtained or opened. */
   public async connect() {
     this.port = await this.serialPortService.getPort();
@@ -78,9 +83,15 @@ export class SerialService {
 
     this.startReadLoop();
 
-    const version = await this.send(SerialCommand.Version);
-    const id = await this.send(SerialCommand.Id);
-    return { version, id };
+    try {
+      const version = await this.send(SerialCommand.Version);
+      const id = await this.send(SerialCommand.Id);
+      return { version, id };
+    } catch (e) {
+      // The port is open but the device did not answer: do not leave it open.
+      await this.disconnect().catch(() => undefined);
+      throw e;
+    }
   }
 
   public loadChords(): Observable<
@@ -118,12 +129,15 @@ export class SerialService {
             }),
             toArray(),
           )
-          .subscribe((chords) => {
-            result.complete = true;
-            observer.next({ ...result, chords });
-            observer.complete();
+          .subscribe({
+            error: (e) => observer.error(e),
+            next: (chords) => {
+              result.complete = true;
+              observer.next({ ...result, chords });
+              observer.complete();
+            },
           });
-      })();
+      })().catch((e) => observer.error(e));
     });
   }
 
@@ -145,10 +159,13 @@ export class SerialService {
           }),
           toArray(),
         )
-        .subscribe(() => {
-          result.complete = true;
-          observer.next(result);
-          observer.complete();
+        .subscribe({
+          error: (e) => observer.error(e),
+          next: () => {
+            result.complete = true;
+            observer.next(result);
+            observer.complete();
+          },
         });
     });
   }
@@ -166,6 +183,16 @@ export class SerialService {
     this.serialLogStore.push(SerialLogItemType.Send, data);
     return firstValueFrom(
       this.webSerialData$.pipe(
+        timeout({
+          first: this.responseTimeoutMs,
+          with: () =>
+            throwError(
+              () =>
+                new Error(
+                  `The device did not answer "${data}" within ${this.responseTimeoutMs} ms.`,
+                ),
+            ),
+        }),
         filter((d) => d.startsWith(data)),
         tap((d) => {
           this.serialLogStore.push(SerialLogItemType.Receive, d);

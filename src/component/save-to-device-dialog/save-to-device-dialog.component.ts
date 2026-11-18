@@ -145,7 +145,7 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
         });
     } catch (e) {
       console.error(e);
-      this.matSnackBar.open('Failed to connect to the device.');
+      this.matSnackBar.open('Failed to communicate with the device.');
       this.matDialogRef.close();
       return;
     }
@@ -262,9 +262,17 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
       const command = `CML C4 ${stringifyChordActions(c.node.actions)}`;
       serialCommands.push(command);
     });
-    this.serialService.batchSend(serialCommands).subscribe(() => {
-      this.matSnackBar.open('Chords are successfully saved to device.');
-      this.matDialogRef.close();
+    this.serialService.batchSend(serialCommands).subscribe({
+      next: ({ complete }) => {
+        if (complete) {
+          this.matSnackBar.open('Chords are successfully saved to device.');
+          this.matDialogRef.close();
+        }
+      },
+      error: (e) => {
+        console.error(e);
+        this.matSnackBar.open('Failed to save chords to the device.');
+      },
     });
   }
 

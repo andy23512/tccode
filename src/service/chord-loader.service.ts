@@ -27,7 +27,14 @@ export class ChordLoaderService {
     { disconnect = true }: { disconnect: boolean } = { disconnect: true },
   ): Promise<ChordTreeNode[]> {
     await this.serialService.connect();
-    const { chords } = await lastValueFrom(this.serialService.loadChords());
+    let chords: Chord[] | undefined;
+    try {
+      ({ chords } = await lastValueFrom(this.serialService.loadChords()));
+    } catch (e) {
+      // Do not leave the port open when the device stops answering.
+      await this.serialService.disconnect().catch(() => undefined);
+      throw e;
+    }
     if (disconnect) {
       await this.serialService.disconnect();
     }
@@ -44,7 +51,7 @@ export class ChordLoaderService {
       chordTreeNodes = await this.loadChordTreeNodesFromDevice();
     } catch (e) {
       console.error(e);
-      this.matSnackBar.open('Failed to connect to the device.');
+      this.matSnackBar.open('Failed to communicate with the device.');
       return;
     }
     const keyboardLayout = this.keyboardLayout();
