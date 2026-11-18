@@ -126,6 +126,18 @@ describe('ChordLoaderService', () => {
       );
     });
 
+    it('tells the user when the connection fails, and loads nothing', async () => {
+      const error = jest.spyOn(console, 'error').mockImplementation();
+      serial.connect.mockRejectedValue(new Error('No port selected'));
+      await service.loadFromDevice();
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith('Failed to connect to the device.');
+      expect(editor.content()).toBe('');
+      expect(serial.loadChords).not.toHaveBeenCalled();
+      expect(error).toHaveBeenCalled();
+      error.mockRestore();
+    });
+
     it('does nothing when the device has no chords', async () => {
       await service.loadFromDevice();
       expect(editor.content()).toBe('');

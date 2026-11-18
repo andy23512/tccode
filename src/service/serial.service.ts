@@ -65,27 +65,22 @@ export class SerialService {
 
   private serialLogStore = inject(SerialLogStore);
 
+  /** Rejects when no port can be obtained or opened. */
   public async connect() {
-    try {
-      this.port = await this.serialPortService.getPort();
-      await this.port.open({ baudRate: 115200 });
-      const textEncoder = new TextEncoderStream();
-      if (!this.port.writable) {
-        throw Error('Port is not writable.');
-      }
-      this.writableStreamClosed = textEncoder.readable.pipeTo(
-        this.port.writable,
-      );
-      this.writer = textEncoder.writable.getWriter();
-
-      this.startReadLoop();
-
-      const version = await this.send(SerialCommand.Version);
-      const id = await this.send(SerialCommand.Id);
-      return { version, id };
-    } catch (e) {
-      console.error(e);
+    this.port = await this.serialPortService.getPort();
+    await this.port.open({ baudRate: 115200 });
+    const textEncoder = new TextEncoderStream();
+    if (!this.port.writable) {
+      throw Error('Port is not writable.');
     }
+    this.writableStreamClosed = textEncoder.readable.pipeTo(this.port.writable);
+    this.writer = textEncoder.writable.getWriter();
+
+    this.startReadLoop();
+
+    const version = await this.send(SerialCommand.Version);
+    const id = await this.send(SerialCommand.Id);
+    return { version, id };
   }
 
   public loadChords(): Observable<
@@ -181,6 +176,10 @@ export class SerialService {
   }
 
   public async disconnect() {
+    if (!this.reader) {
+      // Never connected (or the connection failed): nothing to close.
+      return;
+    }
     this.reader.cancel();
     await this.readableStreamClosed.catch(() => {
       /* empty */

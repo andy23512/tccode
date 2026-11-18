@@ -137,10 +137,18 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
       content,
       keyboardLayout,
     );
-    const chordTreeNodesFromDevice =
-      await this.chordLoaderService.loadChordTreeNodesFromDevice({
-        disconnect: false,
-      });
+    let chordTreeNodesFromDevice: ChordTreeNode[];
+    try {
+      chordTreeNodesFromDevice =
+        await this.chordLoaderService.loadChordTreeNodesFromDevice({
+          disconnect: false,
+        });
+    } catch (e) {
+      console.error(e);
+      this.matSnackBar.open('Failed to connect to the device.');
+      this.matDialogRef.close();
+      return;
+    }
     const rawDiff = treeObjectDiff(
       {
         id: -1,

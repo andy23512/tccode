@@ -173,10 +173,7 @@ describe('SerialService', () => {
       ]);
     });
 
-    // Current behavior: errors are logged and swallowed, connect() resolves
-    // with undefined, and callers (e.g. ChordLoaderService) carry on.
-    it('logs the error and resolves with undefined when no port can be obtained', async () => {
-      const error = jest.spyOn(console, 'error').mockImplementation();
+    it('rejects when no port can be obtained', async () => {
       TestBed.configureTestingModule({
         providers: [
           {
@@ -186,16 +183,13 @@ describe('SerialService', () => {
         ],
       });
       service = TestBed.inject(SerialService);
-      expect(await service.connect()).toBeUndefined();
-      expect(error).toHaveBeenCalledWith(expect.objectContaining({ message: 'denied' }));
+      await expect(service.connect()).rejects.toThrow('denied');
     });
 
-    it('logs the error and resolves with undefined when the port cannot be opened', async () => {
-      const error = jest.spyOn(console, 'error').mockImplementation();
+    it('rejects when the port cannot be opened, without writing anything', async () => {
       setup();
       device.port.open.mockRejectedValue(new Error('busy'));
-      expect(await service.connect()).toBeUndefined();
-      expect(error).toHaveBeenCalledWith(expect.objectContaining({ message: 'busy' }));
+      await expect(service.connect()).rejects.toThrow('busy');
       expect(device.written).toEqual([]);
     });
   });
@@ -347,6 +341,19 @@ describe('SerialService', () => {
   });
 
   describe('disconnect', () => {
+    it('does nothing when it was never connected', async () => {
+      setup();
+      await expect(service.disconnect()).resolves.toBeUndefined();
+      expect(device.port.close).not.toHaveBeenCalled();
+    });
+
+    it('does nothing after a failed connection', async () => {
+      setup();
+      device.port.open.mockRejectedValue(new Error('busy'));
+      await service.connect().catch(() => undefined);
+      await expect(service.disconnect()).resolves.toBeUndefined();
+    });
+
     it('closes the port', async () => {
       setup();
       await connect();

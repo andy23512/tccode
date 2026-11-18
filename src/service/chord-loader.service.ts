@@ -39,7 +39,14 @@ export class ChordLoaderService {
   }
 
   public async loadFromDevice() {
-    const chordTreeNodes = await this.loadChordTreeNodesFromDevice();
+    let chordTreeNodes: ChordTreeNode[];
+    try {
+      chordTreeNodes = await this.loadChordTreeNodesFromDevice();
+    } catch (e) {
+      console.error(e);
+      this.matSnackBar.open('Failed to connect to the device.');
+      return;
+    }
     const keyboardLayout = this.keyboardLayout();
     if (chordTreeNodes.length > 0 && keyboardLayout) {
       const indent = this.editorStore.indent();
