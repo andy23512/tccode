@@ -131,6 +131,8 @@ export class SaveToDeviceDialogComponent implements OnInit, OnDestroy {
     const content = this.editorStore.content();
     const keyboardLayout = this.keyboardLayout();
     if (!keyboardLayout) {
+      this.matSnackBar.open('No keyboard layout is selected.');
+      this.matDialogRef.close();
       return;
     }
     const chordTreeNodesFromEditor = convertTcclFileToChordTreeNodes(

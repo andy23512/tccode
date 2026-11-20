@@ -95,7 +95,9 @@ describe('SaveToDeviceDialogComponent', () => {
       await fixture.whenStable();
       fixture.detectChanges();
       expect(fixture.componentInstance.loading()).toBe(false);
-      expect(fixture.nativeElement.querySelector('mat-progress-bar')).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('mat-progress-bar'),
+      ).toBeNull();
     });
 
     it('says there is nothing to save when both sides are the same', async () => {
@@ -291,12 +293,19 @@ describe('SaveToDeviceDialogComponent', () => {
   });
 
   describe('without a keyboard layout', () => {
-    // Current behavior: nothing is read from the device and the dialog keeps
-    // showing its progress bar.
-    it('never leaves the loading state', async () => {
+    it('tells the user and closes, instead of showing the progress bar forever', async () => {
       TestBed.inject(KeyboardLayoutStore).setSelectedId(null);
-      const fixture = await create('a + b = cd\n', deviceTree(A_B));
-      expect(fixture.componentInstance.loading()).toBe(true);
+      await create('a + b = cd\n', deviceTree(A_B));
+      expect(snackBar.open).toHaveBeenCalledTimes(1);
+      expect(snackBar.open).toHaveBeenCalledWith(
+        'No keyboard layout is selected.',
+      );
+      expect(dialogRef.close).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not read the device', async () => {
+      TestBed.inject(KeyboardLayoutStore).setSelectedId(null);
+      await create('a + b = cd\n', deviceTree(A_B));
       expect(chordLoader.loadChordTreeNodesFromDevice).not.toHaveBeenCalled();
     });
   });
