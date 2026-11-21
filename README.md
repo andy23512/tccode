@@ -1,5 +1,7 @@
 # TanChord Code (TC Code)
 
+[![CI](https://github.com/andy23512/tccode/actions/workflows/ci.yml/badge.svg)](https://github.com/andy23512/tccode/actions/workflows/ci.yml)
+
 An unofficial, experimental editor that allows you to edit the chord library of your CharaChorder device, similar to editing code in a code editor
 
 ## Links
