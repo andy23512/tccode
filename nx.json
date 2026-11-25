@@ -54,5 +54,6 @@
       "style": "css"
     }
   },
-  "defaultProject": "tccode"
+  "defaultProject": "tccode",
+  "analytics": false
 }
